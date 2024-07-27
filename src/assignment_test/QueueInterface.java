@@ -20,6 +20,6 @@ public interface QueueInterface<T> {
     boolean isEmptyEntry();
     int size();
     T[] queueHolder(T[] Ori);
-    T[] empty(T[] q);
+    void empty();
     String toString();
 }
