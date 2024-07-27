@@ -8,18 +8,18 @@ package assignment_test;
  * References Link: https://docs.oracle.com/javase/8/docs/api/java/util/Queue.html
  * @author Asus
  */
-public class Queue<T> {
+public class queue<T> implements QueueInterface<T> {
     private T[] queue;
     private T[] current = (T[]) new Object[queue.length];
     private int numOfEntries;
     private static final int DEFAULT_LENGTH = 1000;
     
-    public Queue(){
+    public queue(){
         numOfEntries = 0;
         this.queue= (T[]) new Object[DEFAULT_LENGTH];
     }
     
-    public Queue(int customLength){
+    public queue(int customLength){
         numOfEntries = 0;
         this.queue= (T[]) new Object[customLength];
     }
@@ -49,6 +49,7 @@ public class Queue<T> {
     }
     
     // read the first item in the queue
+    @Override
     public T peek(){
         
         boolean empty = isEmptyQueue();
@@ -61,6 +62,7 @@ public class Queue<T> {
     }
     
     // read and delete the first queue
+    @Override
     public T poll(){
         
         boolean empty = isEmptyQueue();
@@ -74,6 +76,7 @@ public class Queue<T> {
     }
     
     // remove the 1st item in queue
+    @Override
     public void remove(){
         current = queueHolder(queue); // store the current data into current queue
         queue = empty(queue); // empty entire ori queue
@@ -85,10 +88,12 @@ public class Queue<T> {
         }
     }
         
+    @Override
     public boolean isFull(){
         return numOfEntries == queue.length; // must return true
     }
     
+    @Override
     public boolean isEmptyQueue(){
         int j = queue.length;
         
@@ -105,6 +110,7 @@ public class Queue<T> {
         }
     }
     
+    @Override
     public boolean isEmptyEntry(){
         if(queue[numOfEntries] == null){
             return true; // the specific place is empty
@@ -113,10 +119,12 @@ public class Queue<T> {
         }
     }
     
+    @Override
     public int size(){
         return queue.length;
     }
     
+    @Override
     public T[] queueHolder(T[] ori){
         
         for(int i = 0; i < queue.length; i++){
@@ -126,6 +134,7 @@ public class Queue<T> {
         return current;
     }
     
+    @Override
     public T[] empty(T[] q){
         for (int i = 0; i < q.length; i++){
             q[i] = null;
