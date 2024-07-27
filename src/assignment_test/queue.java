@@ -79,7 +79,7 @@ public class queue<T> implements QueueInterface<T> {
     @Override
     public void remove(){
         current = queueHolder(queue); // store the current data into current queue
-        queue = empty(queue); // empty entire ori queue
+        empty(); // empty entire ori queue
         
         numOfEntries--; 
         
@@ -135,12 +135,10 @@ public class queue<T> implements QueueInterface<T> {
     }
     
     @Override
-    public T[] empty(T[] q){
-        for (int i = 0; i < q.length; i++){
-            q[i] = null;
+    public void empty(){
+        for (int i = 0; i < queue.length; i++){
+            queue[i] = null;
         }
-        
-        return q;
     }
     
     @Override
