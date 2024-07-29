@@ -15,9 +15,6 @@ public class cookies extends food{
     public cookies(){
     }
     
-    public cookies(int qty, Date expiryDate, int weight){
-        super(qty, expiryDate, weight);
-    }
     
     @Override
     public String toString(){

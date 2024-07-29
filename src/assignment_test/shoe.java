@@ -8,14 +8,23 @@ package assignment_test;
  *
  * @author Asus
  */
-public class shoe extends item {
+public class shoe extends apparel {
     private int size; // 3 4 5 6 7 8
+    
     
     public shoe(){
     }
     
-    public shoe(int qty, int size){
-        super(qty);
+    public shoe(String type, int qty, String note, String color, String condition, String brand, int size){
+        super(type, qty, note, color, condition, brand);
+        this.size = size;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
         this.size = size;
     }
     
@@ -23,6 +32,6 @@ public class shoe extends item {
     public String toString(){
         return super.toString()+ 
                 String.format("\n%-15s %-2s %10d" 
-                        + "Shoe size" + ":" + size);
+                        + "size" + ":" + size);
     }
 }

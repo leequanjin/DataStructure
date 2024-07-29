@@ -13,12 +13,14 @@ import java.util.Date;
 public class food extends item{
     private Date expiryDate;
     private int weight; // in gram
+    private String status;
     
     public food(){}
     
-    public food(int qty, Date expiryDate, int weight){
-        super(qty);
+    public food(String type, int qty, String note, Date expiryDate, int weight, String status){
+        super(type, qty, note);
         this.expiryDate = expiryDate;
+        this.status = status;
     }
 
     public Date getExpiryDate() {
@@ -37,12 +39,21 @@ public class food extends item{
         this.weight = weight;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return super.toString() + 
-                String.format("\n%-15s %-2s %10f \n%-15s %-2s %-8d %5s " 
+                String.format("\n%-15s %-2s %10f \n%-15s %-2s %-8d %5s \n%-15s %-2s %-8d %10s" 
                         + "Expiry date" + ":" + expiryDate
-                        + "Weight" + ":" + weight + " gram");
+                        + "Weight" + ":" + weight + " gram"
+                        + "Status" + ":" + status);
     }
     
 }
