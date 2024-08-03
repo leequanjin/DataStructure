@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package assignment_test;
+package DoneeSubsystem;
 
 import java.io.Serializable;
 
@@ -42,7 +42,6 @@ abstract class Donee implements Serializable {
     public String toString() {
         return "ID  : " + getId()
                 + "\nName: " + getName()
-                + "\nType: " + getType()
-                + "\n";
+                + "\nType: " + getType();
     }
 }

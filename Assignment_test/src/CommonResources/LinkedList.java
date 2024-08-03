@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package assignment_test;
+package CommonResources;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,13 +11,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- *
- * @author leeda
+ * Reference https://www.youtube.com/watch?v=SMIq13-FZSE&t=1s
+ * Reference https://www.youtube.com/watch?v=AeqXFjCUcQM
+ * Reference https://www.youtube.com/watch?v=tZxPqhkRLiw&t=438s
+ * @author Lee Quan Jin
  * @param <T>
  */
 public class LinkedList<T> {
 
-    Node<T> head;
+    public Node<T> head;
 
     // Method to insert data at the end of the list
     public void insert(T data) {

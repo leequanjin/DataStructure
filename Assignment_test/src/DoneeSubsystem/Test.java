@@ -2,15 +2,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package assignment_test;
+package DoneeSubsystem;
 
+import CommonResources.LinkedList;
 import java.util.Scanner;
 
 /**
  *
- * @author leeda
+ * @author Lee Quan Jin
  */
-public class DannyTest {
+public class Test {
 
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
@@ -95,7 +96,6 @@ public class DannyTest {
 //                    }
                     case 5 -> {
                         // List donees with all donations made
-                        System.out.println();
                         doneeList.show();
                     }
                     case 6 -> {
