@@ -8,12 +8,12 @@ package assignment_test;
  *
  * @author Lee Quan Jin
  */
-public class Donation {
+public class TestDonation {
     private String donationId;
     private double amount;
     private String donationType; // cash or kind
 
-    public Donation(String donationId, double amount, String donationType) {
+    public TestDonation(String donationId, double amount, String donationType) {
         this.donationId = donationId;
         this.amount = amount;
         this.donationType = donationType;

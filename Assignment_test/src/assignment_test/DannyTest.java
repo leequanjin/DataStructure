@@ -10,7 +10,7 @@ import java.util.Scanner;
  *
  * @author leeda
  */
-public class Test {
+public class DannyTest {
 
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
