@@ -2,18 +2,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package assignment_test;
+package DonationList;
 
 /**
  *
  * @author Asus
  */
-public class sportShoe extends shoe {
-    public sportShoe(){
+public class Cash extends Money {
+    public Cash(){
     }
     
-    public sportShoe(int qty, int size){
-        super(qty, size);
+    public Cash(double amount){
+        super(amount);
     }
     
     @Override

@@ -2,18 +2,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package assignment_test;
+package DonationList;
 
 /**
  *
  * @author Asus
  */
-public class money {
+public class Money {
     private double amount;
     
-    public money(){}
+    public Money(){}
     
-    public money(double amount){
+    public Money(double amount){
         this.amount = amount;
     }
     
@@ -28,5 +28,5 @@ public class money {
     @Override
     public String toString(){
         return String.format("\n%-15s %-4s %5.2f" + "Amount" + ": RM" + amount);
-    }
+    } 
 }
