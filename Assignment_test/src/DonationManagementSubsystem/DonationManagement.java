@@ -4,10 +4,25 @@
  */
 package DonationManagementSubsystem;
 
+import CommonResources.Node;
+import CommonResources.LinkedList;
+import CommonResources.Queue;
+
+import DonorSubsystem.Donor;
+import DonorSubsystem.Individual;
+import DonorSubsystem.Organization;
+import DonorSubsystem.Family;
+
+import java.io.File;
+import java.io.IOException;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class DonationManagement {
+    
+    private static final String ITEM_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\item.txt";
+    private static final String DONOR_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\donor.txt";
     
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
@@ -18,6 +33,10 @@ public class DonationManagement {
     public static final String ANSI_RESET = "\u001B[0m";
     
     public static void main(String[] args) {
+        
+        chkAllFileExist();
+        //addRecord(); //alr store one individual, family and organisation in donor.txt
+        
         Scanner scan = new Scanner(System.in);
         
         boolean contDM = true;
@@ -59,6 +78,8 @@ public class DonationManagement {
                 }
             }
 
+            // clear screen
+            
             switch (dmChoice) {
                 case 1:
                     addDonation();
@@ -100,6 +121,49 @@ public class DonationManagement {
         }
     }
     
+    public static void addRecord(){
+        // instance individual
+        Individual a = new Individual("EI00000", "Anonymous"); 
+        Individual idv = new Individual("EI00001", "HAHA"); 
+        
+        // instance individual
+        Family fam = new Family("EFI00001", "OUO Family"); 
+        
+        // instance organization
+        Organization org = new Organization("EO00001", "OMO Company");
+        
+        // save into list
+        LinkedList dList = new LinkedList();
+        dList.insert(a);
+        dList.insert(idv);
+        dList.insert(fam);
+        dList.insert(org);
+        
+        //idvList.show();
+        
+        //load into file
+        dList.saveToFile(DONOR_PATH);
+    }
+    
+    // Common Use Part  
+    public static void chkAllFileExist(){
+        chkFileExist(ITEM_PATH);
+        chkFileExist(DONOR_PATH);
+    }
+    
+    // Create file if file not exist
+    public static void chkFileExist(String filePath) {
+        File file = new File(filePath);
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+                System.out.println("File created: " + filePath);
+            }
+        } catch (IOException e) {
+            System.out.println(ANSI_RED + "Error creating file: " + e.getMessage() + ANSI_RESET);
+        }
+    }
+    
     public static boolean YN(String sentence) {
         Scanner scan = new Scanner(System.in);
         
@@ -126,24 +190,188 @@ public class DonationManagement {
         return false;
     }
     
+    // Part 1: Add new donation
     public static void addDonation(){
-    
+        Scanner scan = new Scanner(System.in);
+        
+        boolean contAddDonation = true;
+        while(contAddDonation){
+            
+            System.out.println(ANSI_BLUE + " - - - Add Donation - - - " + ANSI_RESET);
+
+            System.out.println("Type of donor\n"
+                    + "1. Individual\n"
+                    + "2. Family\n"
+                    + "3. Organisation");
+            System.out.print("Enter donor's type: ");
+            int dType = 0;
+            boolean validDType = false;
+            while(validDType == false){
+                    try {
+                        dType = scan.nextInt();
+
+                        if (dType < 1 || dType > 3) {
+                            System.out.println(ANSI_RED + "Please enter a number between 1 and 3.\n" + ANSI_RESET);
+                            
+                            scan.nextLine();
+                            System.out.print("Enter again: ");
+                        } else {
+                            validDType = true; 
+                        }
+
+                    } catch (InputMismatchException e) {
+                        System.out.println(ANSI_RED + "Invalid input. Please enter an integer number.\n" + ANSI_RESET);
+                        
+                        scan.nextLine();
+                        System.out.print("Enter again: ");
+                    }
+            }
+
+            scan.nextLine();
+            System.out.print("Enter donor's id: ");
+            String dID = null;
+            boolean validID = false;
+            while(validID == false){
+                dID = scan.next();
+
+                if(dID.isEmpty()){
+                    System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                    
+                    scan.nextLine();
+                    System.out.print("Enter again: ");
+                } else if(dID.length() != 7){
+                    System.out.println(ANSI_RED + "Invalid length. Format of ID should be AA00000.\n" + ANSI_RESET);
+                    
+                    scan.nextLine();
+                    System.out.print("Enter again: ");
+                } else {
+                    switch(dType){
+                        case 1: // individual (EI)
+                            if (dID.substring(0, 2).equals("EI")) {
+                                validID = true;
+                            } else {
+                                System.out.println(ANSI_RED + "Invalid format. Format of individual donor should be EI00000.\n" + ANSI_RESET);
+                                System.out.print("Enter again: ");
+                            }
+                            break;
+                        case 2: // family (EF)
+                            if (dID.substring(0, 2).equals("EF")) {
+                                validID = true;
+                            } else {
+                                System.out.println(ANSI_RED + "Invalid format. Format of family donor should be EF00000.\n" + ANSI_RESET);
+                                System.out.print("Enter again: ");
+                            }
+                            break;
+                        case 3: // organization (EO)
+                            if (dID.substring(0, 2).equals("EO")) {
+                                validID = true;
+                            } else {
+                                System.out.println(ANSI_RED + "Invalid format. Format of organization donor should be EO00000.\n" + ANSI_RESET);
+                                System.out.print("Enter again: ");
+                            }
+                            break;
+                        default:
+                            System.out.println(ANSI_RED + "Unknown donor type.\n" + ANSI_RESET);
+                            System.out.print("Enter again: ");
+                    }
+                }
+            }
+
+            // check if donor exist
+            LinkedList<Donor> donorList = new LinkedList<>();
+            boolean validDonor = chkDonorExist(dType, dID, donorList);
+
+            // if exist, show current data 
+            if(validDonor == true){
+                System.out.println("\n - - - Current Donor - - -");
+                donorList.show();
+            }else{ // if does not exist, create or break
+                System.out.println(ANSI_RED + "Donor does not exist.\n" + ANSI_RESET);
+                contAddDonation = YN("Do you want to continue sign up a new donor?");
+                if(contAddDonation == true){
+                    // create a new one then load into the linkedlist
+                } else{
+                    break;
+                }
+            }
+            
+            contAddDonation = YN("Do you want to continue adding another donation for other donor?");
+            if(contAddDonation == true){
+                System.out.println(); // clear screen 
+            } 
+        }
+        
     }
     
+    public static boolean chkDonorExist(int dType, String dID, LinkedList donorList){
+        LinkedList<Donor> tempDonorList = new LinkedList<>();
+        
+        tempDonorList.loadFromFile(DONOR_PATH);
+        
+        if (!tempDonorList.isEmpty()){
+//            System.out.println();
+//            tempDonorList.show();
+            
+            Node<Donor> current = tempDonorList.head;
+        
+            while (current != null) {
+                Donor donor = current.data;
+
+                switch(dType) {
+                    case 1: // Individual
+                        if (donor instanceof Individual && donor.getId().equals(dID)) {
+                            donorList.insert(donor);
+                            return true;
+                        }
+                        break;
+                    case 2: // Family
+                        if (donor instanceof Family && donor.getId().equals(dID)) {
+                            donorList.insert(donor);
+                            return true;
+                        }
+                        break;
+                    case 3: // Organization
+                        if (donor instanceof Organization && donor.getId().equals(dID)) {
+                            donorList.insert(donor);
+                            return true;
+                        }
+                        break;
+                    default:
+                        return false;
+                }
+
+                current = current.next;
+            }
+            
+        }else{
+            System.out.println("Nothing in tempDonorList");
+        }
+        
+        return false;
+    }
+    
+    // Part 2: Remove a donation
     public static void remDonation(){}
     
+    // Part 3: Search donation details
     public static void searchDonation(){}
     
+    // Part 4: Amend donation details
     public static void amendDonation(){}
     
+    // Part 5: Track donated items in categories
     public static void trackItemByCategory(){}
     
+    // Part 6: List donation by different donor
     public static void listByDiffDonor(){}
     
+    // Part 7: List all donations
     public static void listAll(){}
     
+    // Part 8: Filter donation based on criteria
     public static void filterDonation(){}
     
+    // Part 9: Generate summary reports 
     public static void report(){}
     
 }
