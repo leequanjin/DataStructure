@@ -116,7 +116,7 @@ public class LinkedList<T> {
             // List is empty
         } else {
             while (n != null) {
-                System.out.println(n.data);
+                System.out.print(n.data + "\n");
                 n = n.next;
             }
         }
@@ -158,5 +158,10 @@ public class LinkedList<T> {
         }
 
         return filteredList;
+    }
+    
+    // Method to check if the linked list is empty
+    public boolean isEmpty() {
+        return head == null;
     }
 }
