@@ -13,10 +13,20 @@ import DonorSubsystem.Individual;
 import DonorSubsystem.Organization;
 import DonorSubsystem.Family;
 
+import DonationList.Item;
+import DonationList.Money;
+import DonationList.PhysicalItem;
+import DonationList.Bank;
+import DonationList.Cash;
+import DonationList.Food;
+import DonationList.TinnedFood;
+import DonationList.Apparel;
+import java.io.BufferedReader;
+
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class DonationManagement {
@@ -57,25 +67,35 @@ public class DonationManagement {
             System.out.print("Enter your choice: ");
 
             int dmChoice = 0;
+            String dmSChoice = null;
             boolean validDMChoice = false;
 
             while (!validDMChoice) {
-                try {
-                    dmChoice = scan.nextInt();
-                    scan.nextLine();
-
-                    if (dmChoice < 1 || dmChoice > 10) {
-                        System.out.println(ANSI_RED + "Please enter a number between 1 and 10.\n" + ANSI_RESET);
-                        System.out.print("Enter again: ");
-                    } else {
-                        validDMChoice = true; 
-                    }
-
-                } catch (InputMismatchException e) {
-                    System.out.println(ANSI_RED + "Invalid input. Please enter an integer number.\n" + ANSI_RESET);
-                    scan.nextLine();
+                dmSChoice = scan.nextLine();
+                if(dmSChoice.isEmpty()){
+                
+                    System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
                     System.out.print("Enter again: ");
+                    
+                }else{
+                
+                    try {
+                        dmChoice = Integer.parseInt(dmSChoice);
+
+                        if (dmChoice < 1 || dmChoice > 10) {
+                            System.out.println(ANSI_RED + "Please enter a number between 1 and 10.\n" + ANSI_RESET);
+                            System.out.print("Enter again: ");
+                        }else {
+                            validDMChoice = true; 
+                        }
+
+                    } catch (NumberFormatException e) {
+                        System.out.println(ANSI_RED + "Invalid input. Please enter an integer number.\n" + ANSI_RESET);
+                        System.out.print("Enter again: ");
+                    }
+                    
                 }
+                
             }
 
             // clear screen
@@ -145,7 +165,9 @@ public class DonationManagement {
         dList.saveToFile(DONOR_PATH);
     }
     
+    // ----------------
     // Common Use Part  
+    // ----------------
     public static void chkAllFileExist(){
         chkFileExist(ITEM_PATH);
         chkFileExist(DONOR_PATH);
@@ -190,7 +212,23 @@ public class DonationManagement {
         return false;
     }
     
+    public static String idGenerator(String ab, String fileName){
+        int lineCount = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            while ((br.readLine()) != null) {
+                lineCount++;
+            }
+        } catch (IOException e) {
+            
+        }
+        
+        return (ab + String.format("%05d", lineCount + 1));
+    }
+    
+    // -------------------------
     // Part 1: Add new donation
+    // -------------------------
     public static void addDonation(){
         Scanner scan = new Scanner(System.in);
         
@@ -207,44 +245,51 @@ public class DonationManagement {
             int dType = 0;
             boolean validDType = false;
             while(validDType == false){
+                String dSType = scan.nextLine();
+                if(dSType.isEmpty()){
+                
+                    System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                    System.out.print("Enter again: ");
+                }else{
                     try {
-                        dType = scan.nextInt();
+                        dType = Integer.parseInt(dSType);
 
                         if (dType < 1 || dType > 3) {
-                            System.out.println(ANSI_RED + "Please enter a number between 1 and 3.\n" + ANSI_RESET);
                             
-                            scan.nextLine();
+                            System.out.println(ANSI_RED + "Please enter a number between 1 and 3.\n" + ANSI_RESET);
                             System.out.print("Enter again: ");
+                            
                         } else {
                             validDType = true; 
                         }
 
-                    } catch (InputMismatchException e) {
+                    } catch (NumberFormatException e) {
+
                         System.out.println(ANSI_RED + "Invalid input. Please enter an integer number.\n" + ANSI_RESET);
-                        
-                        scan.nextLine();
                         System.out.print("Enter again: ");
+
                     }
+                }
             }
 
-            scan.nextLine();
             System.out.print("Enter donor's id: ");
             String dID = null;
             boolean validID = false;
             while(validID == false){
-                dID = scan.next();
-
+                dID = scan.nextLine();
+                
                 if(dID.isEmpty()){
+                    
                     System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                    
-                    scan.nextLine();
                     System.out.print("Enter again: ");
-                } else if(dID.length() != 7){
+                    
+                } else if(dID.trim().length() != 7){
+                    
                     System.out.println(ANSI_RED + "Invalid length. Format of ID should be AA00000.\n" + ANSI_RESET);
-                    
-                    scan.nextLine();
                     System.out.print("Enter again: ");
+                    
                 } else {
+                    dID = dID.substring(0,2).toUpperCase() + dID.substring(2, 7);
                     switch(dType){
                         case 1: // individual (EI)
                             if (dID.substring(0, 2).equals("EI")) {
@@ -286,11 +331,22 @@ public class DonationManagement {
                 System.out.println("\n - - - Current Donor - - -");
                 donorList.show();
             }else{ // if does not exist, create or break
-                System.out.println(ANSI_RED + "Donor does not exist.\n" + ANSI_RESET);
+                System.out.println(ANSI_RED + "Donor does not exist." + ANSI_RESET);
                 contAddDonation = YN("Do you want to continue sign up a new donor?");
                 if(contAddDonation == true){
                     // create a new one then load into the linkedlist
                 } else{
+                    break;
+                }
+            }
+            
+            boolean contAddItem = true;
+            while(contAddItem){
+            
+                addItem();
+                
+                contAddItem = YN("Do you want to continue add on?");
+                if (contAddItem == false){
                     break;
                 }
             }
@@ -348,6 +404,224 @@ public class DonationManagement {
         }
         
         return false;
+    }
+    
+    public static void addItem(){
+        Scanner scan = new Scanner(System.in);
+        
+        System.out.print("Number of item wish to add: ");
+        int numItem = 0;
+        boolean validNumItem = false;
+        while(validNumItem == false){
+            String numSItem = scan.nextLine();
+            if(numSItem .isEmpty()){
+
+                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                System.out.print("Enter again: ");
+            }else{
+                try {
+                    numItem = Integer.parseInt(numSItem );
+
+                    if (numItem < 1) {
+                        System.out.println(ANSI_RED + "The number cannot be 0 or negative.\n" + ANSI_RESET);
+
+                        scan.nextLine();
+                        System.out.print("Enter again: ");
+                    } else {
+                        validNumItem = true; 
+                    }
+
+                } catch (NumberFormatException e) {
+
+                    System.out.println(ANSI_RED + "Invalid input. Please enter an integer number.\n" + ANSI_RESET);
+                    System.out.print("Enter again: ");
+
+                }
+            }
+        }
+        
+        LinkedList<Item> newItemList = new LinkedList();
+        
+        for (int i = 0; i< numItem; i++){
+            
+            System.out.println( "\n - Item " + (i+1) + " - \n"
+                    + "Item Category\n"
+                    + "1. Bank\n"
+                    + "2. Cash\n"
+                    + "3. Food\n"
+                    + "4. Apparel");
+            System.out.print("Enter item category: ");
+            int itemCat = 0;
+            boolean validItemCat = false;
+            while(validItemCat== false){
+                String SItemCat = scan.nextLine();
+                if(SItemCat.isEmpty()){
+
+                    System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                    System.out.print("Enter again: ");
+                    
+                }else{
+                    try {
+                        itemCat = Integer.parseInt(SItemCat);
+
+                        if (itemCat < 1 || itemCat > 4) {
+                            System.out.println(ANSI_RED + "The number must between 1 to 4.\n" + ANSI_RESET);
+
+                            scan.nextLine();
+                            System.out.print("Enter again: ");
+                            
+                        } else {
+                            validItemCat = true; 
+                        }
+
+                    } catch (NumberFormatException e) {
+
+                        System.out.println(ANSI_RED + "Invalid input. Please enter an integer number.\n" + ANSI_RESET);
+                        System.out.print("Enter again: ");
+
+                    }
+                }
+            }
+            
+            switch(itemCat){
+                case 1:
+                    inputBank(newItemList);
+                    newItemList.show();
+                    break;
+                case 2:
+                    //inputCash();
+                    break;
+                case 3:
+                    //inputFood();
+                    break;
+                case 4:
+                    //inputApparel();
+                    break;
+                default:
+                    System.out.println(ANSI_RED + "Invalid choice." + ANSI_RESET);
+            }
+            
+        }
+    }
+    
+    public static void inputBank(LinkedList<Item> newItemList){
+        Scanner scan = new Scanner(System.in);
+        
+        // id
+        String id = idGenerator("MB", ITEM_PATH);
+        //System.out.println("Current id is: " + id);
+        
+        // amount
+        System.out.print("Amount Donated: RM ");
+        double amt = 0;
+        boolean validAmt = false;
+        while(validAmt == false){
+            String SAmt = scan.nextLine();
+            if(SAmt.isEmpty()){
+
+                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                System.out.print("Enter again: ");
+
+            }else{
+                try {
+                    amt = Double.parseDouble(SAmt);
+
+                    if (amt <= 0) {
+                        
+                        System.out.println(ANSI_RED + "Invalid amount. Donated amount could not be 0.\n" + ANSI_RESET);
+                        System.out.print("Enter again: ");
+
+                    } else {
+                        validAmt = true; 
+                    }
+
+                } catch (NumberFormatException e) {
+
+                    System.out.println(ANSI_RED + "Invalid input. Please enter correct amount.\n" + ANSI_RESET);
+                    System.out.print("Enter again: ");
+
+                }
+            }
+        }
+        
+        // bank name
+        System.out.println("Bank Type\n"
+                + "1. Affin Bank\n"
+                + "2. Alliance Bank\n"
+                + "3. Am Bank\n"
+                + "4. CIMB\n"
+                + "5. Hong Leong Bank\n"
+                + "6. May Bank\n"
+                + "7. Public Bank\n"
+                + "8. RHB Bank");
+        System.out.print("Enter bank type: ");
+        String bankName = null;
+        int bankType = 0;
+        boolean validBankType = false;
+        while(validBankType == false){
+            bankName = scan.nextLine();
+            
+            if(bankName.isEmpty()){
+
+                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                System.out.print("Enter again: ");
+
+            }else{
+                try {
+                    bankType = Integer.parseInt(bankName);
+
+                    if (bankType < 1 || bankType > 8) {
+                        System.out.println(ANSI_RED + "Invalid integer. Please enter between 1 and 8.\n" + ANSI_RESET);
+
+                        System.out.print("Enter again: ");
+
+                    } else {
+                        validBankType = true; 
+                    }
+
+                } catch (NumberFormatException e) {
+
+                    System.out.println(ANSI_RED + "Invalid input. Please enter correct amount.\n" + ANSI_RESET);
+                    System.out.print("Enter again: ");
+
+                }
+            }
+        }
+        
+        if(validBankType == true){
+            switch(bankType){
+                case 1: 
+                    bankName = "Affin Bank";
+                    break;
+                case 2:
+                    bankName = "Alliance Bank";
+                    break;
+                case 3:
+                    bankName = "AM Bank";
+                    break;
+                case 4:
+                    bankName = "CIMB";
+                    break;
+                case 5:
+                    bankName = "Hong Leong Bank";
+                    break;
+                case 6:
+                    bankName = "May Bank";
+                    break;
+                case 7:
+                    bankName = "Public Bank";
+                    break;
+                case 8:
+                    bankName = "RHB Bank";
+                    break;
+                default:
+                    System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
+            }
+        }
+        
+        Bank tempBank = new Bank(id, amt, bankName);
+        
+        newItemList.insert(tempBank);
     }
     
     // Part 2: Remove a donation
