@@ -9,26 +9,32 @@ package DonationList;
  * @author Asus
  */
 public class Bank extends Money {
-    private String bankType;
+    private String bankName;
     
     public Bank(){
     }
     
-    public Bank(double amount, String bankType){
-        super(amount);
-        this.bankType = bankType;
+    public Bank(String id, double amount, String bankName){
+        super(id, amount);
+        this.bankName = bankName;
     }
 
-    public String getBankType() {
-        return bankType;
+    public String getBankName() {
+        return bankName;
     }
 
-    public void setBankType(String bankType) {
-        this.bankType = bankType;
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
+    
+    @Override
+    public String getType() {
+        return "Bank";
     }
     
     @Override
     public String toString(){
-        return super.toString();
+        return super.toString() + 
+                "\nBank Name:" + bankName;
     }
 }

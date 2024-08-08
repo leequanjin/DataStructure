@@ -4,51 +4,34 @@
  */
 package DonationList;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Asus
  */
-public class Item {
-    private String type;
-    private int qty;
-    private String note;
+public abstract class Item implements Serializable {
+    String id;
     
     public Item(){}
     
-    public Item(String type, int qty, String note){
-        this.type = type;
-        this.qty = qty;
+    public Item(String id){
+        this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public String getId() {
+        return id;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setId(String id) {
+        this.id = id;
     }
     
-    public int getQty(){
-        return qty;
-    }
-    
-    public void setQty(int qty){
-        this.qty = qty;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
+    public abstract String getType();
     
     @Override
-    public String toString(){
-        return String.format("\n%-15s %-2s %-20s \n%-15s %-2s %-5d \n%-15s %-2s %-100s" 
-                + "Type" + ":" + type
-                + "Quantity" + ":" + qty
-                + "Remarks" + ":" + note);
+    public String toString() {
+        return  "ID:" + id + 
+                "\nType:" + getType();
     }
 }

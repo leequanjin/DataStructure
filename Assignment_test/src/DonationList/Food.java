@@ -10,15 +10,15 @@ import java.util.Date;
  *
  * @author Asus
  */
-public class Food extends Item {
+public class Food extends PhysicalItem {
     private Date expiryDate;
     private int weight; // in gram
     private String status;
     
     public Food(){}
     
-    public Food(String type, int qty, String note, Date expiryDate, int weight, String status){
-        super(type, qty, note);
+    public Food(String id, int qty, String note, Date expiryDate, int weight, String status){
+        super(id, qty, note);
         this.expiryDate = expiryDate;
         this.status = status;
     }
@@ -47,6 +47,11 @@ public class Food extends Item {
         this.status = status;
     }
 
+    @Override
+    public String getType() {
+        return "Food";
+    }
+    
     @Override
     public String toString() {
         return super.toString() + 

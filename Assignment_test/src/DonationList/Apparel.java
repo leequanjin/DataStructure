@@ -8,7 +8,7 @@ package DonationList;
  *
  * @author Asus
  */
-public class Apparel extends Item {
+public class Apparel extends PhysicalItem {
     private String color;
     private String condition;
     private String brand;
@@ -17,8 +17,8 @@ public class Apparel extends Item {
     public Apparel(){
     }
     
-    public Apparel(String type, int qty, String note, String color, String condition, String brand){
-        super(type, qty, note);
+    public Apparel(String id, int qty, String note, String color, String condition, String brand){
+        super(id, qty, note);
         this.color = color;
         this.condition = condition;
         this.brand = brand;
@@ -46,6 +46,11 @@ public class Apparel extends Item {
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+    
+    @Override
+    public String getType() {
+        return "Apparel";
     }
     
     @Override

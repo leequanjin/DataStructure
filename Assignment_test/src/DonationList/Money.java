@@ -8,12 +8,13 @@ package DonationList;
  *
  * @author Asus
  */
-public class Money {
+public class Money extends Item{
     private double amount;
     
     public Money(){}
     
-    public Money(double amount){
+    public Money(String id, double amount){
+        super(id);
         this.amount = amount;
     }
     
@@ -26,7 +27,13 @@ public class Money {
     }
     
     @Override
+    public String getType() {
+        return "Money";
+    }
+    
+    @Override
     public String toString(){
-        return String.format("\n%-15s %-4s %5.2f" + "Amount" + ": RM" + amount);
+        return super.toString() + 
+                "\nAmount: RM" + amount;
     } 
 }
