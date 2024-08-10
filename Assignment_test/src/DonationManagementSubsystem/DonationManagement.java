@@ -11,7 +11,7 @@ import CommonResources.Queue;
 import DonorSubsystem.Donor;
 import DonorSubsystem.Individual;
 import DonorSubsystem.Organization;
-import DonorSubsystem.Family;
+
 
 import DonationList.Item;
 import DonationList.Money;
@@ -45,7 +45,7 @@ public class DonationManagement {
     public static void main(String[] args) {
         
         chkAllFileExist();
-        //addRecord(); //alr store one individual, family and organisation in donor.txt
+        //addRecord(); //alr store one individual and organisation in donor.txt
         
         Scanner scan = new Scanner(System.in);
         
@@ -143,20 +143,16 @@ public class DonationManagement {
     
     public static void addRecord(){
         // instance individual
-        Individual a = new Individual("EI00000", "Anonymous"); 
-        Individual idv = new Individual("EI00001", "HAHA"); 
-        
-        // instance individual
-        Family fam = new Family("EFI00001", "OUO Family"); 
+        Individual a = new Individual("EI00000", "Anonymous","private"); 
+        Individual idv = new Individual("EI00001", "HAHA","public"); 
         
         // instance organization
-        Organization org = new Organization("EO00001", "OMO Company");
+        Organization org = new Organization("EO00001", "OMO Company","private");
         
         // save into list
         LinkedList dList = new LinkedList();
         dList.insert(a);
         dList.insert(idv);
-        dList.insert(fam);
         dList.insert(org);
         
         //idvList.show();
@@ -239,8 +235,7 @@ public class DonationManagement {
 
             System.out.println("Type of donor\n"
                     + "1. Individual\n"
-                    + "2. Family\n"
-                    + "3. Organisation");
+                    + "2. Organisation");
             System.out.print("Enter donor's type: ");
             int dType = 0;
             boolean validDType = false;
@@ -299,15 +294,7 @@ public class DonationManagement {
                                 System.out.print("Enter again: ");
                             }
                             break;
-                        case 2: // family (EF)
-                            if (dID.substring(0, 2).equals("EF")) {
-                                validID = true;
-                            } else {
-                                System.out.println(ANSI_RED + "Invalid format. Format of family donor should be EF00000.\n" + ANSI_RESET);
-                                System.out.print("Enter again: ");
-                            }
-                            break;
-                        case 3: // organization (EO)
+                        case 2: // organization (EO)
                             if (dID.substring(0, 2).equals("EO")) {
                                 validID = true;
                             } else {
@@ -380,13 +367,7 @@ public class DonationManagement {
                             return true;
                         }
                         break;
-                    case 2: // Family
-                        if (donor instanceof Family && donor.getId().equals(dID)) {
-                            donorList.insert(donor);
-                            return true;
-                        }
-                        break;
-                    case 3: // Organization
+                    case 2: // Organization
                         if (donor instanceof Organization && donor.getId().equals(dID)) {
                             donorList.insert(donor);
                             return true;
