@@ -15,7 +15,7 @@ public class Test {
 
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
-            ManageDonees<Donee> doneeList = new ManageDonees<Donee>();
+            ManageDonees<Donee> doneeList = new ManageDonees<>();
             doneeList.loadFromFile("donees.txt");
 
             boolean running = true;
@@ -106,6 +106,7 @@ public class Test {
                         int filterChoice = scanner.nextInt();
                         scanner.nextLine(); // consume the newline
                         
+                        System.out.println("");
                         if (filterChoice == 1) {
                             LinkedList<Individual> individualList = doneeList.filterByCategory(Individual.class);
                             individualList.show();

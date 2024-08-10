@@ -12,112 +12,133 @@ import java.io.ObjectOutputStream;
 
 /**
  * Reference https://www.youtube.com/watch?v=SMIq13-FZSE&t=1s
- * Reference https://www.youtube.com/watch?v=AeqXFjCUcQM
- * Reference https://www.youtube.com/watch?v=tZxPqhkRLiw&t=438s
+ * https://www.youtube.com/watch?v=AeqXFjCUcQM
+ * https://www.youtube.com/watch?v=tZxPqhkRLiw&t=438s
+ * https://www.youtube.com/watch?v=sUcVDPDHFJg
+ *
  * @author Lee Quan Jin
  * @param <T>
  */
 public class LinkedList<T> {
 
     public Node<T> head;
+    public Node<T> tail;
 
-    // Method to insert data at the end of the list
+    // Method to insert data at the end of the list 
+    // Time Complexity : O(1)
     public void insert(T data) {
         Node node = new Node(data);
 
         if (head == null) {
-            head = node;
+            head = tail = node;
         } else {
-            Node current = head;
-            while (current.next != null) {
-                current = current.next;
-            }
-            current.next = node;
+            tail.next = node;
+            node.previous = tail;
+            tail = node;
         }
     }
 
     // Method to insert data at the start of the list
+    // Time Complexity : O(1)
     public void insertAtStart(T data) {
         Node node = new Node(data);
 
-        node.next = head;
-        head = node;
+        if (head == null) {
+            head = tail = node;
+        } else {
+            head.previous = node;
+            node.next = head;
+            head = node;
+        }
     }
 
     // Method to insert data at a specific index of the list
+    // Time Complexity : O(n)
     public void insertAt(int index, T data) {
         Node node = new Node(data);
-
         Node current = head;
+
+        if (index < 0) throw new IndexOutOfBoundsException("Invalid index");
+        
         if (index == 0) {
             insertAtStart(data);
         } else {
             for (int i = 0; i < index - 1; i++) {
+                if (current == null) throw new IndexOutOfBoundsException("Invalid index");
                 current = current.next;
             }
             node.next = current.next;
+            node.previous = current;
+
+            if (current.next != null) {
+                current.next.previous = node;
+            } else {
+                tail = node;
+            }
             current.next = node;
         }
     }
 
     // Method to delete data at the end of the list
+    // Time Complexity : O(1)
     public void delete() {
-        if (head == null) {
+        if (tail == null) {
             // Empty List
-        } else if (head.next == null) {
-            // Only 1 node in the list
-            head = null;
+        } else if (head == tail) {
+            head = tail = null;
         } else {
-            Node current = head;
-            while (current.next.next != null) {
-                current = current.next;
-            }
-            current.next = null;
+            tail = tail.previous;
+            tail.next = null;
         }
     }
 
     // Method to delete data at the start of the list
+    // Time Complexity : O(1)
     public void deleteAtStart() {
         if (head == null) {
             // Empty List
+        } else if (head == tail) {
+            head = tail = null;
         } else {
             head = head.next;
+            head.previous = null;
         }
     }
 
     // Method to delete data at a specific index of the list
+    // Time Complexity : O(n)
     public void deleteAt(int index) {
-        if (index < 0 || head == null) {
-            // Invalid index or empty list
-        } else if (index == 0) {
+        if (index < 0 || head == null) throw new IndexOutOfBoundsException("Invalid index");
+        
+        if (index == 0) {
             deleteAtStart();
         } else {
             Node current = head;
-            for (int i = 0; i < index - 1; i++) {
-                if (current.next == null) {
-                    // Index is out of bounds
-                } else {
+            
+            for (int i = 0; i < index; i++) {
+                if (current == null) throw new IndexOutOfBoundsException("Invalid index");
                     current = current.next;
-                }
             }
 
-            if (current.next != null) {
-                // Only delete data if index is not out of bounds
-                current.next = current.next.next;
+            if (current == tail) {
+                delete();
+            } else {
+                current.previous.next = current.next;
+                current.next.previous = current.previous;
             }
         }
     }
-    
+
     // Method to print out all nodes in the list
     public void show() {
-        Node n = head;
+        Node current = head;
 
         if (head == null) {
             // List is empty
         } else {
-            while (n != null) {
-                System.out.print(n.data + "\n");
-                n = n.next;
+            while (current != null) {
+                System.out.print(current.data + "\n");
+                current = current.next;
             }
         }
     }
@@ -125,7 +146,7 @@ public class LinkedList<T> {
     // Method to save the linked list to a file
     public void saveToFile(String filename) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
-            Node<T> current = head;
+            Node current = head;
             while (current != null) {
                 oos.writeObject(current.data);
                 current = current.next;
@@ -144,7 +165,7 @@ public class LinkedList<T> {
         } catch (IOException | ClassNotFoundException e) {
         }
     }
-    
+
     // Method to return a filtered linked list
     public LinkedList filterByCategory(Class categoryClass) {
         LinkedList filteredList = new LinkedList<>();
@@ -159,7 +180,7 @@ public class LinkedList<T> {
 
         return filteredList;
     }
-    
+
     // Method to check if the linked list is empty
     public boolean isEmpty() {
         return head == null;

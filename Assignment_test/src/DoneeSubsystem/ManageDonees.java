@@ -12,7 +12,7 @@ import CommonResources.LinkedList;
  * @author Lee Quan Jin
  * @param <T>
  */
-public class ManageDonees <T extends Donee> extends LinkedList<T>{
+public class ManageDonees<T extends Donee> extends LinkedList<T>{
 
     // Method to delete data by ID
     public void deleteById(String id) {

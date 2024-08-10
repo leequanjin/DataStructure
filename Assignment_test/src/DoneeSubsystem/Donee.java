@@ -42,6 +42,7 @@ abstract class Donee implements Serializable {
     public String toString() {
         return "ID  : " + getId()
                 + "\nName: " + getName()
-                + "\nType: " + getType();
+                + "\nType: " + getType()
+                + "\n";
     }
 }

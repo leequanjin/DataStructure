@@ -5,7 +5,9 @@
 package CommonResources;
 
 /**
- * Reference https://www.youtube.com/watch?v=SMIq13-FZSE&t=1s
+ * Reference https://www.youtube.com/watch?v=sUcVDPDHFJg
+ * https://www.youtube.com/watch?v=SMIq13-FZSE&t=1s
+ *
  * @author Lee Quan Jin
  * @param <T>
  */
@@ -13,9 +15,11 @@ public class Node<T> {
 
     public T data;
     public Node<T> next;
+    public Node<T> previous;
 
     Node(T data) {
         this.data = data;
         this.next = null;
+        this.previous = null;
     }
 }
