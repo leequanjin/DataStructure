@@ -10,8 +10,8 @@ package DonorSubsystem;
  */
 public class Individual extends Donor {
     
-    public Individual(String id, String name){
-        super(id, name);
+    public Individual(String id, String name, String category){
+        super(id, name, category);
     }
     
     @Override
