@@ -14,10 +14,12 @@ public abstract class Donor implements Serializable {
     
     String id;
     String name;
+    String category; // government, private, public
 
-    public Donor(String id, String name) {
+    public Donor(String id, String name, String category) {
         this.id = id;
         this.name = name;
+        this.category = category;
     }
 
     public String getId() {
@@ -35,13 +37,24 @@ public abstract class Donor implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+    
+    public String getCategory() {
+        return category;
+    }
 
-    public abstract String getType(); // Individual or Organization or Family
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public abstract String getType(); // Individual or Organization 
 
     @Override
     public String toString() {
-        return "ID  : " + getId()
-                + "\nName: " + getName()
-                + "\nType: " + getType();
+        return "Donor{" +
+                "Id : '" + id + '\'' +
+                ", Name : '" + name + '\'' +
+                ", Category : '" + category + '\'' +
+                '}';
     }
 }
+
