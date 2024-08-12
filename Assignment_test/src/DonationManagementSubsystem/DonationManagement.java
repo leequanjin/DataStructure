@@ -6,7 +6,6 @@ package DonationManagementSubsystem;
 
 import CommonResources.Node;
 import CommonResources.LinkedList;
-import CommonResources.Queue;
 
 import DonorSubsystem.Donor;
 import DonorSubsystem.Individual;
@@ -14,18 +13,16 @@ import DonorSubsystem.Organization;
 
 
 import DonationList.Item;
-import DonationList.Money;
-import DonationList.PhysicalItem;
 import DonationList.Bank;
 import DonationList.Cash;
-import DonationList.Food;
-import DonationList.TinnedFood;
-import DonationList.Apparel;
 import java.io.BufferedReader;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import java.util.Scanner;
 
@@ -34,6 +31,11 @@ public class DonationManagement {
     private static final String DONOR_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\donor.txt";
     private static final String BANK_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\bank.txt";
     private static final String CASH_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\cash.txt";
+    private static final String BAKED_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\bakedFood.txt";
+    private static final String BOXED_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\boxedFood.txt";
+    private static final String CANNED_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\cannedFood.txt";
+    private static final String DRY_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\dryFood.txt";
+    private static final String ESS_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\essential.txt";
     
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
@@ -166,8 +168,14 @@ public class DonationManagement {
     // Common Use Part  
     // ----------------
     public static void chkAllFileExist(){
-        chkFileExist(BANK_PATH);
         chkFileExist(DONOR_PATH);
+        chkFileExist(BANK_PATH);
+        chkFileExist(CASH_PATH);
+        chkFileExist(BAKED_PATH);
+        chkFileExist(BOXED_PATH);
+        chkFileExist(CANNED_PATH);
+        chkFileExist(DRY_PATH);
+        chkFileExist(ESS_PATH);
     }
     
     // Create file if file not exist
@@ -333,7 +341,7 @@ public class DonationManagement {
             
                 addItem();
                 
-                contAddItem = YN("Do you want to continue add on?");
+                contAddItem = YN("Do you want to continue add item?");
                 if (contAddItem == false){
                     break;
                 }
@@ -474,10 +482,10 @@ public class DonationManagement {
                     inputCash(newItemList);
                     break;
                 case 3:
-                    //inputFood();
+                    inputFood(newItemList);
                     break;
                 case 4:
-                    //inputApparel();
+                    //inputApparel(newItemList);
                     break;
                 default:
                     System.out.println(ANSI_RED + "Invalid choice." + ANSI_RESET);
@@ -532,10 +540,10 @@ public class DonationManagement {
         }
         
         // bank name
-        System.out.println("Bank Type\n"
+        System.out.println("\nBank Type\n"
                 + "1. Affin Bank\n"
                 + "2. Alliance Bank\n"
-                + "3. Am Bank\n"
+                + "3. AmBank\n"
                 + "4. CIMB\n"
                 + "5. Hong Leong Bank\n"
                 + "6. May Bank\n"
@@ -584,7 +592,7 @@ public class DonationManagement {
                     bankName = "Alliance Bank";
                     break;
                 case 3:
-                    bankName = "AM Bank";
+                    bankName = "AmBank";
                     break;
                 case 4:
                     bankName = "CIMB";
@@ -654,6 +662,310 @@ public class DonationManagement {
         Cash tempCash = new Cash(id, amt);
         
         newItemList.insert(tempCash);
+    }
+    
+    public static void inputFood(LinkedList<Item> newItemList){
+        Scanner scan = new Scanner(System.in);
+        
+        // food category
+        System.out.println("\nFood Category\n"
+                + "1. Baked Goods\n"
+                + "2. Baxed Goods\n"
+                + "3. Canned Food\n"
+                + "4. Dry Goods\n"
+                + "5. Essentials");
+        System.out.print("Enter food type: ");
+        String foodCatName = null;
+        int foodCat = 0;
+        boolean validFoodCat = false;
+        while(validFoodCat == false){
+            foodCatName = scan.nextLine();
+            
+            if(foodCatName.isEmpty()){
+
+                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                System.out.print("Enter again: ");
+
+            }else{
+                try {
+                    foodCat = Integer.parseInt(foodCatName);
+
+                    if (foodCat < 1 || foodCat > 5) {
+                        System.out.println(ANSI_RED + "Invalid integer. Please enter between 1 to 5.\n" + ANSI_RESET);
+
+                        System.out.print("Enter again: ");
+
+                    } else {
+                        validFoodCat = true; 
+                    }
+
+                } catch (NumberFormatException e) {
+
+                    System.out.println(ANSI_RED + "Invalid input. Please enter correct amount.\n" + ANSI_RESET);
+                    System.out.print("Enter again: ");
+
+                }
+            }
+        }
+        
+        String id = null;
+        if(validFoodCat == true){
+            switch(foodCat){
+                case 1: 
+                    System.out.println("\nBaked Goods");
+                    commonFoodInput(newItemList);
+                    id = idGenerator("FA", BAKED_PATH);
+                    //inputBaked();
+                    break;
+                case 2:
+                    System.out.println("\nBoxed Goods");
+                    commonFoodInput(newItemList);
+                    id = idGenerator("FO", BOXED_PATH);
+                    //inputBoxed();
+                    break;
+                case 3:
+                    System.out.println("\nCanned Food");
+                    commonFoodInput(newItemList);
+                    id = idGenerator("FC", CANNED_PATH);
+                    //inputCanned();
+                    break;
+                case 4:
+                    System.out.println("\nDry Goods");
+                    commonFoodInput(newItemList);
+                    id = idGenerator("FD", DRY_PATH);
+                    //inputDry();
+                    break;
+                case 5:
+                    System.out.println("\nEssentials");
+                    commonFoodInput(newItemList);
+                    id = idGenerator("FE", ESS_PATH);
+                    //inputEssentials();
+                    break;
+                default:
+                    System.out.println(ANSI_RED + "Invalid food category.\n" + ANSI_RESET);
+            }
+        }
+    }
+    
+    public static void commonFoodInput(LinkedList<Item> newItemList){
+        
+        Scanner scan = new Scanner(System.in);
+        
+        System.out.println("Item with '*' is compulsary to be enter.");
+        
+        // quantity
+        System.out.print("Quantity*: ");
+        int qty = 0;
+        boolean validQty = false;
+        while(validQty == false){
+            String qtyS = scan.nextLine();
+            
+            if(qtyS.isEmpty()){
+
+                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                System.out.print("Enter again: ");
+
+            }else{
+                try {
+                    qty = Integer.parseInt(qtyS);
+
+                    if (qty == 0) {
+                        
+                        System.out.println(ANSI_RED + "Quantity cannot be 0.\n" + ANSI_RESET);
+                        System.out.print("Enter again: ");
+
+                    } else if(qty  < 0){
+                        System.out.println(ANSI_RED + "Quantity cannot be negative.\n" + ANSI_RESET);
+                        System.out.print("Enter again: ");
+                    }else {
+                        validQty = true; 
+                    }
+
+                } catch (NumberFormatException e) {
+
+                    System.out.println(ANSI_RED + "Invalid input. Please enter correct quantity.\n" + ANSI_RESET);
+                    System.out.print("Enter again: ");
+
+                }
+            }
+        }
+        
+        //note
+        System.out.print("Remarks: ");
+        String note = scan.nextLine();
+        
+        //expiryDate
+        System.out.print("Expiry Date (dd/mm/yyyy)*: ");
+        String exp = scan.nextLine();
+        boolean validExp = false;
+        
+        while(validExp == false){
+            
+            if (exp.isEmpty()){
+                
+                System.out.println(ANSI_RED + "Expiry date cannot leave blank.\n" + ANSI_RESET);
+                System.out.print("Enter again: ");
+                
+            } else{
+                
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                dateFormat.setLenient(false); 
+
+                try {
+                    
+                    Date expiryDate = dateFormat.parse(exp);
+
+                    Date today = new Date();
+
+                    if (expiryDate.before(today)) {
+                        
+                        System.out.println(ANSI_RED + "The food had expired.\n" + ANSI_RESET);
+                        System.out.println("1. Enter again\n"
+                                        + "2. Discard");
+                        System.out.print("Enter selection: ");
+                        String input = null;
+                        int selection = 0;
+                        boolean validInput = false;
+                        while(validInput== false){
+                            input = scan.nextLine();
+
+                            if(input.isEmpty()){
+
+                                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                                System.out.print("Enter again: ");
+
+                            }else{
+                                try {
+                                    selection = Integer.parseInt(input);
+
+                                    if (selection < 1 || selection > 2) {
+                                        
+                                        System.out.println(ANSI_RED + "Invalid integer. Please enter only 1 or 2.\n" + ANSI_RESET);
+                                        System.out.print("Enter again: ");
+
+                                    } else {
+                                        validInput = true; 
+                                    }
+
+                                } catch (NumberFormatException e) {
+
+                                    System.out.println(ANSI_RED + "Invalid input. Please enter correct selection.\n" + ANSI_RESET);
+                                    System.out.print("Enter again: ");
+
+                                }
+                            }
+                        }
+                        
+                        if(validInput == true){
+                            if(selection == 1){
+                                System.out.print("Enter date again: ");
+                            }else{
+                                inputFood(newItemList);
+                            }
+                        }
+                        
+                    } else {
+                        validExp = true;
+                    }
+                    
+                } catch (ParseException e) {
+                    System.out.println("Invalid date format. Please enter the date in dd/MM/yyyy format.");
+                }
+                
+            }
+        }
+        
+        //weight
+        System.out.print("Weight(gram)*: ");
+        int w = 0;
+        boolean validW = false;
+        while(validW == false){
+            String wS = scan.nextLine();
+            
+            if(wS.isEmpty()){
+
+                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                System.out.print("Enter again: ");
+
+            }else{
+                try {
+                    w = Integer.parseInt(wS);
+
+                    if (w == 0) {
+                        
+                        System.out.println(ANSI_RED + "Weight cannot be 0.\n" + ANSI_RESET);
+                        System.out.print("Enter again: ");
+
+                    } else if(w  < 0){
+                        System.out.println(ANSI_RED + "Weight cannot be negative.\n" + ANSI_RESET);
+                        System.out.print("Enter again: ");
+                    }else {
+                        validQty = true; 
+                    }
+
+                } catch (NumberFormatException e) {
+
+                    System.out.println(ANSI_RED + "Invalid input. Please enter correct weight.\n" + ANSI_RESET);
+                    System.out.print("Enter again: ");
+
+                }
+            }
+        }
+        
+        //status
+        System.out.println("\nFood Status\n"
+                + "1. Good\n"
+                + "2. Spoil\n"
+                + "3. Expired");
+        System.out.print("Enter food status*: ");
+        String foodStaName = null;
+        int foodSta = 0;
+        boolean validFoodSta = false;
+        while(validFoodSta == false){
+            foodStaName = scan.nextLine();
+            
+            if(foodStaName.isEmpty()){
+
+                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                System.out.print("Enter again: ");
+
+            }else{
+                try {
+                    foodSta = Integer.parseInt(foodStaName);
+
+                    if (foodSta < 1 || foodSta > 3) {
+                        
+                        System.out.println(ANSI_RED + "Invalid integer. Please enter between 1 to 3.\n" + ANSI_RESET);
+                        System.out.print("Enter again: ");
+
+                    } else {
+                        validFoodSta = true; 
+                    }
+
+                } catch (NumberFormatException e) {
+
+                    System.out.println(ANSI_RED + "Invalid input. Please enter correct amount.\n" + ANSI_RESET);
+                    System.out.print("Enter again: ");
+
+                }
+            }
+        }
+        
+        if(validFoodSta == true){
+            switch(foodSta){
+                case 1: 
+                    foodStaName = "Good";
+                    break;
+                case 2:
+                    foodStaName = "Spoil";
+                    break;
+                case 3:
+                    foodStaName = "Expired";
+                    break;
+                default:
+                    System.out.println(ANSI_RED + "Invalid food status.\n" + ANSI_RESET);
+            }
+        }
     }
     
     public static void saveItemToFile(LinkedList<Item> newItemList){
