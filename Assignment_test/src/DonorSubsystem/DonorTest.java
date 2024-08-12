@@ -23,59 +23,72 @@ public class DonorTest {
             boolean running = true;
             
             while (running) {
-                System.out.println("Choose an option:");
-                System.out.println("1. Add a new donor");
-                System.out.println("2. Remove a donor");
-                System.out.println("3. List donors");
-                System.out.println("4. Filter donors based on category");
-                System.out.println("5. Save changes");
-                System.out.println("6. Exit");
-                System.out.print("\nEnter your choice: ");
-                
-                int choice = scanner.nextInt();
-                scanner.nextLine(); // consume the newline
+                int choice = getValidMenuChoice(scanner);
                 System.out.println("");
                 
                 switch (choice) {
                     case 1 -> {
-                    System.out.print("Enter donor type (1 for Individual, 2 for Organization): ");
-                    int type = scanner.nextInt();
-                    scanner.nextLine(); // consume the newline
+                    int type;
+                    do {
+                        System.out.print("Enter donor type (1 for Individual, 2 for Organization): ");
+                        String typeInput = scanner.nextLine(); 
+
+                        if (typeInput.matches("[12]")) { // Check if input is '1' or '2'
+                            type = Integer.parseInt(typeInput);
+                            break;
+                        } else {
+                            System.out.println("Invalid choice. Please enter '1' for Individual or '2' for Organization.\n");
+                        }
+                    } while (true);
+                    
                     String id = generateDonorId(donorList);
                     String name;
+                    String category;
                     
                     if (type == 1){
                     do {
                         System.out.print("Enter donor name: ");
-                        name = scanner.nextLine();
+                        name = scanner.nextLine().trim();
 
                         if (!isValidName(name)) {
-                            System.out.println("Invalid name. Please enter a valid name (only letters and spaces).");
+                            System.out.println("Invalid name. Please enter a valid name (only letters and spaces) and between 2 and 30 characters long.\n");
                         }
                     } while (!isValidName(name));
 
-                    System.out.print("Enter donor category (government, private, public): ");
-                    String category = scanner.nextLine();
+                    do {
+                        System.out.print("Enter donor category (Government, Private, Public): ");
+                        category = scanner.nextLine();
+
+                        if (!isValidCategory(category)) {
+                            System.out.println("Invalid category. Please enter 'Government', 'Private', or 'Public'.\n");
+                        }
+                    } while (!isValidCategory(category));
                     
                     donorList.insert(new Individual(id, name, category));    
                     
                     } else if (type == 2) {
                         do {
                         System.out.print("Enter organization name: ");
-                        name = scanner.nextLine();
+                        name = scanner.nextLine().trim();
 
                         if (!isValidName(name)) {
-                            System.out.println("Invalid name. Please enter a valid name (only letters and spaces).");
+                            System.out.println("Invalid name. Please enter a valid name (only letters and spaces) and between 2 and 30 characters long.\n");
                         }
                     } while (!isValidName(name));
 
-                    System.out.print("Enter donor category (government, private, public): ");
-                    String category = scanner.nextLine();
+                    do {
+                        System.out.print("Enter donor category (Government, Private, Public): ");
+                        category = scanner.nextLine();
+
+                        if (!isValidCategory(category)) {
+                            System.out.println("Invalid category. Please enter 'Government', 'Private', or 'Public'.\n");
+                        }
+                    } while (!isValidCategory(category));
                     
                     donorList.insert(new Organization(id, name, category));
                     }
 
-                    System.out.println("\n1Donor added with ID: " + id);
+                    System.out.println("\nDonor added with ID: " + id);
                 }
 
                     case 2 -> {
@@ -84,9 +97,11 @@ public class DonorTest {
                         donorList.deleteById(id);
                         System.out.println("Donor removed.");
                     }
+                    
                     case 3 -> {
                         donorList.show();
                     }
+                    
                     case 4 -> {
                         System.out.println("1. Filter by Individual");
                         System.out.println("2. Filter by Organization");
@@ -102,21 +117,60 @@ public class DonorTest {
                             organizationList.show();
                         }
                     }
+                    
                     case 5 -> {
                         donorList.saveToFile("donors.txt");
                         System.out.println("Changes saved.");
                     }
+                    
                     case 6 -> {
                         running = false;
                         System.out.println("Exiting...");
                     }
-                    default -> System.out.println("Invalid option, please try again.");
+                    
+                    default -> System.out.println("Invalid option, please try again.\n");
                 }
                 
                 System.out.println();
             }
         }
     }
+         private static int getValidMenuChoice(Scanner scanner) {
+            int choice = -1;
+            boolean validInput = false;
+
+            while (!validInput) {
+                System.out.println("Choose an option:");
+                System.out.println("1. Add a new donor");
+                System.out.println("2. Remove a donor");
+                System.out.println("3. List donors");
+                System.out.println("4. Filter donors based on category");
+                System.out.println("5. Save changes");
+                System.out.println("6. Exit");
+                System.out.print("\nEnter your choice: ");
+
+                String input = scanner.nextLine().trim();
+
+                if (input.isEmpty()) {
+                    System.out.println("Invalid input. Please enter a number between 1 and 6.\n ");
+                } else {
+                    try {
+                        choice = Integer.parseInt(input);
+                        if (choice >= 1 && choice <= 6) {
+                            validInput = true;
+                        } else {
+                            System.out.println("Invalid choice. Please choose a number between 1 and 6.\n");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a valid number.\n");
+                    }
+                }
+            }
+
+            return choice;
+}
+
+         
         private static String generateDonorId(ManageDonors<Donor> donorList) {
             String prefix = "DNR";
             int maxId = 0;
@@ -136,7 +190,12 @@ public class DonorTest {
             return prefix + String.format("%05d", maxId + 1);
     }
         private static boolean isValidName(String name) {
-            // Name should not be empty, should contain only letters and spaces, and be between 2 and 50 characters long
-            return name != null && name.matches("^[a-zA-Z\\s]+$") && name.length() >= 2 && name.length() <= 50;
+            // Name should not be empty, should contain only letters and spaces, and be between 2 and 30 characters long
+            return name != null && name.matches("^[a-zA-Z\\s]+$") && name.length() >= 2 && name.length() <= 30;
+    }
+        private static boolean isValidCategory(String category) {
+            return category.equalsIgnoreCase("Government") || 
+                   category.equalsIgnoreCase("Private") || 
+                   category.equalsIgnoreCase("Public");
     }
 }

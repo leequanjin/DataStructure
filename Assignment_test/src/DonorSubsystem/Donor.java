@@ -52,8 +52,8 @@ public abstract class Donor implements Serializable {
     public String toString() {
         return "Donor{" +
                 "Id : '" + id + '\'' +
-                ", Name : '" + name + '\'' +
-                ", Category : '" + category + '\'' +
+                ", Name : '" + name.toUpperCase() + '\'' +
+                ", Category : '" + category.toUpperCase() + '\'' +
                 '}';
     }
 }
