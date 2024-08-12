@@ -31,8 +31,9 @@ import java.util.Scanner;
 
 public class DonationManagement {
     
-    private static final String ITEM_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\item.txt";
     private static final String DONOR_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\donor.txt";
+    private static final String BANK_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\bank.txt";
+    private static final String CASH_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\cash.txt";
     
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
@@ -165,7 +166,7 @@ public class DonationManagement {
     // Common Use Part  
     // ----------------
     public static void chkAllFileExist(){
-        chkFileExist(ITEM_PATH);
+        chkFileExist(BANK_PATH);
         chkFileExist(DONOR_PATH);
     }
     
@@ -251,7 +252,7 @@ public class DonationManagement {
 
                         if (dType < 1 || dType > 3) {
                             
-                            System.out.println(ANSI_RED + "Please enter a number between 1 and 3.\n" + ANSI_RESET);
+                            System.out.println(ANSI_RED + "Please enter a number between 1 to 3.\n" + ANSI_RESET);
                             System.out.print("Enter again: ");
                             
                         } else {
@@ -350,6 +351,7 @@ public class DonationManagement {
         LinkedList<Donor> tempDonorList = new LinkedList<>();
         
         tempDonorList.loadFromFile(DONOR_PATH);
+        tempDonorList.show();
         
         if (!tempDonorList.isEmpty()){
 //            System.out.println();
@@ -467,10 +469,9 @@ public class DonationManagement {
             switch(itemCat){
                 case 1:
                     inputBank(newItemList);
-                    newItemList.show();
                     break;
                 case 2:
-                    //inputCash();
+                    inputCash(newItemList);
                     break;
                 case 3:
                     //inputFood();
@@ -482,6 +483,11 @@ public class DonationManagement {
                     System.out.println(ANSI_RED + "Invalid choice." + ANSI_RESET);
             }
             
+            //show all item to be added
+            System.out.println("Item to be add:");
+            newItemList.show();
+            saveItemToFile(newItemList);
+            
         }
     }
     
@@ -489,7 +495,7 @@ public class DonationManagement {
         Scanner scan = new Scanner(System.in);
         
         // id
-        String id = idGenerator("MB", ITEM_PATH);
+        String id = idGenerator("MB", BANK_PATH);
         //System.out.println("Current id is: " + id);
         
         // amount
@@ -603,6 +609,55 @@ public class DonationManagement {
         Bank tempBank = new Bank(id, amt, bankName);
         
         newItemList.insert(tempBank);
+    }
+    
+    public static void inputCash(LinkedList<Item> newItemList){
+        Scanner scan = new Scanner(System.in);
+        
+        // id
+        String id = idGenerator("MC", CASH_PATH);
+        //System.out.println("Current id is: " + id);
+        
+        // amount
+        System.out.print("Amount Donated: RM ");
+        double amt = 0;
+        boolean validAmt = false;
+        while(validAmt == false){
+            String SAmt = scan.nextLine();
+            if(SAmt.isEmpty()){
+
+                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                System.out.print("Enter again: ");
+
+            }else{
+                try {
+                    amt = Double.parseDouble(SAmt);
+
+                    if (amt <= 0) {
+                        
+                        System.out.println(ANSI_RED + "Invalid amount. Donated amount could not be 0.\n" + ANSI_RESET);
+                        System.out.print("Enter again: ");
+
+                    } else {
+                        validAmt = true; 
+                    }
+
+                } catch (NumberFormatException e) {
+
+                    System.out.println(ANSI_RED + "Invalid input. Please enter correct amount.\n" + ANSI_RESET);
+                    System.out.print("Enter again: ");
+
+                }
+            }
+        }
+        
+        Cash tempCash = new Cash(id, amt);
+        
+        newItemList.insert(tempCash);
+    }
+    
+    public static void saveItemToFile(LinkedList<Item> newItemList){
+        
     }
     
     // Part 2: Remove a donation
