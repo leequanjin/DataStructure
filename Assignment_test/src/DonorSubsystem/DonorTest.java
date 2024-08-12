@@ -249,35 +249,65 @@ public class DonorTest {
                     }
                     
                     case 6 -> {
-                        int type;
-                        do {
-                            System.out.println("1. Filter by Individual");
-                            System.out.println("2. Filter by Organization");
-                            System.out.print("Enter your choice: ");
-                            String filterChoice = scanner.nextLine().trim();
-                            
-                            if (filterChoice.matches("[12]")) { // Check if input is '1' or '2'
-                                type = Integer.parseInt(filterChoice);
-                                break;
-                            } else {
-                                 System.out.println(Red + "Invalid choice. Please enter '1' to show Individual DonorList or '2' for Organization DonorList.\n" + Reset);
+                        System.out.println("Filter by:");
+                        System.out.println("1. Individual Donors");
+                        System.out.println("2. Organization Donors");
+                        System.out.println("3. Donor Category");
+                        System.out.print("Enter your choice: ");
+
+                        String filterChoice = scanner.nextLine().trim();
+
+                        switch (filterChoice) {
+                            case "1" -> {
+                                LinkedList<Donor> individualList = donorList.filterByCategory(Individual.class);
+                                if (individualList.isEmpty()){
+                                    System.out.println(Red + "\nNo Individual donors found in the system." + Reset);
+                                } else {
+                                    individualList.show();
+                                }
                             }
-                        }while (true);
-                            
-                        if (type == 1) {
-                            LinkedList<Donor> individualList = donorList.filterByCategory(Individual.class);
-                            if (individualList.isEmpty()){
-                                System.out.println(Red + "\nNo Individual donors found in the system." + Reset);
-                            } else {
-                                individualList.show();
+                            case "2" -> {
+                                LinkedList<Donor> organizationList = donorList.filterByCategory(Organization.class);
+                                if (organizationList.isEmpty()){
+                                    System.out.println(Red + "\nNo Organization donors found in the system." + Reset);
+                                } else {
+                                    organizationList.show();
+                                }
                             }
-                        } else if (type == 2) {
-                            LinkedList<Donor> organizationList = donorList.filterByCategory(Organization.class);
-                            if (organizationList.isEmpty()){
-                                System.out.println(Red + "\nNo Organization donors found in the system." + Reset);
-                            } else {
-                                organizationList.show();
+                            case "3" -> {
+                                System.out.println("Filter by category:");
+                                System.out.println("1. Government");
+                                System.out.println("2. Private");
+                                System.out.println("3. Public");
+                                System.out.print("Enter your choice: ");
+
+                                String categoryChoice = scanner.nextLine().trim();
+
+                                LinkedList<Donor> categoryList = new LinkedList<>();
+                                Node<Donor> current = donorList.head;
+
+                                while (current != null) {
+                                    String donorCategory = current.data.getCategory().toLowerCase();
+                                    boolean match = false;
+                                    switch (categoryChoice) {
+                                        case "1" -> match = donorCategory.equals("government");
+                                        case "2" -> match = donorCategory.equals("private");
+                                        case "3" -> match = donorCategory.equals("public");
+                                        default -> System.out.println(Red + "Invalid category choice." + Reset);
+                                    }
+                                    if (match) {
+                                        categoryList.insert(current.data);
+                                    }
+                                    current = current.next;
+                                }
+
+                                if (categoryList.isEmpty()) {
+                                    System.out.println(Red + "\nNo donors found in the selected category." + Reset);
+                                } else {
+                                    categoryList.show();
+                                }
                             }
+                            default -> System.out.println(Red + "Invalid choice. Please enter '1' for Individual Donors, '2' for Organization Donors, or '3' for Donor Category." + Reset);
                         }
                     }
                     
