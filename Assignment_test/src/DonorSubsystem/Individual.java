@@ -6,7 +6,7 @@ package DonorSubsystem;
 
 /**
  *
- * @author Asus
+ * @author Kee Ke Shen
  */
 public class Individual extends Donor {
     

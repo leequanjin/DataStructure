@@ -35,4 +35,16 @@ public class ManageDonors<T extends Donor> extends LinkedList<T>{
             }
         }
     }
+
+    public Donor findById(String id) {
+        Node<T> current = head; // Start from the head of the list
+
+        while (current != null) {
+            if (current.data.getId().equals(id)) {
+                return current.data; // Donor found
+            }
+            current = current.next; // Move to the next node
+        }
+            return null; // Donor not found
+    }
 }

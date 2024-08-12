@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author Asus
+ * @author Kee Ke Shen
  */
 public abstract class Donor implements Serializable {
     
