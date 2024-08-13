@@ -6,7 +6,7 @@ package DonationList;
 
 /**
  *
- * @author Asus
+ * @author Heng Pei Lin
  */
 public class Bank extends Money {
     private String bankName;

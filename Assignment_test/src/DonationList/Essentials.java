@@ -10,12 +10,12 @@ import java.util.Date;
  *
  * @author Heng Pei Lin
  */
-public class CannedFood extends Food {
+public class Essentials extends Food {
     
-    public CannedFood(){
+    public Essentials(){
     }
     
-    public CannedFood(String id, int qty, String note, Date expiryDate, int weight, String status, String detail){
+    public Essentials(String id, int qty, String note, Date expiryDate, int weight, String status, String detail){
         super(id, qty, note, expiryDate, weight, status, detail);
     }
     

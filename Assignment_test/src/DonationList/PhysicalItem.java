@@ -6,7 +6,7 @@ package DonationList;
 
 /**
  *
- * @author Asus
+ * @author Heng Pei Lin
  */
 public class PhysicalItem extends Item {
     private int qty;
@@ -43,8 +43,7 @@ public class PhysicalItem extends Item {
     @Override
     public String toString(){
         return super.toString() + 
-                String.format("\n%-15s %-2s %-5d \n%-15s %-2s %-100s" 
-                + "Quantity" + ":" + qty
-                + "Remarks" + ":" + note);
+                "\nQuantity: " + qty +
+                "\nRemarks: " + note;
     }
 }

@@ -6,7 +6,7 @@ package DonationList;
 
 /**
  *
- * @author Asus
+ * @author Heng Pei Lin
  */
 public class Apparel extends PhysicalItem {
     private String color;

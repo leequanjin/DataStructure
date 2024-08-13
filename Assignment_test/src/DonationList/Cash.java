@@ -6,7 +6,7 @@ package DonationList;
 
 /**
  *
- * @author Asus
+ * @author Heng Pei Lin
  */
 public class Cash extends Money {
     public Cash(){

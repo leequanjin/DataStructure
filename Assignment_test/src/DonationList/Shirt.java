@@ -4,24 +4,21 @@
  */
 package DonationList;
 
-import java.util.Date;
-
 /**
  *
  * @author Heng Pei Lin
  */
-public class CannedFood extends Food {
+public class Shirt extends Apparel{
     
-    public CannedFood(){
-    }
+    public Shirt(){}
     
-    public CannedFood(String id, int qty, String note, Date expiryDate, int weight, String status, String detail){
-        super(id, qty, note, expiryDate, weight, status, detail);
+    public Shirt(String id, int qty, String note, String color, String condition, String brand){
+        super(id, qty, note, color, condition, brand);
     }
     
     @Override
     public String getType() {
-        return "Canned Food";
+        return "Shirt";
     }
     
     @Override

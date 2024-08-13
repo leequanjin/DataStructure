@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author Asus
+ * @author Heng Pei Lin
  */
 public abstract class Item implements Serializable {
     String id;

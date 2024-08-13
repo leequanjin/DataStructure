@@ -4,23 +4,27 @@
  */
 package DonationList;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  *
- * @author Asus
+ * @author Heng Pei Lin
  */
 public class Food extends PhysicalItem {
     private Date expiryDate;
     private int weight; // in gram
     private String status;
+    private String detail;
     
     public Food(){}
     
-    public Food(String id, int qty, String note, Date expiryDate, int weight, String status){
+    public Food(String id, int qty, String note, Date expiryDate, int weight, String status, String detail){
         super(id, qty, note);
         this.expiryDate = expiryDate;
+        this.weight = weight;
         this.status = status;
+        this.detail = detail;
     }
 
     public Date getExpiryDate() {
@@ -47,6 +51,14 @@ public class Food extends PhysicalItem {
         this.status = status;
     }
 
+    public String getdetail() {
+        return detail;
+    }
+
+    public void setdetail(String detail) {
+        this.detail = detail;
+    }
+
     @Override
     public String getType() {
         return "Food";
@@ -54,10 +66,16 @@ public class Food extends PhysicalItem {
     
     @Override
     public String toString() {
+        
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        
+        // Convert the date to string
+        String dateString = formatter.format(expiryDate);
+        
         return super.toString() + 
-                String.format("\n%-15s %-2s %10f \n%-15s %-2s %-8d %5s \n%-15s %-2s %-8d %10s" 
-                        + "Expiry date" + ":" + expiryDate
-                        + "Weight" + ":" + weight + " gram"
-                        + "Status" + ":" + status);
+                "\nExpiry date: " + dateString + 
+                "\nWeight: " + weight + " gram" + 
+                "\nStatus: " + status +
+                "\nDetail: " + detail;
     }
 }
