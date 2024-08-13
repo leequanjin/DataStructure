@@ -15,6 +15,7 @@ import DonorSubsystem.Organization;
 import DonationList.Item;
 import DonationList.Bank;
 import DonationList.Cash;
+import DonationList.CannedFood;
 import java.io.BufferedReader;
 
 import java.io.File;
@@ -713,32 +714,32 @@ public class DonationManagement {
             switch(foodCat){
                 case 1: 
                     System.out.println("\nBaked Goods");
-                    commonFoodInput(newItemList);
                     id = idGenerator("FA", BAKED_PATH);
+                    commonFoodInput(id, newItemList, foodCat);
                     //inputBaked();
                     break;
                 case 2:
                     System.out.println("\nBoxed Goods");
-                    commonFoodInput(newItemList);
                     id = idGenerator("FO", BOXED_PATH);
+                    commonFoodInput(id, newItemList, foodCat);
                     //inputBoxed();
                     break;
                 case 3:
                     System.out.println("\nCanned Food");
-                    commonFoodInput(newItemList);
                     id = idGenerator("FC", CANNED_PATH);
+                    commonFoodInput(id, newItemList, foodCat);
                     //inputCanned();
                     break;
                 case 4:
                     System.out.println("\nDry Goods");
-                    commonFoodInput(newItemList);
                     id = idGenerator("FD", DRY_PATH);
+                    commonFoodInput(id, newItemList, foodCat);
                     //inputDry();
                     break;
                 case 5:
                     System.out.println("\nEssentials");
-                    commonFoodInput(newItemList);
                     id = idGenerator("FE", ESS_PATH);
+                    commonFoodInput(id, newItemList, foodCat);
                     //inputEssentials();
                     break;
                 default:
@@ -747,7 +748,7 @@ public class DonationManagement {
         }
     }
     
-    public static void commonFoodInput(LinkedList<Item> newItemList){
+    public static void commonFoodInput(String id, LinkedList<Item> newItemList, int foodCat){
         
         Scanner scan = new Scanner(System.in);
         
@@ -796,10 +797,11 @@ public class DonationManagement {
         
         //expiryDate
         System.out.print("Expiry Date (dd/mm/yyyy)*: ");
-        String exp = scan.nextLine();
+        Date expiryDate = null;
         boolean validExp = false;
         
         while(validExp == false){
+            String exp = scan.nextLine();
             
             if (exp.isEmpty()){
                 
@@ -813,7 +815,7 @@ public class DonationManagement {
 
                 try {
                     
-                    Date expiryDate = dateFormat.parse(exp);
+                    expiryDate = dateFormat.parse(exp);
 
                     Date today = new Date();
 
@@ -965,6 +967,22 @@ public class DonationManagement {
                 default:
                     System.out.println(ANSI_RED + "Invalid food status.\n" + ANSI_RESET);
             }
+        }
+        
+        switch(foodCat){
+            case 1: 
+                break;
+            case 2:
+                break;
+            case 3:
+                CannedFood current = new CannedFood(id, qty, note, expiryDate, w, foodStaName);
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid food category.\n" + ANSI_RESET);
         }
     }
     
