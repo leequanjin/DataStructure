@@ -20,8 +20,13 @@ import DonationList.BoxedGoods;
 import DonationList.CannedFood;
 import DonationList.DryGoods;
 import DonationList.Essentials;
-import java.io.BufferedReader;
+import DonationList.Jacket;
+import DonationList.Pant;
+import DonationList.Shirt;
+import DonationList.Shoes;
+import DonationList.Socks;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -45,6 +50,11 @@ public class DonationManagement {
     private static final String CANNED_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\cannedFood.txt";
     private static final String DRY_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\dryFood.txt";
     private static final String ESS_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\essential.txt";
+    private static final String JACKET_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\jacket.txt";
+    private static final String PANT_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\pant.txt";
+    private static final String SHIRT_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\shirt.txt";
+    private static final String SHOES_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\shoes.txt";
+    private static final String SOCKS_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\socks.txt";
     
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
@@ -66,49 +76,18 @@ public class DonationManagement {
         while(contDM == true){
         
             System.out.println(ANSI_BLUE + " - - - Donation Management - - - " + ANSI_RESET);
-            System.out.println("1. Add a new donation\n"
-                    + "2. Remove a donation\n"
-                    + "3. Search donation details\n"
-                    + "4. Amend donation details\n"
-                    + "5. Track donated item in categories\n"
-                    + "6. List donation by different donor\n"
-                    + "7. List all donation\n"
-                    + "8. Filter donation base on criteria\n"
-                    + "9. Generate sumary report\n"
-                    + "10. Exit\n");
-            System.out.print("Enter your choice: ");
-
-            int dmChoice = 0;
-            String dmSChoice = null;
-            boolean validDMChoice = false;
-
-            while (!validDMChoice) {
-                dmSChoice = scan.nextLine();
-                if(dmSChoice.isEmpty()){
-                
-                    System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                    System.out.print("Enter again: ");
-                    
-                }else{
-                
-                    try {
-                        dmChoice = Integer.parseInt(dmSChoice);
-
-                        if (dmChoice < 1 || dmChoice > 10) {
-                            System.out.println(ANSI_RED + "Please enter a number between 1 and 10.\n" + ANSI_RESET);
-                            System.out.print("Enter again: ");
-                        }else {
-                            validDMChoice = true; 
-                        }
-
-                    } catch (NumberFormatException e) {
-                        System.out.println(ANSI_RED + "Invalid input. Please enter an integer number.\n" + ANSI_RESET);
-                        System.out.print("Enter again: ");
-                    }
-                    
-                }
-                
-            }
+            String[] donationManagementMenu = {
+                "Add a new donation", 
+                "Remove a donation", 
+                "Search donation details", 
+                "Amend donation details", 
+                "Track donated item in categories", 
+                "List donation by different donor", 
+                "List all donation", 
+                "Filter donation base on criteria", 
+                "Generate sumary report", 
+                "Exit"};
+            int dmChoice = menuIntReturn(donationManagementMenu);
 
             // clear screen
             
@@ -226,6 +205,51 @@ public class DonationManagement {
         return false;
     }
     
+    public static int menuIntReturn(String[] selectionList){
+        
+        Scanner scan = new Scanner(System.in);
+        
+        int intInput = 0;
+        boolean validInput = false;
+        
+        for(int i = 0; i < selectionList.length; i++){
+            System.out.println( ( i + 1 ) + ". " + selectionList[i]);
+        }
+        System.out.print("Enter your selection: ");
+        
+        while(validInput == false){
+            String stringInput = scan.nextLine();
+            
+            if(stringInput.isEmpty()){
+
+                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                System.out.print("Enter again: ");
+
+            }else{
+                try {
+                    intInput = Integer.parseInt(stringInput);
+
+                    if (intInput < 1 || intInput > selectionList.length) {
+                        System.out.println(ANSI_RED + "Invalid integer. Please enter between 1 to " + selectionList.length + ".\n" + ANSI_RESET);
+
+                        System.out.print("Enter again: ");
+
+                    } else {
+                        validInput = true; 
+                    }
+
+                } catch (NumberFormatException e) {
+
+                    System.out.println(ANSI_RED + "Invalid input. Please enter correct integer.\n" + ANSI_RESET);
+                    System.out.print("Enter again: ");
+
+                }
+            }
+        }
+        
+        return intInput;
+    }
+    
     public static String idGenerator(String ab, String fileName){
         int lineCount = 0;
 
@@ -251,39 +275,9 @@ public class DonationManagement {
             
             System.out.println(ANSI_BLUE + " - - - Add Donation - - - " + ANSI_RESET);
 
-            System.out.println("Type of donor\n"
-                    + "1. Individual\n"
-                    + "2. Organisation");
-            System.out.print("Enter donor's type: ");
-            int dType = 0;
-            boolean validDType = false;
-            while(validDType == false){
-                String dSType = scan.nextLine();
-                if(dSType.isEmpty()){
-                
-                    System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                    System.out.print("Enter again: ");
-                }else{
-                    try {
-                        dType = Integer.parseInt(dSType);
-
-                        if (dType < 1 || dType > 3) {
-                            
-                            System.out.println(ANSI_RED + "Please enter a number between 1 to 3.\n" + ANSI_RESET);
-                            System.out.print("Enter again: ");
-                            
-                        } else {
-                            validDType = true; 
-                        }
-
-                    } catch (NumberFormatException e) {
-
-                        System.out.println(ANSI_RED + "Invalid input. Please enter an integer number.\n" + ANSI_RESET);
-                        System.out.print("Enter again: ");
-
-                    }
-                }
-            }
+            System.out.println("Type of donor");
+            String[] typeOfDonorList = {"Individual", "Organisation"};
+            int dType = menuIntReturn(typeOfDonorList);
 
             System.out.print("Enter donor's id: ");
             String dID = null;
@@ -445,50 +439,16 @@ public class DonationManagement {
         for (int i = 0; i< numItem; i++){
             
             System.out.println( "\n - Item " + (i+1) + " - \n"
-                    + "Item Category\n"
-                    + "1. Bank\n"
-                    + "2. Cash\n"
-                    + "3. Food\n"
-                    + "4. Apparel");
-            System.out.print("Enter item category: ");
-            int itemCat = 0;
-            boolean validItemCat = false;
-            while(validItemCat== false){
-                String SItemCat = scan.nextLine();
-                if(SItemCat.isEmpty()){
-
-                    System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                    System.out.print("Enter again: ");
-                    
-                }else{
-                    try {
-                        itemCat = Integer.parseInt(SItemCat);
-
-                        if (itemCat < 1 || itemCat > 4) {
-                            System.out.println(ANSI_RED + "The number must between 1 to 4.\n" + ANSI_RESET);
-
-                            scan.nextLine();
-                            System.out.print("Enter again: ");
-                            
-                        } else {
-                            validItemCat = true; 
-                        }
-
-                    } catch (NumberFormatException e) {
-
-                        System.out.println(ANSI_RED + "Invalid input. Please enter an integer number.\n" + ANSI_RESET);
-                        System.out.print("Enter again: ");
-
-                    }
-                }
-            }
+                    + "Item Category");
+            String[] itemMenu = {"Bank", "Cash", "Food", "Apparel"};
+            int itemCat = menuIntReturn(itemMenu);
             
             switch(itemCat){
                 case 1:
-                    inputBank(newItemList);
+                    inputMoney(newItemList, itemCat);
                     break;
                 case 2:
-                    inputCash(newItemList);
+                    inputMoney(newItemList, itemCat);
                     break;
                 case 3:
                     inputFood(newItemList);
@@ -503,17 +463,12 @@ public class DonationManagement {
             //show all item to be added
             System.out.println("Item to be add:");
             newItemList.show();
-            //saveItemToFile(newItemList);
             
         }
     }
     
-    public static void inputBank(LinkedList<Item> newItemList){
+    public static void inputMoney(LinkedList<Item> newItemList, int itemCat){
         Scanner scan = new Scanner(System.in);
-        
-        // id
-        String id = idGenerator("MB", BANK_PATH);
-        //System.out.println("Current id is: " + id);
         
         // amount
         System.out.print("Amount Donated: RM ");
@@ -548,51 +503,25 @@ public class DonationManagement {
             }
         }
         
-        // bank name
-        System.out.println("\nBank Type\n"
-                + "1. Affin Bank\n"
-                + "2. Alliance Bank\n"
-                + "3. AmBank\n"
-                + "4. CIMB\n"
-                + "5. Hong Leong Bank\n"
-                + "6. May Bank\n"
-                + "7. Public Bank\n"
-                + "8. RHB Bank");
-        System.out.print("Enter bank type: ");
-        String bankName = null;
-        int bankType = 0;
-        boolean validBankType = false;
-        while(validBankType == false){
-            bankName = scan.nextLine();
-            
-            if(bankName.isEmpty()){
-
-                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                System.out.print("Enter again: ");
-
-            }else{
-                try {
-                    bankType = Integer.parseInt(bankName);
-
-                    if (bankType < 1 || bankType > 8) {
-                        System.out.println(ANSI_RED + "Invalid integer. Please enter between 1 and 8.\n" + ANSI_RESET);
-
-                        System.out.print("Enter again: ");
-
-                    } else {
-                        validBankType = true; 
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    System.out.println(ANSI_RED + "Invalid input. Please enter correct amount.\n" + ANSI_RESET);
-                    System.out.print("Enter again: ");
-
-                }
-            }
-        }
+        if (itemCat == 1){
         
-        if(validBankType == true){
+            // id
+            String id = idGenerator("MB", BANK_PATH);
+        
+            // bank name
+            System.out.println("\nBank Type");
+            String[] bankTypeMenu = {
+                "Affin Bank", 
+                "Alliance Bank", 
+                "AmBank", 
+                "CIMB", 
+                "Hong Leong Bank", 
+                "May Bank", 
+                "Public Bank", 
+                "RHB Bank"};
+            int bankType = menuIntReturn(bankTypeMenu);
+            
+            String bankName = null;
             switch(bankType){
                 case 1: 
                     bankName = "Affin Bank";
@@ -621,139 +550,117 @@ public class DonationManagement {
                 default:
                     System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
             }
+
+            Bank tempBank = new Bank(id, amt, bankName);
+            
+            LinkedList<Bank> list = new LinkedList();
+            list.insert(tempBank);
+            list.saveToFile(BANK_PATH);
+            
+            newItemList.insert(tempBank);
+        
+        }else{
+            // id
+            String id = idGenerator("MC", CASH_PATH);
+            
+            Cash tempCash = new Cash(id, amt);
+
+            LinkedList<Cash> list = new LinkedList();
+            list.insert(tempCash);
+            list.saveToFile(CASH_PATH);
+            
+            newItemList.insert(tempCash);
         }
         
-        Bank tempBank = new Bank(id, amt, bankName);
-        
-        newItemList.insert(tempBank);
-    }
-    
-    public static void inputCash(LinkedList<Item> newItemList){
-        Scanner scan = new Scanner(System.in);
-        
-        // id
-        String id = idGenerator("MC", CASH_PATH);
-        //System.out.println("Current id is: " + id);
-        
-        // amount
-        System.out.print("Amount Donated: RM ");
-        double amt = 0;
-        boolean validAmt = false;
-        while(validAmt == false){
-            String SAmt = scan.nextLine();
-            if(SAmt.isEmpty()){
-
-                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                System.out.print("Enter again: ");
-
-            }else{
-                try {
-                    amt = Double.parseDouble(SAmt);
-
-                    if (amt <= 0) {
-                        
-                        System.out.println(ANSI_RED + "Invalid amount. Donated amount could not be 0.\n" + ANSI_RESET);
-                        System.out.print("Enter again: ");
-
-                    } else {
-                        validAmt = true; 
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    System.out.println(ANSI_RED + "Invalid input. Please enter correct amount.\n" + ANSI_RESET);
-                    System.out.print("Enter again: ");
-
-                }
-            }
-        }
-        
-        Cash tempCash = new Cash(id, amt);
-        
-        newItemList.insert(tempCash);
     }
     
     public static void inputFood(LinkedList<Item> newItemList){
-        Scanner scan = new Scanner(System.in);
         
         // food category
-        System.out.println("\nFood Category\n"
-                + "1. Baked Goods\n"
-                + "2. Baxed Goods\n"
-                + "3. Canned Food\n"
-                + "4. Dry Goods\n"
-                + "5. Essentials");
-        System.out.print("Enter food type: ");
-        String foodCatName = null;
-        int foodCat = 0;
-        boolean validFoodCat = false;
-        while(validFoodCat == false){
-            foodCatName = scan.nextLine();
-            
-            if(foodCatName.isEmpty()){
-
-                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                System.out.print("Enter again: ");
-
-            }else{
-                try {
-                    foodCat = Integer.parseInt(foodCatName);
-
-                    if (foodCat < 1 || foodCat > 5) {
-                        System.out.println(ANSI_RED + "Invalid integer. Please enter between 1 to 5.\n" + ANSI_RESET);
-
-                        System.out.print("Enter again: ");
-
-                    } else {
-                        validFoodCat = true; 
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    System.out.println(ANSI_RED + "Invalid input. Please enter correct amount.\n" + ANSI_RESET);
-                    System.out.print("Enter again: ");
-
-                }
-            }
-        }
+        System.out.println("\nFood Category");
+        String[] foodCatMenu = {
+            "Baked Goods", 
+            "Boxed Goods", 
+            "Canned Food", 
+            "Dry Goods", 
+            "Essentials"};
+        int foodCat = menuIntReturn(foodCatMenu);
         
         String id = null;
-        if(validFoodCat == true){
-            switch(foodCat){
-                case 1: 
-                    System.out.println("\nBaked Goods");
-                    id = idGenerator("FA", BAKED_PATH);
-                    commonFoodInput(id, newItemList, foodCat);
-                    break;
-                case 2:
-                    System.out.println("\nBoxed Goods");
-                    id = idGenerator("FO", BOXED_PATH);
-                    commonFoodInput(id, newItemList, foodCat);
-                    break;
-                case 3:
-                    System.out.println("\nCanned Food");
-                    id = idGenerator("FC", CANNED_PATH);
-                    commonFoodInput(id, newItemList, foodCat);
-                    break;
-                case 4:
-                    System.out.println("\nDry Goods");
-                    id = idGenerator("FD", DRY_PATH);
-                    commonFoodInput(id, newItemList, foodCat);
-                    //inputDry();
-                    break;
-                case 5:
-                    System.out.println("\nEssentials");
-                    id = idGenerator("FE", ESS_PATH);
-                    commonFoodInput(id, newItemList, foodCat);
-                    //inputEssentials();
-                    break;
-                default:
-                    System.out.println(ANSI_RED + "Invalid food category.\n" + ANSI_RESET);
-            }
+        switch(foodCat){
+            case 1: 
+                System.out.println("\nBaked Goods");
+                id = idGenerator("FA", BAKED_PATH);
+                break;
+            case 2:
+                System.out.println("\nBoxed Goods");
+                id = idGenerator("FO", BOXED_PATH);
+                break;
+            case 3:
+                System.out.println("\nCanned Food");
+                id = idGenerator("FC", CANNED_PATH);
+                break;
+            case 4:
+                System.out.println("\nDry Goods");
+                id = idGenerator("FD", DRY_PATH);
+                break;
+            case 5:
+                System.out.println("\nEssentials");
+                id = idGenerator("FE", ESS_PATH);
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid food category.\n" + ANSI_RESET);
+                break;
         }
+        
+        commonItemInput(id, newItemList, foodCat, 1);
+        
     }
     
-    public static void commonFoodInput(String id, LinkedList<Item> newItemList, int foodCat){
+    public static void inputApparel(LinkedList<Item> newItemList){
+        
+        // food category
+        System.out.println("\nApparel Category");
+        String[] appCatMenu = {
+            "Jacket", 
+            "Pant", 
+            "Shirt", 
+            "Shoes", 
+            "Socks"};
+        int appCat = menuIntReturn(appCatMenu);
+        
+        String id = null;
+        switch(appCat){
+            case 1: 
+                System.out.println("\nJacket");
+                id = idGenerator("AJ", JACKET_PATH);
+                break;
+            case 2:
+                System.out.println("\nPant");
+                id = idGenerator("AP", PANT_PATH);
+                break;
+            case 3:
+                System.out.println("\nShirt");
+                id = idGenerator("AI", SHIRT_PATH);
+                break;
+            case 4:
+                System.out.println("\nShoes");
+                id = idGenerator("AO", SHOES_PATH);
+                break;
+            case 5:
+                System.out.println("\nSocks");
+                id = idGenerator("AS", SOCKS_PATH);
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid food category.\n" + ANSI_RESET);
+                break;
+        }
+        
+        commonItemInput(id, newItemList, appCat, 2);
+        
+    }
+    
+    public static void commonItemInput(String id, LinkedList<Item> newItemList, int detailCat, int itemCat){
         
         Scanner scan = new Scanner(System.in);
         
@@ -800,6 +707,22 @@ public class DonationManagement {
         System.out.print("Remarks: ");
         String note = scan.nextLine();
         
+        switch(itemCat){
+            case 1:
+                // food
+                commonFoodInput(id, newItemList, detailCat, qty, note);
+                break;
+            case 2:
+                // apparel
+                commonApparelInput(id, newItemList, detailCat, qty, note);
+                break;
+        }
+        
+    }
+    
+    public static void commonFoodInput(String id, LinkedList<Item> newItemList, int foodCat, int qty, String note){
+        Scanner scan = new Scanner(System.in);
+        
         //expiryDate
         System.out.print("Expiry Date (dd/mm/yyyy)*: ");
         Date expiryDate = null;
@@ -827,48 +750,13 @@ public class DonationManagement {
                     if (expiryDate.before(today)) {
                         
                         System.out.println(ANSI_RED + "The food had expired.\n" + ANSI_RESET);
-                        System.out.println("1. Enter again\n"
-                                        + "2. Discard");
-                        System.out.print("Enter selection: ");
-                        String input = null;
-                        int selection = 0;
-                        boolean validInput = false;
-                        while(validInput== false){
-                            input = scan.nextLine();
-
-                            if(input.isEmpty()){
-
-                                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                                System.out.print("Enter again: ");
-
-                            }else{
-                                try {
-                                    selection = Integer.parseInt(input);
-
-                                    if (selection < 1 || selection > 2) {
-                                        
-                                        System.out.println(ANSI_RED + "Invalid integer. Please enter only 1 or 2.\n" + ANSI_RESET);
-                                        System.out.print("Enter again: ");
-
-                                    } else {
-                                        validInput = true; 
-                                    }
-
-                                } catch (NumberFormatException e) {
-
-                                    System.out.println(ANSI_RED + "Invalid input. Please enter correct selection.\n" + ANSI_RESET);
-                                    System.out.print("Enter again: ");
-
-                                }
-                            }
-                        }
+                        String[] menu = {"Enter again", "Discard"};
+                        int selection = menuIntReturn(menu);
                         
-                        if(validInput == true){
-                            if(selection == 1){
-                                System.out.print("Enter date again: ");
-                            }else{
-                                inputFood(newItemList);
-                            }
+                        if(selection == 1){
+                            System.out.print("Enter date again: ");
+                        }else{
+                            inputFood(newItemList);
                         }
                         
                     } else {
@@ -920,84 +808,74 @@ public class DonationManagement {
         }
         
         //status
-        System.out.println("\nFood Status\n"
-                + "1. Good\n"
-                + "2. Spoil\n"
-                + "3. Expired");
-        System.out.print("Enter food status*: ");
-        String foodStaName = null;
-        int foodSta = 0;
-        boolean validFoodSta = false;
-        while(validFoodSta == false){
-            foodStaName = scan.nextLine();
-            
-            if(foodStaName.isEmpty()){
-
-                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                System.out.print("Enter again: ");
-
-            }else{
-                try {
-                    foodSta = Integer.parseInt(foodStaName);
-
-                    if (foodSta < 1 || foodSta > 3) {
-                        
-                        System.out.println(ANSI_RED + "Invalid integer. Please enter between 1 to 3.\n" + ANSI_RESET);
-                        System.out.print("Enter again: ");
-
-                    } else {
-                        validFoodSta = true; 
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    System.out.println(ANSI_RED + "Invalid input. Please enter correct amount.\n" + ANSI_RESET);
-                    System.out.print("Enter again: ");
-
-                }
-            }
-        }
+        System.out.println("\nFood Status");
+        String[] foodStatusMenu = {"Good", "Spoil", "Expired"};
+        int foodSta = menuIntReturn(foodStatusMenu);
         
-        if(validFoodSta == true){
-            switch(foodSta){
-                case 1: 
-                    foodStaName = "Good";
-                    break;
-                case 2:
-                    foodStaName = "Spoil";
-                    break;
-                case 3:
-                    foodStaName = "Expired";
-                    break;
-                default:
-                    System.out.println(ANSI_RED + "Invalid food status.\n" + ANSI_RESET);
-            }
+        String foodStaName = null;
+        switch(foodSta){
+            case 1: 
+                foodStaName = "Good";
+                break;
+            case 2:
+                foodStaName = "Spoil";
+                break;
+            case 3:
+                foodStaName = "Expired";
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid food status.\n" + ANSI_RESET);
         }
         
         switch(foodCat){
             case 1: 
                 String bakedName = inputBaked();
                 BakedGoods baG = new BakedGoods(id, qty, note, expiryDate, w, foodStaName, bakedName);
+                
+                LinkedList<BakedGoods> list = new LinkedList();
+                list.insert(baG);
+                list.saveToFile(BAKED_PATH);
+            
                 newItemList.insert(baG);
                 break;
             case 2:
                 String boxedName = inputBoxed();
                 BoxedGoods boG = new BoxedGoods(id, qty, note, expiryDate, w, foodStaName, boxedName);
+                
+                LinkedList<BoxedGoods> list1 = new LinkedList();
+                list1.insert(boG);
+                list1.saveToFile(BOXED_PATH);
+            
                 newItemList.insert(boG);
                 break;
             case 3:
                 String cannedName = inputCanned();
                 CannedFood cF = new CannedFood(id, qty, note, expiryDate, w, foodStaName, cannedName);
+                
+                LinkedList<CannedFood> list2 = new LinkedList();
+                list2.insert(cF);
+                list2.saveToFile(CANNED_PATH);
+            
                 newItemList.insert(cF);
                 break;
             case 4:
                 String dryName = inputDry();
                 DryGoods dG = new DryGoods(id, qty, note, expiryDate, w, foodStaName, dryName);
+                
+                LinkedList<DryGoods> list3 = new LinkedList();
+                list3.insert(dG);
+                list3.saveToFile(DRY_PATH);
+            
                 newItemList.insert(dG);
                 break;
             case 5:
                 String essName = inputEss();
                 Essentials eG = new Essentials(id, qty, note, expiryDate, w, foodStaName, essName);
+                
+                LinkedList<Essentials> list4 = new LinkedList();
+                list4.insert(eG);
+                list4.saveToFile(ESS_PATH);
+            
                 newItemList.insert(eG);
                 break;
             default:
@@ -1007,114 +885,44 @@ public class DonationManagement {
     }
     
     public static String inputBaked() {
-        Scanner scan = new Scanner(System.in);
         
         // baked food type
-        System.out.println("\nBaked Food Type\n"
-                + "1. Cookies\n"
-                + "2. Crackers");
-        System.out.print("Enter baked food type: ");
-        String name = null;
-        int type = 0;
-        boolean validType = false;
-        while(validType == false){
-            name = scan.nextLine();
-            
-            if(name.isEmpty()){
-
-                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                System.out.print("Enter again: ");
-
-            }else{
-                try {
-                    type = Integer.parseInt(name);
-
-                    if (type < 1 || type > 2) {
-                        System.out.println(ANSI_RED + "Invalid integer. Please enter between 1 to 2.\n" + ANSI_RESET);
-
-                        System.out.print("Enter again: ");
-
-                    } else {
-                        validType = true; 
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    System.out.println(ANSI_RED + "Invalid input. Please enter correct integer.\n" + ANSI_RESET);
-                    System.out.print("Enter again: ");
-
-                }
-            }
-        }
+        System.out.println("\nBaked Food Type");
+        String[] bakedFoodMenu = {"Cookies", "Crackers"};
+        int type = menuIntReturn(bakedFoodMenu);
         
-        if(validType == true){
-            switch(type){
-                case 1: 
-                    name = "Cookies";
-                    break;
-                case 2:
-                    name = "Crackers";
-                    break;
-                default:
-                    System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
-            }
+        String name = null;
+        switch(type){
+            case 1: 
+                name = "Cookies";
+                break;
+            case 2:
+                name = "Crackers";
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
         }
         
         return name;
     }
     
     public static String inputBoxed(){
-        Scanner scan = new Scanner(System.in);
         
         // boxed food type
-        System.out.println("\nBoxed Food Type\n"
-                + "1. Cereals\n"
-                + "2. Snacks");
-        System.out.print("Enter boxed food type: ");
-        String name = null;
-        int type = 0;
-        boolean validType = false;
-        while(validType == false){
-            name = scan.nextLine();
-            
-            if(name.isEmpty()){
-
-                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                System.out.print("Enter again: ");
-
-            }else{
-                try {
-                    type = Integer.parseInt(name);
-
-                    if (type < 1 || type > 2) {
-                        System.out.println(ANSI_RED + "Invalid integer. Please enter between 1 to 2.\n" + ANSI_RESET);
-
-                        System.out.print("Enter again: ");
-
-                    } else {
-                        validType = true; 
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    System.out.println(ANSI_RED + "Invalid input. Please enter correct integer.\n" + ANSI_RESET);
-                    System.out.print("Enter again: ");
-
-                }
-            }
-        }
+        System.out.println("\nBoxed Food Type");
+        String[] boxedFoodMenu = {"Cereals", "Snacks"};
+        int type = menuIntReturn(boxedFoodMenu);
         
-        if(validType == true){
-            switch(type){
-                case 1: 
-                    name = "Cereals";
-                    break;
-                case 2:
-                    name = "Snacks";
-                    break;
-                default:
-                    System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
-            }
+        String name = null;
+        switch(type){
+            case 1: 
+                name = "Cereals";
+                break;
+            case 2:
+                name = "Snacks";
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
         }
         
         return name;
@@ -1124,363 +932,271 @@ public class DonationManagement {
         Scanner scan = new Scanner(System.in);
         
         // canned food type
-        System.out.println("\nCanned Food Type\n"
-                + "1. Baked beans\n"
-                + "2. Chicken soup\n"
-                + "3. Corn\n"
-                + "4. Lychee\n"
-                + "5. Meat\n"
-                + "6. Mushroom soup\n"
-                + "7. Pineapple\n"
-                + "8. Tomatoes\n"
-                + "9. Tuna");
-        System.out.print("Enter canned food type: ");
-        String name = null;
-        int type = 0;
-        boolean validType = false;
-        while(validType == false){
-            name = scan.nextLine();
-            
-            if(name.isEmpty()){
-
-                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                System.out.print("Enter again: ");
-
-            }else{
-                try {
-                    type = Integer.parseInt(name);
-
-                    if (type < 1 || type > 9) {
-                        System.out.println(ANSI_RED + "Invalid integer. Please enter between 1 to 9.\n" + ANSI_RESET);
-
-                        System.out.print("Enter again: ");
-
-                    } else {
-                        validType = true; 
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    System.out.println(ANSI_RED + "Invalid input. Please enter correct integer.\n" + ANSI_RESET);
-                    System.out.print("Enter again: ");
-
-                }
-            }
-        }
+        System.out.println("\nCanned Food Type");
+        String[] cannedFoodMenu = {
+                "Baked beans", 
+                "Chicken soup", 
+                "Corn", 
+                "Lychee", 
+                "Meat", 
+                "Mushroom soup", 
+                "Pineapple", 
+                "Tomatoes", 
+                "Tuna"};
+        int type = menuIntReturn(cannedFoodMenu);
         
-        if(validType == true){
-            switch(type){
-                case 1: 
-                    name = "Baked beans can";
-                    break;
-                case 2:
-                    name = "Chicken soup can";
-                    break;
-                case 3:
-                    name = "Corn can";
-                    break;
-                case 4:
-                    name = "Lychee can";
-                    break;
-                case 5:
-                    name = "Meat can";
-                    break;
-                case 6:
-                    name = "Mushroom soup can";
-                    break;
-                case 7:
-                    name = "Pineapple can";
-                    break;
-                case 8:
-                    name = "Tomatoes can";
-                    break;
-                case 9:
-                    name = "Tuna can";
-                    break;
-                default:
-                    System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
-            }
+        String name = null;
+        switch(type){
+            case 1: 
+                name = "Baked beans can";
+                break;
+            case 2:
+                name = "Chicken soup can";
+                break;
+            case 3:
+                name = "Corn can";
+                break;
+            case 4:
+                name = "Lychee can";
+                break;
+            case 5:
+                name = "Meat can";
+                break;
+            case 6:
+                name = "Mushroom soup can";
+                break;
+            case 7:
+                name = "Pineapple can";
+                break;
+            case 8:
+                name = "Tomatoes can";
+                break;
+            case 9:
+                name = "Tuna can";
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
         }
         
         return name;
     }
     
     public static String inputDry(){
-        Scanner scan = new Scanner(System.in);
         
         // dry food type
-        System.out.println("\nDry Food Type\n"
-                + "1. Instant noodles\n"
-                + "2. Oats\n"
-                + "3. Pasta\n"
-                + "4. Rice");
-        System.out.print("Enter boxed food type: ");
-        String name = null;
-        int type = 0;
-        boolean validType = false;
-        while(validType == false){
-            name = scan.nextLine();
-            
-            if(name.isEmpty()){
-
-                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                System.out.print("Enter again: ");
-
-            }else{
-                try {
-                    type = Integer.parseInt(name);
-
-                    if (type < 1 || type > 4) {
-                        System.out.println(ANSI_RED + "Invalid integer. Please enter between 1 to 4.\n" + ANSI_RESET);
-
-                        System.out.print("Enter again: ");
-
-                    } else {
-                        validType = true; 
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    System.out.println(ANSI_RED + "Invalid input. Please enter correct integer.\n" + ANSI_RESET);
-                    System.out.print("Enter again: ");
-
-                }
-            }
-        }
+        System.out.println("\nDry Food Type");
+        String[] dryFoodMenu = {"Instant noodles", "Oats", "Pasta", "Rice"};
+        int type = menuIntReturn(dryFoodMenu);
         
-        if(validType == true){
-            switch(type){
-                case 1: 
-                    name = "Instant noodles";
-                    break;
-                case 2:
-                    name = "Oats";
-                    break;
-                case 3: 
-                    name = "Pasta";
-                    break;
-                case 4:
-                    name = "Rice";
-                    break;
-                default:
-                    System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
-            }
+        String name = null;
+        switch(type){
+            case 1: 
+                name = "Instant noodles";
+                break;
+            case 2:
+                name = "Oats";
+                break;
+            case 3: 
+                name = "Pasta";
+                break;
+            case 4:
+                name = "Rice";
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
         }
         
         return name;
     }
     
     public static String inputEss(){
-        Scanner scan = new Scanner(System.in);
         
         // essentials type
-        System.out.println("\nEssentials Type\n"
-                + "1. Oil\n"
-                + "2. Pepper\n"
-                + "3. Salt\n"
-                + "4. Sugar");
-        System.out.print("Enter essential type: ");
-        String name = null;
-        int type = 0;
-        boolean validType = false;
-        while(validType == false){
-            name = scan.nextLine();
-            
-            if(name.isEmpty()){
-
-                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                System.out.print("Enter again: ");
-
-            }else{
-                try {
-                    type = Integer.parseInt(name);
-
-                    if (type < 1 || type > 4) {
-                        System.out.println(ANSI_RED + "Invalid integer. Please enter between 1 to 4.\n" + ANSI_RESET);
-
-                        System.out.print("Enter again: ");
-
-                    } else {
-                        validType = true; 
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    System.out.println(ANSI_RED + "Invalid input. Please enter correct integer.\n" + ANSI_RESET);
-                    System.out.print("Enter again: ");
-
-                }
-            }
-        }
+        System.out.println("\nEssentials Type");
+        String[] essMenu = {"Oil", "Pepper", "Salt", "Sugar"};
+        int type = menuIntReturn(essMenu);
         
-        if(validType == true){
-            switch(type){
-                case 1: 
-                    name = "Oil";
-                    break;
-                case 2:
-                    name = "Pepper";
-                    break;
-                case 3: 
-                    name = "Salt";
-                    break;
-                case 4:
-                    name = "Sugar";
-                    break;
-                default:
-                    System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
-            }
+        String name = null;
+       
+        switch(type){
+            case 1: 
+                name = "Oil";
+                break;
+            case 2:
+                name = "Pepper";
+                break;
+            case 3: 
+                name = "Salt";
+                break;
+            case 4:
+                name = "Sugar";
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
         }
         
         return name;
     }
     
-    public static void inputApparel(LinkedList<Item> newItemList){
+    public static void commonApparelInput(String id, LinkedList<Item> newItemList, int appCat, int qty, String note){
         Scanner scan = new Scanner(System.in);
         
-        // apparel category
-        System.out.println("\nApparel Category\n"
-                + "1. Jacket\n"
-                + "2. Pant\n"
-                + "3. Shirt\n"
-                + "4. Shoes\n"
-                + "5. Socks");
-        System.out.print("Enter apparel type: ");
-        String appCatName = null;
-        int appCat = 0;
-        boolean validAppCat = false;
-        while(validAppCat == false){
-            appCatName = scan.nextLine();
-            
-            if(appCatName.isEmpty()){
-
-                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                System.out.print("Enter again: ");
-
-            }else{
-                try {
-                    appCat = Integer.parseInt(appCatName);
-
-                    if (appCat < 1 || appCat > 5) {
-                        System.out.println(ANSI_RED + "Invalid integer. Please enter between 1 to 5.\n" + ANSI_RESET);
-
-                        System.out.print("Enter again: ");
-
-                    } else {
-                        validAppCat = true; 
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    System.out.println(ANSI_RED + "Invalid input. Please enter correct amount.\n" + ANSI_RESET);
-                    System.out.print("Enter again: ");
-
-                }
-            }
+        // color
+        System.out.println("\nApparel Color");
+        String[] appColorMenu = {"Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Silver", "White", "Black"};
+        int appColor = menuIntReturn(appColorMenu);
+        
+        String color = null;
+        switch(appColor){
+            case 1: 
+                color = "Red";
+                break;
+            case 2:
+                color = "Orange";
+                break;
+            case 3:
+                color = "Yellow";
+                break;
+            case 4:
+                color = "Green";
+                break;
+            case 5:
+                color = "Blue";
+                break;
+            case 6:
+                color = "Purple";
+                break;
+            case 7:
+                color = "Silver";
+                break;
+            case 8:
+                color = "White";
+                break;
+            case 9:
+                color = "Black";
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid apparel color.\n" + ANSI_RESET);
         }
         
-        String id = null;
-        if(validAppCat == true){
-            switch(appCat){
-                case 1: 
-                    System.out.println("\nJacket");
-                    id = idGenerator("FA", BAKED_PATH);
-                    commonAppInput(id, newItemList, appCat);
-                    break;
-                case 2:
-                    System.out.println("\nPant");
-                    id = idGenerator("FO", BOXED_PATH);
-                    commonAppInput(id, newItemList, appCat);
-                    break;
-                case 3:
-                    System.out.println("\nShirt");
-                    id = idGenerator("FC", CANNED_PATH);
-                    commonAppInput(id, newItemList, appCat);
-                    break;
-                case 4:
-                    System.out.println("\nShoes");
-                    id = idGenerator("FD", DRY_PATH);
-                    commonAppInput(id, newItemList, appCat);
-                    break;
-                case 5:
-                    System.out.println("\nSocks");
-                    id = idGenerator("FE", ESS_PATH);
-                    commonAppInput(id, newItemList, appCat);
-                    break;
-                default:
-                    System.out.println(ANSI_RED + "Invalid food category.\n" + ANSI_RESET);
-            }
-        }
-    }
-    
-    public static void commonAppInput(String id, LinkedList<Item> newItemList, int appCat){
-
-        Scanner scan = new Scanner(System.in);
+        // condition
+        System.out.println("\nApparel Condition");
+        String[] appConMenu = {"New", "Good", "Fair", "Poor"};
+        int appCon = menuIntReturn(appConMenu);
         
-        System.out.println("Item with '*' is compulsary to be enter.");
-        
-        // quantity
-        System.out.print("Quantity*: ");
-        int qty = 0;
-        boolean validQty = false;
-        while(validQty == false){
-            String qtyS = scan.nextLine();
-            
-            if(qtyS.isEmpty()){
-
-                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                System.out.print("Enter again: ");
-
-            }else{
-                try {
-                    qty = Integer.parseInt(qtyS);
-
-                    if (qty == 0) {
-                        
-                        System.out.println(ANSI_RED + "Quantity cannot be 0.\n" + ANSI_RESET);
-                        System.out.print("Enter again: ");
-
-                    } else if(qty  < 0){
-                        System.out.println(ANSI_RED + "Quantity cannot be negative.\n" + ANSI_RESET);
-                        System.out.print("Enter again: ");
-                    }else {
-                        validQty = true; 
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    System.out.println(ANSI_RED + "Invalid input. Please enter correct quantity.\n" + ANSI_RESET);
-                    System.out.print("Enter again: ");
-
-                }
-            }
+        String condition = null;
+        switch(appCon){
+            case 1: 
+                condition = "New";
+                break;
+            case 2:
+                condition = "Good";
+                break;
+            case 3:
+                condition = "Fair";
+                break;
+            case 4:
+                condition = "Poor";
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid apparel condition.\n" + ANSI_RESET);
         }
         
-        //note
-        System.out.print("Remarks: ");
-        String note = scan.nextLine();
-
+        // brand
+        System.out.println("\nApparel Brand");
+        String[] appBrandMenu = {"Adidas", "H & M", "Nike", "Puma", "Uniclo", "Others"};
+        int appBrand = menuIntReturn(appBrandMenu);
         
+        String brand = null;
+        switch(appBrand){
+            case 1: 
+                brand = "Adidas";
+                break;
+            case 2:
+                brand = "H & M";
+                break;
+            case 3:
+                brand = "Nike";
+                break;
+            case 4:
+                brand = "Puma";
+                break;
+            case 5:
+                brand = "Uniclo";
+                break;
+            case 6:
+                brand = "Others";
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid apparel brand.\n" + ANSI_RESET);
+        }
         
         switch(appCat){
             case 1: 
+                Jacket j = new Jacket(id, qty, note, color, condition, brand);
+                
+                LinkedList<Jacket> list1 = new LinkedList();
+                list1.insert(j);
+                list1.saveToFile(JACKET_PATH);
+            
+                newItemList.insert(j);
                 break;
-            case 2:
+            case 2: 
+                Pant p = new Pant(id, qty, note, color, condition, brand);
+                
+                LinkedList<Pant> list2 = new LinkedList();
+                list2.insert(p);
+                list2.saveToFile(PANT_PATH);
+            
+                newItemList.insert(p);
                 break;
-            case 3:
+            case 3: 
+                Shirt shirt = new Shirt(id, qty, note, color, condition, brand);
+                
+                LinkedList<Shirt> list3 = new LinkedList();
+                list3.insert(shirt);
+                list3.saveToFile(SHIRT_PATH);
+            
+                newItemList.insert(shirt);
                 break;
-            case 4:
+            case 4: 
+                String detailType = inputShoes();
+                Shoes shoes = new Shoes(id, qty, note, color, condition, brand, detailType);
+                
+                LinkedList<Shoes> list4 = new LinkedList();
+                list4.insert(shoes);
+                list4.saveToFile(SHOES_PATH);
+            
+                newItemList.insert(shoes);
                 break;
-            case 5:
+            case 5: 
+                Socks socks = new Socks(id, qty, note, color, condition, brand);
+                
+                LinkedList<Socks> list5 = new LinkedList();
+                list5.insert(socks);
+                list5.saveToFile(SOCKS_PATH);
+            
+                newItemList.insert(socks);
                 break;
             default:
-                System.out.println(ANSI_RED + "Invalid food category.\n" + ANSI_RESET);
+                System.out.println(ANSI_RED + "Invalid apparel category.\n" + ANSI_RESET);
         }
     }
     
-    public static void saveItemToFile(LinkedList<Item> newItemList){
-        // sort
-        // place in one by one
+    public static String inputShoes(){
+        
+        System.out.println("\nShoes Category");
+        String[] shoesMenu = {"Slipper", "Sport shoes"};
+        int s = menuIntReturn(shoesMenu);
+        
+        switch(s){
+            case 1: 
+                return "Slipper";
+            case 2:
+                return "Sport shoes";
+            default:
+                return "Unknown";
+        }
     }
     
     // Part 2: Remove a donation
