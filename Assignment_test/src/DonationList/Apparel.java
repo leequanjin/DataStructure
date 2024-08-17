@@ -55,10 +55,9 @@ public class Apparel extends PhysicalItem {
     
     @Override
     public String toString(){
-        return super.toString()+ 
-                String.format("\n%-15s %-2s %10s \n%-15s %-2s %10s \n%-15s %-2s %20s" 
-                        + "color" + ":" + color
-                        + "condition" + ":" + condition
-                        + "brand" + ":" + brand);
+        return super.toString()
+                +"\nColor: " + color
+                + "\nCondition: " + condition
+                + "\nBrand: " + brand;
     }
 }
