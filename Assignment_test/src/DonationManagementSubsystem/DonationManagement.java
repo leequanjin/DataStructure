@@ -26,15 +26,16 @@ import DonationList.Shoes;
 import DonationList.Socks;
 import DonationList.ManageItem;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  *
@@ -751,6 +752,7 @@ public class DonationManagement {
                     
                 } catch (ParseException e) {
                     System.out.println("Invalid date format. Please enter the date in dd/MM/yyyy format.");
+                    System.out.print("Enter date again: ");
                 }
                 
             }
@@ -1353,65 +1355,92 @@ public class DonationManagement {
     }
     
     // Part 3: Search donation details
-    public static void searchDonation(){
+    public static void searchDonation() {
         Scanner scan = new Scanner(System.in);
-        System.out.print("\nWhich item do you wish to search?\n"
-                + "Enter ID: ");
+        System.out.print("\nWhich item do you wish to search?\n" + "Enter ID: ");
         boolean validID = false;
 
-        while(validID == false){
-
+        while (!validID) {
             String inputID = scan.nextLine();
 
-            if(inputID.isEmpty()){
+            if (inputID.isEmpty()) {
                 System.out.println(ANSI_RED + "Cannot leave blank." + ANSI_RESET);
                 System.out.print("\nEnter again: ");
-            }else {
-
-                if( inputID.length() != 7 ){
+            } else {
+                if (inputID.length() != 7) {
                     System.out.println(ANSI_RED + "Invalid length. The length should be 7 and format AA00000." + ANSI_RESET);
                     System.out.print("\nEnter again: ");
-                } else{
+                } else {
+                    inputID = inputID.substring(0, 2).toUpperCase() + inputID.substring(2, 7);
 
-                    inputID = inputID.substring(0,2).toUpperCase() + inputID.substring(2, 7);
-                    if (    !("MB".equalsIgnoreCase(inputID.substring(0, 2))) ||
-                            !("MC".equalsIgnoreCase(inputID.substring(0, 2))) ||
-                            !("FA".equalsIgnoreCase(inputID.substring(0, 2))) ||
-                            !("FO".equalsIgnoreCase(inputID.substring(0, 2))) ||
-                            !("FC".equalsIgnoreCase(inputID.substring(0, 2))) ||
-                            !("FD".equalsIgnoreCase(inputID.substring(0, 2))) ||
-                            !("FE".equalsIgnoreCase(inputID.substring(0, 2))) ||
-                            !("AJ".equalsIgnoreCase(inputID.substring(0, 2))) ||
-                            !("AP".equalsIgnoreCase(inputID.substring(0, 2))) ||
-                            !("AI".equalsIgnoreCase(inputID.substring(0, 2))) ||
-                            !("AO".equalsIgnoreCase(inputID.substring(0, 2))) ||
-                            !("AS".equalsIgnoreCase(inputID.substring(0, 2))) ){
+                    String prefix = inputID.substring(0, 2);
+                    Set<String> validPrefixes = new HashSet<>(
+                            Arrays.asList("MB", "MC", "FA", "FO", "FC", "FD", "FE", "AJ", "AP", "AI", "AO", "AS"));
+
+                    if (!validPrefixes.contains(prefix)) {
                         System.out.println(ANSI_RED + "Invalid format. The format should be AA00000." + ANSI_RESET);
                         System.out.print("\nEnter again: ");
-                    }else{
-                        
-                        String id = inputID.substring(0, 2);
+                    } else {
                         String filePath = null;
-                        
-                        switch(id){
+
+                        switch (prefix) {
                             case "MB":
                                 filePath = BANK_PATH;
+                                break;
+                            case "MC":
+                                filePath = CASH_PATH;
+                                break;
+                            case "FA":
+                                filePath = BAKED_PATH;
+                                break;
+                            case "FO":
+                                filePath = BOXED_PATH;
+                                break;
+                            case "FC":
+                                filePath = CANNED_PATH;
+                                break;
+                            case "FD":
+                                filePath = DRY_PATH;
+                                break;
+                            case "FE":
+                                filePath = ESS_PATH;  // This was corrected from "ME" to "FE"
+                                break;
+                            case "AJ":
+                                filePath = JACKET_PATH;
+                                break;
+                            case "AP":
+                                filePath = PANT_PATH;
+                                break;
+                            case "AI":
+                                filePath = SHIRT_PATH;
+                                break;
+                            case "AO":
+                                filePath = SHOES_PATH;
+                                break;
+                            case "AS":
+                                filePath = SOCKS_PATH;
+                                break;
+                            default:
+                                System.out.println(ANSI_RED + "Invalid ID." + ANSI_RESET);
                         }
-                        
-                        // valid format, check if this id exist, remove if yes
-                        ManageItem<Item> list = new ManageItem();
-                        list.loadFromFile(filePath);
-                        Item item = list.findById(inputID);
-                        if (item != null){
-                            // show that particular item
-                        }else{
-                            System.out.println(ANSI_RED + "Item does not exist." + ANSI_RESET);
-                            System.out.print("\nEnter again: ");
+
+                        // valid format, check if this id exists, show it if yes
+                        if (filePath != null) {
+                            ManageItem<Item> list = new ManageItem<>();
+                            list.loadFromFile(filePath);
+                            Item item = list.findById(inputID);
+                            if (item != null) {
+                                // show that particular item
+                                System.out.println(item.toString());
+                                validID = true; // Assuming you want to exit the loop after a successful search
+                            } else {
+                                System.out.println(ANSI_RED + "Item does not exist or had been deleted." + ANSI_RESET);
+                                System.out.print("\nEnter again: ");
+                            }
                         }
                     }
                 }
             }
-
         }
     }
     
