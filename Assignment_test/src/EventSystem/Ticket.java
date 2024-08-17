@@ -4,17 +4,21 @@
  */
 package EventSystem;
 
+import EventSystem.Event;
+import java.util.Date;
+
 /**
  *
  * @author Clarist Liew
  */
-public class Ticket {
+public class Ticket extends Event {
     
     private String ticketID;
     private String ticketType;
     private double ticketPrice;
 
-    public Ticket(String ticketID, String ticketType, double ticketPrice) {
+    public Ticket(String eventID, String eventName, Date date, String time,  String location,String ticketID, String ticketType, double ticketPrice) {
+        super(eventID,eventName,date,time,location);
         this.ticketID = ticketID;
         this.ticketType = ticketType;
         this.ticketPrice = ticketPrice;
@@ -43,6 +47,11 @@ public class Ticket {
     public void setTicketPrice(double ticketPrice) {
         this.ticketPrice = ticketPrice;
     }
+    
+    @Override
+    public String toString(){
+        return super.toString() + "\n" + "Ticket ID: " +ticketID + "\n" + "Ticket Type: " +ticketType + "\n" +"Ticket Amount: RM" +ticketPrice;
+    } 
     
     
     
