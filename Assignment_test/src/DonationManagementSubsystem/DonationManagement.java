@@ -11,7 +11,6 @@ import DonorSubsystem.Donor;
 import DonorSubsystem.Individual;
 import DonorSubsystem.Organization;
 
-
 import DonationList.Item;
 import DonationList.Bank;
 import DonationList.Cash;
@@ -25,6 +24,7 @@ import DonationList.Pant;
 import DonationList.Shirt;
 import DonationList.Shoes;
 import DonationList.Socks;
+import DonationList.ManageItem;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -255,42 +255,9 @@ public class DonationManagement {
         return intInput;
     }
     
-    public static String idGenerator(String ab, String fileName){
-        int lineCount = 0;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            while ((br.readLine()) != null) {
-                lineCount++;
-            }
-        } catch (IOException e) {
-            
-        }
+    public static String idGenerator(String ab, LinkedList<Item> list){
         
-        return (ab + String.format("%05d", lineCount + 1));
-    }
-    
-    public static boolean fileNotEmpty(String filePath){
-        File file = new File(filePath);
-        
-        if (file.length() == 0){
-            return false; // file is empty
-        }else{
-            return true; // file not empty
-        }
-    }
-    
-    public static LinkedList<Item> loadFileIntoList(String filePath){
-        LinkedList<Item> list = new LinkedList();
-        File file = new File(filePath);
-        
-        boolean notEmpty = fileNotEmpty(filePath);
-        if(notEmpty == true){
-            list.loadFromFile(filePath);
-        }else{
-            System.out.println(ANSI_RED + "This file is empty." + ANSI_RESET);
-        }
-        
-        return list;
+        return (ab + String.format("%05d", list.length() + 1));
     }
     
     // -------------------------
@@ -488,12 +455,11 @@ public class DonationManagement {
                 default:
                     System.out.println(ANSI_RED + "Invalid choice." + ANSI_RESET);
             }
-            
-            //show all item to be added
-            System.out.println("Item to be add:");
-            newItemList.show();
-            
         }
+            
+        //show all item to be added
+        System.out.println("Item to be add:");
+        newItemList.show();
     }
     
     public static void inputMoney(LinkedList<Item> newItemList, int itemCat){
@@ -533,9 +499,6 @@ public class DonationManagement {
         }
         
         if (itemCat == 1){
-        
-            // id
-            String id = idGenerator("MB", BANK_PATH);
         
             // bank name
             System.out.println("\nBank Type");
@@ -580,21 +543,27 @@ public class DonationManagement {
                     System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
             }
 
-            Bank tempBank = new Bank(id, amt, bankName);
             
-            LinkedList<Bank> list = new LinkedList();
+            LinkedList<Item> list = new LinkedList();
+            list.loadFromFile(BANK_PATH);
+        
+            // id
+            String id = idGenerator("MB", list);
+            
+            Bank tempBank = new Bank(id, amt, bankName);
             list.insert(tempBank);
             list.saveToFile(BANK_PATH);
             
             newItemList.insert(tempBank);
         
         }else{
+            LinkedList<Item> list = new LinkedList();
+            list.loadFromFile(CASH_PATH);
+            
             // id
-            String id = idGenerator("MC", CASH_PATH);
+            String id = idGenerator("MC", list);
             
             Cash tempCash = new Cash(id, amt);
-
-            LinkedList<Cash> list = new LinkedList();
             list.insert(tempCash);
             list.saveToFile(CASH_PATH);
             
@@ -615,34 +584,28 @@ public class DonationManagement {
             "Essentials"};
         int foodCat = menuIntReturn(foodCatMenu);
         
-        String id = null;
         switch(foodCat){
             case 1: 
                 System.out.println("\nBaked Goods");
-                id = idGenerator("FA", BAKED_PATH);
                 break;
             case 2:
                 System.out.println("\nBoxed Goods");
-                id = idGenerator("FO", BOXED_PATH);
                 break;
             case 3:
                 System.out.println("\nCanned Food");
-                id = idGenerator("FC", CANNED_PATH);
                 break;
             case 4:
                 System.out.println("\nDry Goods");
-                id = idGenerator("FD", DRY_PATH);
                 break;
             case 5:
                 System.out.println("\nEssentials");
-                id = idGenerator("FE", ESS_PATH);
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid food category.\n" + ANSI_RESET);
                 break;
         }
         
-        commonItemInput(id, newItemList, foodCat, 1);
+        commonItemInput(newItemList, foodCat, 1);
         
     }
     
@@ -658,38 +621,32 @@ public class DonationManagement {
             "Socks"};
         int appCat = menuIntReturn(appCatMenu);
         
-        String id = null;
         switch(appCat){
             case 1: 
                 System.out.println("\nJacket");
-                id = idGenerator("AJ", JACKET_PATH);
                 break;
             case 2:
                 System.out.println("\nPant");
-                id = idGenerator("AP", PANT_PATH);
                 break;
             case 3:
                 System.out.println("\nShirt");
-                id = idGenerator("AI", SHIRT_PATH);
                 break;
             case 4:
                 System.out.println("\nShoes");
-                id = idGenerator("AO", SHOES_PATH);
                 break;
             case 5:
                 System.out.println("\nSocks");
-                id = idGenerator("AS", SOCKS_PATH);
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid food category.\n" + ANSI_RESET);
                 break;
         }
         
-        commonItemInput(id, newItemList, appCat, 2);
+        commonItemInput(newItemList, appCat, 2);
         
     }
     
-    public static void commonItemInput(String id, LinkedList<Item> newItemList, int detailCat, int itemCat){
+    public static void commonItemInput(LinkedList<Item> newItemList, int detailCat, int itemCat){
         
         Scanner scan = new Scanner(System.in);
         
@@ -739,17 +696,17 @@ public class DonationManagement {
         switch(itemCat){
             case 1:
                 // food
-                commonFoodInput(id, newItemList, detailCat, qty, note);
+                commonFoodInput(newItemList, detailCat, qty, note);
                 break;
             case 2:
                 // apparel
-                commonApparelInput(id, newItemList, detailCat, qty, note);
+                commonApparelInput(newItemList, detailCat, qty, note);
                 break;
         }
         
     }
     
-    public static void commonFoodInput(String id, LinkedList<Item> newItemList, int foodCat, int qty, String note){
+    public static void commonFoodInput(LinkedList<Item> newItemList, int foodCat, int qty, String note){
         Scanner scan = new Scanner(System.in);
         
         //expiryDate
@@ -853,54 +810,71 @@ public class DonationManagement {
                 System.out.println(ANSI_RED + "Invalid food status.\n" + ANSI_RESET);
         }
         
+        LinkedList<Item> list = new LinkedList();
+        String id = null;
         switch(foodCat){
             case 1: 
+                
+                list.loadFromFile(BAKED_PATH);
+                
+                id = idGenerator("FA", list);
                 String bakedName = inputBaked();
                 BakedGoods baG = new BakedGoods(id, qty, note, expiryDate, w, foodStaName, bakedName);
                 
-                LinkedList<BakedGoods> list = new LinkedList();
                 list.insert(baG);
                 list.saveToFile(BAKED_PATH);
             
                 newItemList.insert(baG);
                 break;
             case 2:
+                
+                list.loadFromFile(BOXED_PATH);
+                
+                id = idGenerator("FO", list);
                 String boxedName = inputBoxed();
                 BoxedGoods boG = new BoxedGoods(id, qty, note, expiryDate, w, foodStaName, boxedName);
                 
-                LinkedList<BoxedGoods> list1 = new LinkedList();
-                list1.insert(boG);
-                list1.saveToFile(BOXED_PATH);
+                list.insert(boG);
+                list.saveToFile(BOXED_PATH);
             
                 newItemList.insert(boG);
                 break;
             case 3:
+                
+                list.loadFromFile(CANNED_PATH);
+                
+                id = idGenerator("FC", list);
                 String cannedName = inputCanned();
                 CannedFood cF = new CannedFood(id, qty, note, expiryDate, w, foodStaName, cannedName);
                 
-                LinkedList<CannedFood> list2 = new LinkedList();
-                list2.insert(cF);
-                list2.saveToFile(CANNED_PATH);
+                list.insert(cF);
+                list.saveToFile(CANNED_PATH);
             
                 newItemList.insert(cF);
                 break;
             case 4:
+                
+                list.loadFromFile(DRY_PATH);
+                
+                id = idGenerator("FD", list);
                 String dryName = inputDry();
                 DryGoods dG = new DryGoods(id, qty, note, expiryDate, w, foodStaName, dryName);
                 
-                LinkedList<DryGoods> list3 = new LinkedList();
-                list3.insert(dG);
-                list3.saveToFile(DRY_PATH);
+                list.insert(dG);
+                list.saveToFile(DRY_PATH);
             
                 newItemList.insert(dG);
                 break;
             case 5:
+                
+                list.loadFromFile(ESS_PATH);
+                
+                id = idGenerator("FE", list);
                 String essName = inputEss();
                 Essentials eG = new Essentials(id, qty, note, expiryDate, w, foodStaName, essName);
-                
-                LinkedList<Essentials> list4 = new LinkedList();
-                list4.insert(eG);
-                list4.saveToFile(ESS_PATH);
+
+                list.insert(eG);
+                list.saveToFile(ESS_PATH);
             
                 newItemList.insert(eG);
                 break;
@@ -1064,7 +1038,7 @@ public class DonationManagement {
         return name;
     }
     
-    public static void commonApparelInput(String id, LinkedList<Item> newItemList, int appCat, int qty, String note){
+    public static void commonApparelInput(LinkedList<Item> newItemList, int appCat, int qty, String note){
         Scanner scan = new Scanner(System.in);
         
         // color
@@ -1157,50 +1131,67 @@ public class DonationManagement {
                 System.out.println(ANSI_RED + "Invalid apparel brand.\n" + ANSI_RESET);
         }
         
+        LinkedList<Item> list = new LinkedList();
+        String id = null;
         switch(appCat){
             case 1: 
+                
+                list.loadFromFile(JACKET_PATH);
+                
+                id = idGenerator("AJ", list);
                 Jacket j = new Jacket(id, qty, note, color, condition, brand);
                 
-                LinkedList<Jacket> list1 = new LinkedList();
-                list1.insert(j);
-                list1.saveToFile(JACKET_PATH);
+                list.insert(j);
+                list.saveToFile(JACKET_PATH);
             
                 newItemList.insert(j);
                 break;
             case 2: 
+                
+                list.loadFromFile(PANT_PATH);
+                
+                id = idGenerator("AP", list);
                 Pant p = new Pant(id, qty, note, color, condition, brand);
                 
-                LinkedList<Pant> list2 = new LinkedList();
-                list2.insert(p);
-                list2.saveToFile(PANT_PATH);
+                list.insert(p);
+                list.saveToFile(PANT_PATH);
             
                 newItemList.insert(p);
                 break;
             case 3: 
+                
+                list.loadFromFile(SHIRT_PATH);
+                
+                id = idGenerator("AI", list);
                 Shirt shirt = new Shirt(id, qty, note, color, condition, brand);
                 
-                LinkedList<Shirt> list3 = new LinkedList();
-                list3.insert(shirt);
-                list3.saveToFile(SHIRT_PATH);
+                list.insert(shirt);
+                list.saveToFile(SHIRT_PATH);
             
                 newItemList.insert(shirt);
                 break;
             case 4: 
+                
+                list.loadFromFile(SHOES_PATH);
+                
+                id = idGenerator("AO", list);
                 String detailType = inputShoes();
                 Shoes shoes = new Shoes(id, qty, note, color, condition, brand, detailType);
                 
-                LinkedList<Shoes> list4 = new LinkedList();
-                list4.insert(shoes);
-                list4.saveToFile(SHOES_PATH);
+                list.insert(shoes);
+                list.saveToFile(SHOES_PATH);
             
                 newItemList.insert(shoes);
                 break;
             case 5: 
+                
+                list.loadFromFile(SOCKS_PATH);
+                
+                id = idGenerator("AS", list);
                 Socks socks = new Socks(id, qty, note, color, condition, brand);
                 
-                LinkedList<Socks> list5 = new LinkedList();
-                list5.insert(socks);
-                list5.saveToFile(SOCKS_PATH);
+                list.insert(socks);
+                list.saveToFile(SOCKS_PATH);
             
                 newItemList.insert(socks);
                 break;
@@ -1233,51 +1224,196 @@ public class DonationManagement {
         
         switch(itemRem){
             case 1: 
-                remMoney(itemRem);
+                remItem(BANK_PATH, "MB");
                 break;
+            case 2:
+                remItem(CASH_PATH, "MC");
+                break;
+            case 3:
+                System.out.println("\nFood Category");
+                String[] foodCatMenu = {
+                    "Baked Goods", 
+                    "Boxed Goods", 
+                    "Canned Food", 
+                    "Dry Goods", 
+                    "Essentials"};
+                int foodCat = menuIntReturn(foodCatMenu);
+
+                switch(foodCat){
+                    case 1: 
+                        remItem(BAKED_PATH, "FA");
+                        break;
+                    case 2:
+                        remItem(BOXED_PATH, "FO");
+                        break;
+                    case 3:
+                        remItem(CANNED_PATH, "FC");
+                        break;
+                    case 4:
+                        remItem(DRY_PATH, "FD");
+                        break;
+                    case 5:
+                        remItem(ESS_PATH, "FE");
+                        break;
+                    default:
+                        System.out.println(ANSI_RED + "Invalid food category.\n" + ANSI_RESET);
+                        break;
+                }
+                break;
+            case 4:
+                System.out.println("\nApparel Category");
+                String[] appCatMenu = {
+                    "Jacket", 
+                    "Pant", 
+                    "Shirt", 
+                    "Shoes", 
+                    "Socks"};
+                int appCat = menuIntReturn(appCatMenu);
+
+                switch(appCat){
+                    case 1: 
+                        remItem(JACKET_PATH, "AJ");
+                        break;
+                    case 2:
+                        remItem(PANT_PATH, "AP");
+                        break;
+                    case 3:
+                        remItem(SHIRT_PATH, "AI");
+                        break;
+                    case 4:
+                        remItem(SHOES_PATH, "AO");
+                        break;
+                    case 5:
+                        remItem(SOCKS_PATH, "AS");
+                        break;
+                    default:
+                        System.out.println(ANSI_RED + "Invalid food category.\n" + ANSI_RESET);
+                        break;
+                }
         }
-        
     }
     
-    public static void remMoney(int moneyType){
+    public static void remItem(String filePath, String id){
         Scanner scan = new Scanner(System.in);
-        LinkedList<Item> list;
-        String id = null;
-        if(moneyType == 1){
-            list = loadFileIntoList(BANK_PATH);
-            id = "MB";
-        }else{
-            list = loadFileIntoList(CASH_PATH);
-            id = "MC";
-        }
+        ManageItem<Item> list = new ManageItem();
+        LinkedList<Item> sList = new LinkedList();
         
+        list.loadFromFile(filePath);
+        sList.loadFromFile(filePath);
+            
         if(list.isEmpty()){
             System.out.println(ANSI_RED + "The list is empty" + ANSI_RESET);
         }else{
-            list.removeIf(item -> item.toString().trim().isEmpty()); // remove empty or space
+            sList.removeIf(item -> item.toString().trim().isEmpty()); // remove empty or space
             
-            list.show();
-            System.out.println("\nWhich item do you wish to remove? Enter ID: ");
-            String inputID = scan.nextLine();
+            sList.show();
+            System.out.print("\nWhich item do you wish to remove?\n"
+                    + "Enter ID: ");
+            boolean validID = false;
             
-            if(inputID.isEmpty()){
-                System.out.println(ANSI_RED + "Cannot leave blank." + ANSI_RESET);
-            }else {
-                inputID = inputID.substring(0,2).toUpperCase() + inputID.substring(2, 7);
-                            
-                if(!(inputID.length() == 7) && !(id.equalsIgnoreCase(id.substring(0, 2)))){
-                    System.out.println(ANSI_RED + "Invalid format. The format should be " + id + "00000." + ANSI_RESET);
-                }else{
-                    // check if this id exist
-                    
+            while(validID == false){
+            
+                String inputID = scan.nextLine();
+
+                if(inputID.isEmpty()){
+                    System.out.println(ANSI_RED + "Cannot leave blank." + ANSI_RESET);
+                    System.out.print("\nEnter again: ");
+                }else {
+
+                    if( inputID.length() != 7 ){
+                        System.out.println(ANSI_RED + "Invalid length. The length should be 7 and format "+ id + "00000." + ANSI_RESET);
+                        System.out.print("\nEnter again: ");
+                    } else{
+                        
+                        inputID = inputID.substring(0,2).toUpperCase() + inputID.substring(2, 7);
+                        if (!(id.equalsIgnoreCase(inputID.substring(0, 2)))){
+                            System.out.println(ANSI_RED + "Invalid format. The format should be " + id + "00000." + ANSI_RESET);
+                            System.out.print("\nEnter again: ");
+                        }else{
+                            // valid format, check if this id exist, remove if yes
+                            Item item = list.findById(inputID);
+                            if (item != null){
+                                // item found
+                                // delete from list
+                                list.deleteById(inputID);
+                                validID = true;
+                            }else{
+                                System.out.println(ANSI_RED + "Item does not exist." + ANSI_RESET);
+                                System.out.print("\nEnter again: ");
+                            }
+                        }
+                    }
                 }
-            } 
+            
+            }
+            
+            list.saveToFile(filePath);
         }
         
     }
     
     // Part 3: Search donation details
-    public static void searchDonation(){}
+    public static void searchDonation(){
+        Scanner scan = new Scanner(System.in);
+        System.out.print("\nWhich item do you wish to search?\n"
+                + "Enter ID: ");
+        boolean validID = false;
+
+        while(validID == false){
+
+            String inputID = scan.nextLine();
+
+            if(inputID.isEmpty()){
+                System.out.println(ANSI_RED + "Cannot leave blank." + ANSI_RESET);
+                System.out.print("\nEnter again: ");
+            }else {
+
+                if( inputID.length() != 7 ){
+                    System.out.println(ANSI_RED + "Invalid length. The length should be 7 and format AA00000." + ANSI_RESET);
+                    System.out.print("\nEnter again: ");
+                } else{
+
+                    inputID = inputID.substring(0,2).toUpperCase() + inputID.substring(2, 7);
+                    if (    !("MB".equalsIgnoreCase(inputID.substring(0, 2))) ||
+                            !("MC".equalsIgnoreCase(inputID.substring(0, 2))) ||
+                            !("FA".equalsIgnoreCase(inputID.substring(0, 2))) ||
+                            !("FO".equalsIgnoreCase(inputID.substring(0, 2))) ||
+                            !("FC".equalsIgnoreCase(inputID.substring(0, 2))) ||
+                            !("FD".equalsIgnoreCase(inputID.substring(0, 2))) ||
+                            !("FE".equalsIgnoreCase(inputID.substring(0, 2))) ||
+                            !("AJ".equalsIgnoreCase(inputID.substring(0, 2))) ||
+                            !("AP".equalsIgnoreCase(inputID.substring(0, 2))) ||
+                            !("AI".equalsIgnoreCase(inputID.substring(0, 2))) ||
+                            !("AO".equalsIgnoreCase(inputID.substring(0, 2))) ||
+                            !("AS".equalsIgnoreCase(inputID.substring(0, 2))) ){
+                        System.out.println(ANSI_RED + "Invalid format. The format should be AA00000." + ANSI_RESET);
+                        System.out.print("\nEnter again: ");
+                    }else{
+                        
+                        String id = inputID.substring(0, 2);
+                        String filePath = null;
+                        
+                        switch(id){
+                            case "MB":
+                                filePath = BANK_PATH;
+                        }
+                        
+                        // valid format, check if this id exist, remove if yes
+                        ManageItem<Item> list = new ManageItem();
+                        list.loadFromFile(filePath);
+                        Item item = list.findById(inputID);
+                        if (item != null){
+                            // show that particular item
+                        }else{
+                            System.out.println(ANSI_RED + "Item does not exist." + ANSI_RESET);
+                            System.out.print("\nEnter again: ");
+                        }
+                    }
+                }
+            }
+
+        }
+    }
     
     // Part 4: Amend donation details
     public static void amendDonation(){}
