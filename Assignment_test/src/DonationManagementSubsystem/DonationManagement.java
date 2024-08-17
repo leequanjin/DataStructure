@@ -269,6 +269,30 @@ public class DonationManagement {
         return (ab + String.format("%05d", lineCount + 1));
     }
     
+    public static boolean fileNotEmpty(String filePath){
+        File file = new File(filePath);
+        
+        if (file.length() == 0){
+            return false; // file is empty
+        }else{
+            return true; // file not empty
+        }
+    }
+    
+    public static LinkedList<Item> loadFileIntoList(String filePath){
+        LinkedList<Item> list = new LinkedList();
+        File file = new File(filePath);
+        
+        boolean notEmpty = fileNotEmpty(filePath);
+        if(notEmpty == true){
+            list.loadFromFile(filePath);
+        }else{
+            System.out.println(ANSI_RED + "This file is empty." + ANSI_RESET);
+        }
+        
+        return list;
+    }
+    
     // -------------------------
     // Part 1: Add new donation
     // -------------------------
@@ -1202,7 +1226,55 @@ public class DonationManagement {
     }
     
     // Part 2: Remove a donation
-    public static void remDonation(){}
+    public static void remDonation(){
+        System.out.println("\nItem to remove:");
+        String[] itemRemoveMenu = {"Bank", "Cash", "Food", "Apparel"};
+        int itemRem = menuIntReturn(itemRemoveMenu);
+        
+        switch(itemRem){
+            case 1: 
+                remMoney(itemRem);
+                break;
+        }
+        
+    }
+    
+    public static void remMoney(int moneyType){
+        Scanner scan = new Scanner(System.in);
+        LinkedList<Item> list;
+        String id = null;
+        if(moneyType == 1){
+            list = loadFileIntoList(BANK_PATH);
+            id = "MB";
+        }else{
+            list = loadFileIntoList(CASH_PATH);
+            id = "MC";
+        }
+        
+        if(list.isEmpty()){
+            System.out.println(ANSI_RED + "The list is empty" + ANSI_RESET);
+        }else{
+            list.removeIf(item -> item.toString().trim().isEmpty()); // remove empty or space
+            
+            list.show();
+            System.out.println("\nWhich item do you wish to remove? Enter ID: ");
+            String inputID = scan.nextLine();
+            
+            if(inputID.isEmpty()){
+                System.out.println(ANSI_RED + "Cannot leave blank." + ANSI_RESET);
+            }else {
+                inputID = inputID.substring(0,2).toUpperCase() + inputID.substring(2, 7);
+                            
+                if(!(inputID.length() == 7) && !(id.equalsIgnoreCase(id.substring(0, 2)))){
+                    System.out.println(ANSI_RED + "Invalid format. The format should be " + id + "00000." + ANSI_RESET);
+                }else{
+                    // check if this id exist
+                    
+                }
+            } 
+        }
+        
+    }
     
     // Part 3: Search donation details
     public static void searchDonation(){}
