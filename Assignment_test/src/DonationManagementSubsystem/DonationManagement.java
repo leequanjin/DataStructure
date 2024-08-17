@@ -164,6 +164,11 @@ public class DonationManagement {
         chkFileExist(CANNED_PATH);
         chkFileExist(DRY_PATH);
         chkFileExist(ESS_PATH);
+        chkFileExist(JACKET_PATH);
+        chkFileExist(PANT_PATH);
+        chkFileExist(SHIRT_PATH);
+        chkFileExist(SHOES_PATH);
+        chkFileExist(SOCKS_PATH);
     }
     
     // Create file if file not exist
@@ -809,7 +814,7 @@ public class DonationManagement {
         
         //status
         System.out.println("\nFood Status");
-        String[] foodStatusMenu = {"Good", "Spoil", "Expired"};
+        String[] foodStatusMenu = {"Good", "Spoil"};
         int foodSta = menuIntReturn(foodStatusMenu);
         
         String foodStaName = null;
@@ -819,9 +824,6 @@ public class DonationManagement {
                 break;
             case 2:
                 foodStaName = "Spoil";
-                break;
-            case 3:
-                foodStaName = "Expired";
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid food status.\n" + ANSI_RESET);
