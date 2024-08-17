@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.function.Predicate;
 
 /**
  * Reference https://www.youtube.com/watch?v=SMIq13-FZSE&t=1s
@@ -128,6 +129,26 @@ public class LinkedList<T> {
             }
         }
     }
+    
+    // Method to remove elements based on a condition
+    public void removeIf(Predicate<T> filter) {
+        Node<T> current = head;
+
+        while (current != null) {
+            Node<T> next = current.next;
+            if (filter.test(current.data)) {
+                if (current == head) {
+                    deleteAtStart();
+                } else if (current == tail) {
+                    delete();
+                } else {
+                    current.previous.next = current.next; // Update previous node pointer to point to the correct next node
+                    current.next.previous = current.previous; // Update next node previous pointer to point to the correct previous pointer
+                }
+            }
+            current = next;
+        }
+    }
 
     // Method to print out all nodes in the list
     public void show() {
@@ -179,6 +200,23 @@ public class LinkedList<T> {
         }
 
         return filteredList;
+    }
+    
+    // Method to return linkedlist length
+    public int length(){
+        int count = 0;
+        Node current = head;
+        
+        if(head == null){
+            return 0;
+        }
+        
+        while(current != null){
+            count ++;
+            current = current.next;
+        }
+        
+        return count;
     }
 
     // Method to check if the linked list is empty
