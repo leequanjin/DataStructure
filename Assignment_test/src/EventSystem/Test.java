@@ -4,7 +4,7 @@
  */
 package EventSystem;
 
-import EventSystem.Event;
+
 import CommonResources.LinkedList;
 import CommonResources.Node;
 
