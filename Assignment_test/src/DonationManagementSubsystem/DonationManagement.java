@@ -1445,7 +1445,10 @@ public class DonationManagement {
     }
     
     // Part 4: Amend donation details
-    public static void amendDonation(){}
+    public static void amendDonation(){
+        System.out.println("Which kind of item you would like to amend?");
+        System.out.print("Enter item ID: ");
+    }
     
     // Part 5: Track donated items in categories
     public static void trackItemByCategory(){}
