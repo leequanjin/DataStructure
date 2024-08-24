@@ -4,8 +4,8 @@
  */
 package DoneeSubsystem;
 
-import CommonResources.Node;
 import CommonResources.LinkedList;
+import CommonResources.Node;
 
 /**
  *
@@ -36,6 +36,7 @@ public class ManageDonees<T extends Donee> extends LinkedList<T> {
         }
     }
 
+    // Method to find and return a donee by ID
     public Donee findById(String id) {
         Node<T> current = head; // Start from the head of the list
 
@@ -48,24 +49,9 @@ public class ManageDonees<T extends Donee> extends LinkedList<T> {
         return null; // Donor not found
     }
 
-    // Method to replace an element
-    public void replace(T oldEntry, T newEntry) {
-        Node<T> current = head;
-
-        while (current != null) {
-            if (current.data.equals(oldEntry)) {
-                current.data = newEntry;
-                break;
-            } else {
-                current = current.next;
-            }
-        }
-    }
-
     public Donee changeToIndividual(Donee donee) {
         Individual individualDonee = new Individual(donee.getId(), donee.getName());
         return individualDonee;
-
     }
 
     public Donee changeToFamily(Donee donee) {

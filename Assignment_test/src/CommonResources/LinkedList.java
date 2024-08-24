@@ -20,13 +20,14 @@ import java.util.function.Predicate;
  * @author Lee Quan Jin
  * @param <T>
  */
-public class LinkedList<T> {
+public class LinkedList<T> implements LinkedListInterface<T> {
 
     public Node<T> head;
     public Node<T> tail;
 
     // Method to insert data at the end of the list 
     // Time Complexity : O(1)
+    @Override
     public void insert(T data) {
         Node node = new Node(data);
 
@@ -41,6 +42,7 @@ public class LinkedList<T> {
 
     // Method to insert data at the start of the list
     // Time Complexity : O(1)
+    @Override
     public void insertAtStart(T data) {
         Node node = new Node(data);
 
@@ -55,17 +57,22 @@ public class LinkedList<T> {
 
     // Method to insert data at a specific index of the list
     // Time Complexity : O(n)
+    @Override
     public void insertAt(int index, T data) {
         Node node = new Node(data);
         Node current = head;
 
-        if (index < 0) throw new IndexOutOfBoundsException("Invalid index");
-        
+        if (index < 0) {
+            throw new IndexOutOfBoundsException("Invalid index");
+        }
+
         if (index == 0) {
             insertAtStart(data);
         } else {
             for (int i = 0; i < index - 1; i++) {
-                if (current == null) throw new IndexOutOfBoundsException("Invalid index");
+                if (current == null) {
+                    throw new IndexOutOfBoundsException("Invalid index");
+                }
                 current = current.next;
             }
             node.next = current.next;
@@ -82,6 +89,7 @@ public class LinkedList<T> {
 
     // Method to delete data at the end of the list
     // Time Complexity : O(1)
+    @Override
     public void delete() {
         if (tail == null) {
             // Empty List
@@ -95,6 +103,7 @@ public class LinkedList<T> {
 
     // Method to delete data at the start of the list
     // Time Complexity : O(1)
+    @Override
     public void deleteAtStart() {
         if (head == null) {
             // Empty List
@@ -108,17 +117,22 @@ public class LinkedList<T> {
 
     // Method to delete data at a specific index of the list
     // Time Complexity : O(n)
+    @Override
     public void deleteAt(int index) {
-        if (index < 0 || head == null) throw new IndexOutOfBoundsException("Invalid index");
-        
+        if (index < 0 || head == null) {
+            throw new IndexOutOfBoundsException("Invalid index");
+        }
+
         if (index == 0) {
             deleteAtStart();
         } else {
             Node current = head;
-            
+
             for (int i = 0; i < index; i++) {
-                if (current == null) throw new IndexOutOfBoundsException("Invalid index");
-                    current = current.next;
+                if (current == null) {
+                    throw new IndexOutOfBoundsException("Invalid index");
+                }
+                current = current.next;
             }
 
             if (current == tail) {
@@ -129,8 +143,9 @@ public class LinkedList<T> {
             }
         }
     }
-    
+
     // Method to remove elements based on a condition
+    @Override
     public void removeIf(Predicate<T> filter) {
         Node<T> current = head;
 
@@ -151,6 +166,7 @@ public class LinkedList<T> {
     }
 
     // Method to print out all nodes in the list
+    @Override
     public void show() {
         Node current = head;
 
@@ -165,6 +181,7 @@ public class LinkedList<T> {
     }
 
     // Method to save the linked list to a file
+    @Override
     public void saveToFile(String filename) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             Node current = head;
@@ -177,6 +194,7 @@ public class LinkedList<T> {
     }
 
     // Method to load the linked list from a file
+    @Override
     public void loadFromFile(String filename) {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
             T obj;
@@ -188,6 +206,7 @@ public class LinkedList<T> {
     }
 
     // Method to return a filtered linked list
+    @Override
     public LinkedList filterByCategory(Class categoryClass) {
         LinkedList filteredList = new LinkedList<>();
         Node current = head;
@@ -201,25 +220,42 @@ public class LinkedList<T> {
 
         return filteredList;
     }
-    
+
+    // Method to replace an element
+    @Override
+    public void replace(T oldEntry, T newEntry) {
+        Node<T> current = head;
+
+        while (current != null) {
+            if (current.data.equals(oldEntry)) {
+                current.data = newEntry;
+                break;
+            } else {
+                current = current.next;
+            }
+        }
+    }
+
     // Method to return linkedlist length
-    public int length(){
+    @Override
+    public int length() {
         int count = 0;
         Node current = head;
-        
-        if(head == null){
+
+        if (head == null) {
             return 0;
         }
-        
-        while(current != null){
-            count ++;
+
+        while (current != null) {
+            count++;
             current = current.next;
         }
-        
+
         return count;
     }
 
     // Method to check if the linked list is empty
+    @Override
     public boolean isEmpty() {
         return head == null;
     }

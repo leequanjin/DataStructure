@@ -40,9 +40,8 @@ abstract class Donee implements Serializable {
 
     @Override
     public String toString() {
-        return "ID  : " + getId()
+        return "\nID  : " + getId()
                 + "\nName: " + getName()
-                + "\nType: " + getType()
-                + "\n";
+                + "\nType: " + getType();
     }
 }
