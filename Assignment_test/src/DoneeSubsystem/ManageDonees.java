@@ -12,7 +12,7 @@ import CommonResources.LinkedList;
  * @author Lee Quan Jin
  * @param <T>
  */
-public class ManageDonees<T extends Donee> extends LinkedList<T>{
+public class ManageDonees<T extends Donee> extends LinkedList<T> {
 
     // Method to delete data by ID
     public void deleteById(String id) {
@@ -34,5 +34,47 @@ public class ManageDonees<T extends Donee> extends LinkedList<T>{
                 // ID not found
             }
         }
+    }
+
+    public Donee findById(String id) {
+        Node<T> current = head; // Start from the head of the list
+
+        while (current != null) {
+            if (current.data.getId().equals(id)) {
+                return current.data; // Donor found
+            }
+            current = current.next; // Move to the next node
+        }
+        return null; // Donor not found
+    }
+
+    // Method to replace an element
+    public void replace(T oldEntry, T newEntry) {
+        Node<T> current = head;
+
+        while (current != null) {
+            if (current.data.equals(oldEntry)) {
+                current.data = newEntry;
+                break;
+            } else {
+                current = current.next;
+            }
+        }
+    }
+
+    public Donee changeToIndividual(Donee donee) {
+        Individual individualDonee = new Individual(donee.getId(), donee.getName());
+        return individualDonee;
+
+    }
+
+    public Donee changeToFamily(Donee donee) {
+        Family familyDonee = new Family(donee.getId(), donee.getName());
+        return familyDonee;
+    }
+
+    public Donee changeToOrganization(Donee donee) {
+        Individual individualDonee = new Individual(donee.getId(), donee.getName());
+        return individualDonee;
     }
 }
