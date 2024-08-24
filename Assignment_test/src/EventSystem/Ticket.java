@@ -48,6 +48,11 @@ public class Ticket extends Event {
     }
     
     @Override
+    public String getType() {
+        return "Ticket";
+    }
+    
+    @Override
     public String toString(){
         return super.toString() + "\n" + "Ticket ID: " +ticketID + "\n" + "Ticket Type: " +ticketType + "\n" +"Ticket Amount: RM" +ticketPrice;
     } 

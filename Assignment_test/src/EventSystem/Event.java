@@ -4,14 +4,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-public class Event implements Serializable {
+public abstract class Event implements Serializable {
     private String eventID;
     private String eventName;
     private Date date;
     private String time;
     private String location;
-//    private String ticket;
-//    private String sponsorship;
+
     
 
     
@@ -21,9 +20,7 @@ public class Event implements Serializable {
         this.date = date;
         this.time = time;
         this.location = location;
-//        this.ticket = ticket;
-//        this.sponsorship = sponsorship;
-        
+
     }
 
     public String getEventID() {
@@ -65,28 +62,15 @@ public class Event implements Serializable {
     public void setLocation(String location) {
         this.location = location;
     }
+    
+    public abstract String getType();
 
-//    public String getTicket() {
-//        return ticket;
-//    }
-//
-//    public void setTicket(String ticket) {
-//        this.ticket = ticket;
-//    }
-//
-//    public String getSponsorship() {
-//        return sponsorship;
-//    }
-//
-//    public void setSponsorship(String sponsorship) {
-//        this.sponsorship = sponsorship;
-//    }
 
     @Override
     public String toString() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String dateString = formatter.format(date);
-    return "Event Name: " + eventName + '\n' + "Date: " + dateString + '\n' + "Time: " + time + '\n' + "Location: " + location ;
+    return "Event Name: " + eventName + '\n' + "Date: " + dateString + '\n' + "Time: " + time + '\n' + "Location: " + location + '\n' + "Type: " +getType();
     }
 }    
 

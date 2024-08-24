@@ -48,7 +48,10 @@ public class Sponsorship extends Event {
         this.sponsorAmount = sponsorAmount;
     }
     
-    
+    @Override
+    public String getType() {
+        return "Sponsorship";
+    }
    @Override
     public String toString(){
         return super.toString() + "\n" + "Sponsor ID: " +sponsorID + "\n" + "Sponsor Name: " +sponsorName + "\n" +"Sponsor Amount: RM" +sponsorAmount;
