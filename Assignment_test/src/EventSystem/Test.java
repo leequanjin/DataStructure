@@ -585,6 +585,7 @@ public static void updateEvent() {
     }
 
     private static void filterEvents() {
+        System.out.println("Hello");
         
     }
 
