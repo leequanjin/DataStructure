@@ -12,13 +12,17 @@ import DonorSubsystem.Individual;
 import DonorSubsystem.Organization;
 
 import DonationList.Item;
+import DonationList.Money;
 import DonationList.Bank;
 import DonationList.Cash;
+import DonationList.PhysicalItem;
+import DonationList.Food;
 import DonationList.BakedGoods;
 import DonationList.BoxedGoods;
 import DonationList.CannedFood;
 import DonationList.DryGoods;
 import DonationList.Essentials;
+import DonationList.Apparel;
 import DonationList.Jacket;
 import DonationList.Pant;
 import DonationList.Shirt;
@@ -195,7 +199,7 @@ public class DonationManagement {
 
         while (!validInput) {
 
-            input = (scan.nextLine()).toUpperCase();
+            input = (scan.nextLine()).toUpperCase().trim();
             
             if (input.equals("Y")) {
                 validInput = true;
@@ -1515,6 +1519,7 @@ public class DonationManagement {
                         Item item = list.findById(inputID);
                         if (item != null) {
                             // show that particular item
+                            System.out.println("\nItem Details: ");
                             System.out.println(item.toString());
                             validID = true; // Assuming you want to exit the loop after a successful search
                         } else {
@@ -1534,7 +1539,7 @@ public class DonationManagement {
     public static void amendDonation(){
         Scanner scan = new Scanner(System.in);
         
-        System.out.println("Which kind of item you would like to amend?");
+        System.out.println("What kind of item you would like to amend?");
         System.out.print("Enter item ID: ");
         boolean validID = false;
 
@@ -1548,12 +1553,12 @@ public class DonationManagement {
         String prefix = id.substring(0, 2).toUpperCase();
         String filePath = null;
         String[] amendList = null;
-        String[] cloth = new String[]{"Type", "Quantity", "Remarks", "Color", "Condition", "Brand"};
-        String[] food = new String[]{"Type", "Quantity", "Remarks", "Expiry date", "Weight", "Status", "Details"};
+        String[] cloth = new String[]{"Quantity", "Remarks", "Color", "Condition", "Brand"};
+        String[] food = new String[]{"Quantity", "Remarks", "Expiry date", "Weight", "Status", "Food Details"};
         switch (prefix) {
             case "MB":
                 filePath = BANK_PATH;
-                amendList = new String[]{"Type", "Amount"};
+                amendList = new String[]{"Amount", "Bank Type"};
                 break;
             case "MC":
                 filePath = CASH_PATH;
@@ -1593,7 +1598,7 @@ public class DonationManagement {
                 break;
             case "AO":
                 filePath = SHOES_PATH;
-                amendList = new String[]{"Type", "Quantity", "Remarks", "Color", "Condition", "Brand", "Details"};
+                amendList = new String[]{"Quantity", "Remarks", "Color", "Condition", "Brand", "Shoes Details"};
                 break;
             case "AS":
                 filePath = SOCKS_PATH;
@@ -1607,16 +1612,102 @@ public class DonationManagement {
         list.loadFromFile(filePath);
         Item item = list.findById(id);
         if (item != null) {
-            // show that particular item
-            System.out.println("Item to be edit: ");
-            System.out.println(item.toString());
-        } else {
-            System.out.println(ANSI_RED + "Item does not exist or had been deleted." + ANSI_RESET);
-            System.out.print("\nEnter again: ");
-        }
         
-        System.out.println("Option available");
-        int amendOption = menuIntReturn(amendList);
+            System.out.println("\nOption available");
+            int amendOption = menuIntReturn(amendList);
+            
+            if (item instanceof Money){
+                
+                if (amendOption == 1){
+                    double amt = amountValidation();
+                    ((Money) item).setAmount(amt);
+                }
+                
+                if (item instanceof Bank){
+                    if(amendOption == 2){
+                        String bankType = bankTypeValidation();
+                        ((Bank) item).setBankName(bankType);
+                    }
+                }
+            }else if(item instanceof PhysicalItem){
+                
+                if (amendOption == 1){
+                    int qty = qtyValidation();
+                    ((PhysicalItem) item).setQty(qty);
+                }else if(amendOption == 2){
+                    System.out.print("Remarks: ");
+                    String note = scan.nextLine();
+                    ((PhysicalItem) item).setNote(note);
+                }
+                
+                if (item instanceof Food){
+                    if (amendOption == 3){
+                        System.out.print("Expiry Date (dd/mm/yyyy)*: ");
+                        Date expiryDate = null;
+                        boolean validExp = false;
+
+                        while(validExp == false){
+                            String exp = scan.nextLine();
+
+                            if (exp.isEmpty()){
+
+                                System.out.println(ANSI_RED + "Expiry date cannot leave blank.\n" + ANSI_RESET);
+                                System.out.print("Enter again: ");
+
+                            } else{
+
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                                dateFormat.setLenient(false); 
+
+                                try {
+
+                                    expiryDate = dateFormat.parse(exp);
+
+                                    Date today = new Date();
+
+                                    if (expiryDate.before(today)) {
+
+                                        System.out.println(ANSI_RED + "The food had expired.\n" + ANSI_RESET);
+                                        String[] menu = {"Enter again", "Discard"};
+                                        int selection = menuIntReturn(menu);
+
+                                        if(selection == 1){
+                                            System.out.print("Enter date again: ");
+                                        }else{
+                                            boolean cont = YN("Do you want to continue amend item?");
+                                            if (cont == true){
+                                                amendDonation();
+                                            }else{
+                                                break;
+                                            }
+                                        }
+
+                                    } else {
+                                        validExp = true;
+                                    }
+
+                                } catch (ParseException e) {
+                                    System.out.println("Invalid date format. Please enter the date in dd/MM/yyyy format.");
+                                    System.out.print("Enter date again: ");
+                                }
+
+                            }
+                        }
+                        
+                    }
+                }
+                
+                if (item instanceof Apparel){
+                    if (amendOption == 3){
+                        String color = colorValidation();
+                        ((Apparel) item).setColor(color);
+                    }
+                
+                }
+                
+            }
+            
+        }
         
     }
     
