@@ -1821,7 +1821,35 @@ public class DonationManagement {
     // -----------------------------------------
     // Part 5: Track donated items in categories
     // -----------------------------------------
-    public static void trackItemByCategory(){}
+    public static void trackItemByCategory(){
+        System.out.println("Which category of item do you wish to track?");
+        String[] itemCatMenu = {"Money", "Physical Item", "More details selection"};
+        int itemCat = menuIntReturn(itemCatMenu);
+        
+        ManageItem<Item> list = new ManageItem<>();
+        String[] appendList = null;
+        switch(itemCat){
+            case 1: 
+                appendList = new String[]{"BANK_PATH", "CASH_PATH"};
+                break;
+            case 2:
+                list.loadFromFile(CASH_PATH);
+                break;
+        }
+        
+        if(appendList != null){
+            list.loadFromFile(appendList[0]);
+            
+            LinkedList currentList = new LinkedList();
+            for (int i = 1; i < appendList.length; i++){
+                currentList.loadFromFile(appendList[i]);
+                list.appendList(currentList);
+                
+            }
+            
+            System.out.println(list.toString());
+        }
+    }
     
     // ----------------------------------------
     // Part 6: List donation by different donor
