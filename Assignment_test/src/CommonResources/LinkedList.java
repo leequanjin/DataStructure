@@ -267,6 +267,8 @@ public class LinkedList<T> implements LinkedListInterface<T> {
     public void appendList(LinkedList anotherList){
         
         if(!isEmpty()){
+            
+            // check whether first node is empty, if empty, search for the first node that is not empty
             Node<T> currentNode = head;
             if (head == null){
                 while(currentNode == null){
@@ -282,6 +284,12 @@ public class LinkedList<T> implements LinkedListInterface<T> {
 
                 currentNode = currentNode.next;
 
+            }
+            
+            if (currentNode == tail){
+                if(currentNode == null){
+                    
+                }
             }
             
             this.tail.next = anotherList.head.previous;
