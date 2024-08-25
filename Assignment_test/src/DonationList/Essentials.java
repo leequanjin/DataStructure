@@ -15,8 +15,8 @@ public class Essentials extends Food {
     public Essentials(){
     }
     
-    public Essentials(String id, int qty, String note, Date expiryDate, int weight, String status, String detail){
-        super(id, qty, note, expiryDate, weight, status, detail);
+    public Essentials(String id, String donorID, int qty, String note, Date expiryDate, int weight, String status, String detail){
+        super(id, donorID, qty, note, expiryDate, weight, status, detail);
     }
     
     @Override

@@ -52,9 +52,11 @@ public class ManageItem<T extends Item> extends LinkedList<T> {
         String result = "";
         
         Node<T> current = head;
+        int i = 1;
         while (current != null) {
-            result += ((current.data.toString()) + ("\n"));
+            result += ( i + ".\n" + (current.data.toString()) + ("\n\n"));
             current = current.next;
+            i++;
         }
         
         return result.toString();

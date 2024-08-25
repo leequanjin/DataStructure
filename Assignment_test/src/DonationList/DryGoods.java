@@ -15,8 +15,8 @@ public class DryGoods extends Food {
     public DryGoods(){
     }
     
-    public DryGoods(String id, int qty, String note, Date expiryDate, int weight, String status, String detail){
-        super(id, qty, note, expiryDate, weight, status, detail);
+    public DryGoods(String id, String donorID, int qty, String note, Date expiryDate, int weight, String status, String detail){
+        super(id, donorID, qty, note, expiryDate, weight, status, detail);
     }
     
     @Override

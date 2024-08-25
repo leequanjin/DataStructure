@@ -13,8 +13,8 @@ public class Money extends Item{
     
     public Money(){}
     
-    public Money(String id, double amount){
-        super(id);
+    public Money(String id, String donorID, double amount){
+        super(id, donorID);
         this.amount = amount;
     }
     

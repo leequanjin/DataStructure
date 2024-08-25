@@ -12,8 +12,8 @@ public class Pant extends Apparel{
     
     public Pant(){}
     
-    public Pant(String id, int qty, String note, String color, String condition, String brand){
-        super(id, qty, note, color, condition, brand);
+    public Pant(String id, String donorID, int qty, String note, String size, String color, String condition, String brand){
+        super(id, donorID, qty, note, size, color, condition, brand);
     }
     
     @Override

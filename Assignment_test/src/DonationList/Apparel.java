@@ -9,19 +9,28 @@ package DonationList;
  * @author Heng Pei Lin
  */
 public class Apparel extends PhysicalItem {
+    private String size;
     private String color;
     private String condition;
     private String brand;
     
-    
     public Apparel(){
     }
     
-    public Apparel(String id, int qty, String note, String color, String condition, String brand){
-        super(id, qty, note);
+    public Apparel(String id, String donorID, int qty, String note, String size, String color, String condition, String brand){
+        super(id, donorID, qty, note);
+        this.size = size;
         this.color = color;
         this.condition = condition;
         this.brand = brand;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 
     public String getColor() {
@@ -56,6 +65,7 @@ public class Apparel extends PhysicalItem {
     @Override
     public String toString(){
         return super.toString()
+                +"\nSize: " + size
                 +"\nColor: " + color
                 + "\nCondition: " + condition
                 + "\nBrand: " + brand;

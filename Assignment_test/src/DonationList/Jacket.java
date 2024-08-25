@@ -12,8 +12,8 @@ public class Jacket extends Apparel {
 
     public Jacket(){}
     
-    public Jacket(String id, int qty, String note, String color, String condition, String brand){
-        super(id, qty, note, color, condition, brand);
+    public Jacket(String id, String donorID, int qty, String note, String size, String color, String condition, String brand){
+        super(id, donorID, qty, note, size, color, condition, brand);
     }
     
     @Override

@@ -12,11 +12,13 @@ import java.io.Serializable;
  */
 public abstract class Item implements Serializable {
     String id;
+    String donorID;
     
     public Item(){}
     
-    public Item(String id){
+    public Item(String id, String donorID){
         this.id = id;
+        this.donorID = donorID;
     }
 
     public String getId() {
@@ -26,12 +28,21 @@ public abstract class Item implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
+
+    public String getDonorID() {
+        return donorID;
+    }
+
+    public void setDonorID(String donorID) {
+        this.donorID = donorID;
+    }
     
     public abstract String getType();
     
     @Override
     public String toString() {
-        return  "ID:" + id + 
-                "\nType:" + getType();
+        return  "Item ID: " + id +
+                "\nDonor ID: " + donorID + 
+                "\nType: " + getType();
     }
 }

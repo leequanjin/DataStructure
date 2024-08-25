@@ -14,8 +14,8 @@ public class PhysicalItem extends Item {
     
     public PhysicalItem(){}
     
-    public PhysicalItem(String id, int qty, String note){
-        super(id);
+    public PhysicalItem(String id, String donorID, int qty, String note){
+        super(id, donorID);
         this.qty = qty;
     }
     

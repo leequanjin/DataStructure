@@ -14,8 +14,8 @@ public class Bank extends Money {
     public Bank(){
     }
     
-    public Bank(String id, double amount, String bankName){
-        super(id, amount);
+    public Bank(String id, String donorID, double amount, String bankName){
+        super(id, donorID, amount);
         this.bankName = bankName;
     }
 
@@ -35,6 +35,6 @@ public class Bank extends Money {
     @Override
     public String toString(){
         return super.toString() + 
-                "\nBank Name:" + bankName;
+                "\nBank Name: " + bankName;
     }
 }

@@ -13,8 +13,8 @@ public class Shoes extends Apparel{
     
     public Shoes(){}
     
-    public Shoes(String id, int qty, String note, String color, String condition, String brand, String detail){
-        super(id, qty, note, color, condition, brand);
+    public Shoes(String id, String donorID, int qty, String note, String size, String color, String condition, String brand, String detail){
+        super(id, donorID, qty, note, size, color, condition, brand);
         this.detail = detail;
     }
 

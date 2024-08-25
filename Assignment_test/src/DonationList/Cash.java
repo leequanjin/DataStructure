@@ -12,8 +12,8 @@ public class Cash extends Money {
     public Cash(){
     }
     
-    public Cash(String id, double amount){
-        super(id, amount);
+    public Cash(String id, String donorID, double amount){
+        super(id, donorID, amount);
     }
     
     @Override
