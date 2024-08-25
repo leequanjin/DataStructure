@@ -73,8 +73,11 @@ public class DonationManagement {
         
         chkAllFileExist();
         //addRecord(); //alr store one individual and organisation in donor.txt
+        donationManagementMainMenu();
         
-        Scanner scan = new Scanner(System.in);
+    }
+    
+    public static void donationManagementMainMenu(){
         
         boolean contDM = true;
         
@@ -1376,14 +1379,17 @@ public class DonationManagement {
     
     public static void remItem(String filePath, String id){
         Scanner scan = new Scanner(System.in);
-        ManageItem<Item> list = new ManageItem();
         LinkedList<Item> sList = new LinkedList();
-        
-        list.loadFromFile(filePath);
         sList.loadFromFile(filePath);
             
-        if(list.isEmpty()){
-            System.out.println(ANSI_RED + "The list is empty" + ANSI_RESET);
+        if(sList.isEmpty()){
+            System.out.println(ANSI_RED + "The list is empty, no item exist in file." + ANSI_RESET);
+            boolean cont = YN("Do you want to continue remove other item?");
+            if (cont == true){
+                remDonation();
+            }else{
+                donationManagementMainMenu();
+            }
         }else{
             sList.removeIf(item -> item.toString().trim().isEmpty()); // remove empty or space
             
@@ -1412,14 +1418,11 @@ public class DonationManagement {
                             System.out.print("\nEnter again: ");
                         }else{
                             // valid format, check if this id exist, remove if yes
-                            Item item = list.findById(inputID);
-                            if (item != null){
-                                // item found
-                                // delete from list
-                                list.deleteById(inputID);
-                                validID = true;
-                            }else{
-                                System.out.println(ANSI_RED + "Item does not exist." + ANSI_RESET);
+                            ManageItem<Item> list = new ManageItem();
+
+                            list.loadFromFile(filePath);
+                            validID = removeByID(list, inputID, filePath);
+                            if (validID == false){
                                 System.out.print("\nEnter again: ");
                             }
                         }
@@ -1427,10 +1430,25 @@ public class DonationManagement {
                 }
             
             }
-            
-            list.saveToFile(filePath);
         }
         
+    }
+    
+    // make sure list available before enter function
+    public static boolean removeByID(ManageItem<Item> list, String id, String filePath){
+        Item item = list.findById(id);
+        if (item != null){
+            // item found
+            // delete from list
+            list.deleteById(id);
+
+            list.saveToFile(filePath);
+            return true;
+        }else{
+            System.out.println(ANSI_RED + "Item does not exist." + ANSI_RESET);
+        }
+        
+        return false;
     }
     
     // -------------------------------
@@ -1618,97 +1636,186 @@ public class DonationManagement {
             
             if (item instanceof Money){
                 
-                if (amendOption == 1){
-                    double amt = amountValidation();
-                    ((Money) item).setAmount(amt);
-                }
+                moneyAmend(amendOption, item);
                 
-                if (item instanceof Bank){
-                    if(amendOption == 2){
-                        String bankType = bankTypeValidation();
-                        ((Bank) item).setBankName(bankType);
-                    }
-                }
             }else if(item instanceof PhysicalItem){
                 
-                if (amendOption == 1){
-                    int qty = qtyValidation();
-                    ((PhysicalItem) item).setQty(qty);
-                }else if(amendOption == 2){
-                    System.out.print("Remarks: ");
-                    String note = scan.nextLine();
-                    ((PhysicalItem) item).setNote(note);
-                }
-                
-                if (item instanceof Food){
-                    if (amendOption == 3){
-                        System.out.print("Expiry Date (dd/mm/yyyy)*: ");
-                        Date expiryDate = null;
-                        boolean validExp = false;
-
-                        while(validExp == false){
-                            String exp = scan.nextLine();
-
-                            if (exp.isEmpty()){
-
-                                System.out.println(ANSI_RED + "Expiry date cannot leave blank.\n" + ANSI_RESET);
-                                System.out.print("Enter again: ");
-
-                            } else{
-
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                                dateFormat.setLenient(false); 
-
-                                try {
-
-                                    expiryDate = dateFormat.parse(exp);
-
-                                    Date today = new Date();
-
-                                    if (expiryDate.before(today)) {
-
-                                        System.out.println(ANSI_RED + "The food had expired.\n" + ANSI_RESET);
-                                        String[] menu = {"Enter again", "Discard"};
-                                        int selection = menuIntReturn(menu);
-
-                                        if(selection == 1){
-                                            System.out.print("Enter date again: ");
-                                        }else{
-                                            boolean cont = YN("Do you want to continue amend item?");
-                                            if (cont == true){
-                                                amendDonation();
-                                            }else{
-                                                break;
-                                            }
-                                        }
-
-                                    } else {
-                                        validExp = true;
-                                    }
-
-                                } catch (ParseException e) {
-                                    System.out.println("Invalid date format. Please enter the date in dd/MM/yyyy format.");
-                                    System.out.print("Enter date again: ");
-                                }
-
-                            }
-                        }
-                        
-                    }
-                }
-                
-                if (item instanceof Apparel){
-                    if (amendOption == 3){
-                        String color = colorValidation();
-                        ((Apparel) item).setColor(color);
-                    }
-                
-                }
+                physicalItemAmend(amendOption, item, filePath);
                 
             }
             
         }
         
+    }
+    
+    public static void moneyAmend(int amendOption, Item item){
+        if (amendOption == 1){
+            double amt = amountValidation();
+            ((Money) item).setAmount(amt);
+        }
+
+        if (item instanceof Bank){
+            if(amendOption == 2){
+                String bankType = bankTypeValidation();
+                ((Bank) item).setBankName(bankType);
+            }
+        }
+    }
+    
+    public static void physicalItemAmend(int amendOption, Item item, String filePath){
+        Scanner scan = new Scanner(System.in);
+        
+        if (amendOption == 1){
+            int qty = qtyValidation();
+            ((PhysicalItem) item).setQty(qty);
+        }else if(amendOption == 2){
+            System.out.print("Remarks: ");
+            String note = scan.nextLine();
+            ((PhysicalItem) item).setNote(note);
+        }
+
+        if (item instanceof Food){
+            foodAmend(amendOption, item, filePath);
+        }
+
+        if (item instanceof Apparel){
+            apparelAmend(amendOption, item);
+        }
+    }
+    
+    public static void foodAmend(int amendOption, Item item, String filePath){
+        Scanner scan = new Scanner(System.in);
+        
+        if (amendOption == 3){
+            
+            // expiry date
+            System.out.print("Expiry Date (dd/mm/yyyy)*: ");
+            Date expiryDate = null;
+            boolean validExp = false;
+
+            while(validExp == false){
+                String exp = scan.nextLine();
+
+                if (exp.isEmpty()){
+
+                    System.out.println(ANSI_RED + "Expiry date cannot leave blank.\n" + ANSI_RESET);
+                    System.out.print("Enter again: ");
+
+                } else{
+
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    dateFormat.setLenient(false); 
+
+                    try {
+
+                        expiryDate = dateFormat.parse(exp);
+
+                        Date today = new Date();
+
+                        if (expiryDate.before(today)) {
+
+                            System.out.println(ANSI_RED + "The food had expired.\n" + ANSI_RESET);
+                            String[] menu = {"Enter Again", "Remain Unchange", "Delete Item"};
+                            int selection = menuIntReturn(menu);
+
+                            if(selection == 1){
+                                
+                                System.out.print("Enter date again: ");
+                                
+                            }else if(selection == 2){
+                                
+                                boolean cont = YN("Do you want to continue amend item?");
+                                if (cont == true){
+                                    amendDonation();
+                                }else{
+                                    donationManagementMainMenu();
+                                }
+                                
+                            }else{
+                                
+                                ManageItem<Item> list = new ManageItem<>();
+                                list.loadFromFile(filePath);
+                                if (list.isEmpty()){
+                                    
+                                    System.out.println(ANSI_RED + "The list is empty, no item exist in file." + ANSI_RESET);
+                                    
+                                }else{
+                                    boolean delSuccessfully = removeByID(list, item.getId(), filePath);
+                                    if(delSuccessfully == true){
+                                        System.out.println("Item had been deleted successfully!");
+                                    } else{
+                                        System.out.println("Item deleted unsuccessfully.");
+                                    }
+                                }
+                            }
+
+                        } else {
+                            ((Food) item).setExpiryDate(expiryDate);
+                            validExp = true;
+                        }
+
+                    } catch (ParseException e) {
+                        System.out.println("Invalid date format. Please enter the date in dd/MM/yyyy format.");
+                        System.out.print("Enter date again: ");
+                    }
+
+                }
+            }
+            
+        } else if(amendOption == 4){
+            
+            //weight
+            int w = weightValidation();
+            ((Food) item).setWeight(w);
+        
+        } else if(amendOption == 5){
+            
+            //status
+            String status = foodStaValidation();
+            ((Food) item).setStatus(status);
+        
+        }else if(amendOption == 6){
+            //Food Details
+            String detail = null;
+            if (item instanceof BakedGoods){
+                detail = inputBaked();
+            } else if(item instanceof BoxedGoods){
+                detail = inputBoxed();
+            } else if(item instanceof CannedFood){
+                detail = inputCanned();
+            } else if(item instanceof DryGoods){
+                detail = inputDry();
+            } else if(item instanceof Essentials){
+                detail = inputEss();
+            }else{
+                System.out.println(ANSI_RED + "Invalid food type." + ANSI_RESET);
+            }
+            
+            if(detail != null){
+                ((Food) item).setdetail(detail);
+            }
+            
+        }else{
+            System.out.println(ANSI_RED + "Invalid amend option." + ANSI_RESET);
+        }
+    }
+    
+    public static void apparelAmend(int amendOption, Item item){
+        if (amendOption == 3){
+            //color
+            String color = colorValidation();
+            ((Apparel) item).setColor(color);
+        } else if (amendOption == 4){
+            //condition
+            String condition = conditionValidation();
+            ((Apparel) item).setCondition(condition);
+            
+        } else if (amendOption == 5 && item instanceof Shoes){
+            String detail = inputShoes();
+            ((Shoes) item).setDetail(detail);
+        } else{
+            System.out.println(ANSI_RED + "Invalid amend option." + ANSI_RESET);
+        }
     }
     
     // -----------------------------------------
