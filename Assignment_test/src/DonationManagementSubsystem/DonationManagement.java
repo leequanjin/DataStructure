@@ -8,6 +8,8 @@ import CommonResources.Node;
 import CommonResources.LinkedList;
 
 import DonorSubsystem.Donor;
+import DonorSubsystem.ManageDonors;
+import DonorSubsystem.DonorTest;
 import DonorSubsystem.Individual;
 import DonorSubsystem.Organization;
 
@@ -47,19 +49,19 @@ import java.util.Set;
  */
 public class DonationManagement {
     
-    private static final String DONOR_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\donor.txt";
-    private static final String BANK_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\bank.txt";
-    private static final String CASH_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\cash.txt";
-    private static final String BAKED_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\bakedFood.txt";
-    private static final String BOXED_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\boxedFood.txt";
-    private static final String CANNED_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\cannedFood.txt";
-    private static final String DRY_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\dryFood.txt";
-    private static final String ESS_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\essential.txt";
-    private static final String JACKET_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\jacket.txt";
-    private static final String PANT_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\pant.txt";
-    private static final String SHIRT_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\shirt.txt";
-    private static final String SHOES_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\shoes.txt";
-    private static final String SOCKS_PATH = "C:\\Users\\Asus\\Desktop\\DS_Assign\\DataStructure\\DonationListFile\\socks.txt";
+    private static final String DONOR_PATH = "donor.txt";
+    private static final String BANK_PATH = "bank.txt";
+    private static final String CASH_PATH = "cash.txt";
+    private static final String BAKED_PATH = "bakedFood.txt";
+    private static final String BOXED_PATH = "boxedFood.txt";
+    private static final String CANNED_PATH = "cannedFood.txt";
+    private static final String DRY_PATH = "dryFood.txt";
+    private static final String ESS_PATH = "essential.txt";
+    private static final String JACKET_PATH = "jacket.txt";
+    private static final String PANT_PATH = "pant.txt";
+    private static final String SHIRT_PATH = "shirt.txt";
+    private static final String SHOES_PATH = "shoes.txt";
+    private static final String SOCKS_PATH = "socks.txt";
     
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
@@ -279,10 +281,6 @@ public class DonationManagement {
             
             System.out.println(ANSI_BLUE + " - - - Add Donation - - - " + ANSI_RESET);
 
-            System.out.println("Type of donor");
-            String[] typeOfDonorList = {"Individual", "Organisation"};
-            int dType = menuIntReturn(typeOfDonorList);
-
             System.out.print("Enter donor's id: ");
             String dID = null;
             boolean validID = false;
@@ -294,53 +292,40 @@ public class DonationManagement {
                     System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
                     System.out.print("Enter again: ");
                     
-                } else if(dID.trim().length() != 7){
+                } else if(dID.trim().length() != 8){
                     
-                    System.out.println(ANSI_RED + "Invalid length. Format of ID should be AA00000.\n" + ANSI_RESET);
+                    System.out.println(ANSI_RED + "Invalid length. Format of ID should be DNR00000.\n" + ANSI_RESET);
                     System.out.print("Enter again: ");
                     
                 } else {
-                    dID = dID.substring(0,2).toUpperCase() + dID.substring(2, 7);
-                    switch(dType){
-                        case 1: // individual (EI)
-                            if (dID.substring(0, 2).equals("EI")) {
-                                validID = true;
-                            } else {
-                                System.out.println(ANSI_RED + "Invalid format. Format of individual donor should be EI00000.\n" + ANSI_RESET);
+                    dID = dID.substring(0,3).toUpperCase() + dID.substring(3, 8);
+                    if (dID.substring(0, 3).equals("DNR")) {
+                        // correct donor id format
+                        // check if donor exist
+                        LinkedList<Donor> donorList = new LinkedList<>();
+                        boolean validDonor = chkDonorExist(dID, donorList);
+
+                        // if exist, show current data 
+                        if(validDonor == true){
+                            System.out.println("\n - - - Current Donor - - -");
+                            donorList.show();
+                        }else{ // if does not exist, enter other
+                            System.out.println(ANSI_RED + "\nDonor does not exist." + ANSI_RESET);
+                            String[] contMenu = {"Enter Other Donor", "Exit"};
+                            int selectionToCont = menuIntReturn(contMenu);
+                            if (selectionToCont == 1){
                                 System.out.print("Enter again: ");
+                            }else{
+                                donationManagementMainMenu();
                             }
-                            break;
-                        case 2: // organization (EO)
-                            if (dID.substring(0, 2).equals("EO")) {
-                                validID = true;
-                            } else {
-                                System.out.println(ANSI_RED + "Invalid format. Format of organization donor should be EO00000.\n" + ANSI_RESET);
-                                System.out.print("Enter again: ");
-                            }
-                            break;
-                        default:
-                            System.out.println(ANSI_RED + "Unknown donor type.\n" + ANSI_RESET);
-                            System.out.print("Enter again: ");
+                        }
+                        
+                    } else {
+                        System.out.println(ANSI_RED + "Invalid format. Format of donor should be DNR00000.\n" + ANSI_RESET);
+                        System.out.print("Enter again: ");
                     }
                 }
-            }
-
-            // check if donor exist
-            LinkedList<Donor> donorList = new LinkedList<>();
-            boolean validDonor = chkDonorExist(dType, dID, donorList);
-
-            // if exist, show current data 
-            if(validDonor == true){
-                System.out.println("\n - - - Current Donor - - -");
-                donorList.show();
-            }else{ // if does not exist, create or break
-                System.out.println(ANSI_RED + "Donor does not exist." + ANSI_RESET);
-                contAddDonation = YN("Do you want to continue sign up a new donor?");
-                if(contAddDonation == true){
-                    // create a new one then load into the linkedlist
-                } else{
-                    break;
-                }
+                
             }
             
             boolean contAddItem = true;
@@ -362,36 +347,22 @@ public class DonationManagement {
         
     }
     
-    public static boolean chkDonorExist(int dType, String dID, LinkedList donorList){
+    public static boolean chkDonorExist(String dID, LinkedList donorList){
         LinkedList<Donor> tempDonorList = new LinkedList<>();
         
         tempDonorList.loadFromFile(DONOR_PATH);
         tempDonorList.show();
         
         if (!tempDonorList.isEmpty()){
-//            System.out.println();
-//            tempDonorList.show();
             
             Node<Donor> current = tempDonorList.head;
         
             while (current != null) {
                 Donor donor = current.data;
-
-                switch(dType) {
-                    case 1: // Individual
-                        if (donor instanceof Individual && donor.getId().equals(dID)) {
-                            donorList.insert(donor);
-                            return true;
-                        }
-                        break;
-                    case 2: // Organization
-                        if (donor instanceof Organization && donor.getId().equals(dID)) {
-                            donorList.insert(donor);
-                            return true;
-                        }
-                        break;
-                    default:
-                        return false;
+                
+                if (donor.getId().equals(dID)) {
+                    donorList.insert(donor);
+                    return true;
                 }
 
                 current = current.next;
@@ -683,7 +654,7 @@ public class DonationManagement {
         int qty = qtyValidation();
         
         //note
-        System.out.print("Remarks: ");
+        System.out.print("\nRemarks: ");
         String note = scan.nextLine();
         
         switch(itemCat){
@@ -828,7 +799,7 @@ public class DonationManagement {
     public static Date expiryDateValidation(LinkedList<Item> newItemList, String dID){
         Scanner scan = new Scanner(System.in);
         
-        System.out.print("Expiry Date (dd/mm/yyyy)*: ");
+        System.out.print("\nExpiry Date (dd/mm/yyyy)*: ");
         Date expiryDate = null;
         boolean validExp = false;
         
@@ -882,7 +853,7 @@ public class DonationManagement {
     public static int weightValidation(){
         Scanner scan = new Scanner(System.in);
         
-        System.out.print("Weight(gram)*: ");
+        System.out.print("\nWeight(gram)*: ");
         int w = 0;
         boolean validW = false;
         while(validW == false){
@@ -1911,19 +1882,84 @@ public class DonationManagement {
     // -----------------------------------------
     public static void trackItemByCategory(){
         
+        System.out.println("--- MONEY ---");
+        System.out.println("Bank");
+        printTable(BANK_PATH);
+        
+        System.out.println("Cash");
+        printTable(CASH_PATH);
+        
+        System.out.println("--- FOOD ---");
+        System.out.println("Boxed Goods");
+        printTable(BOXED_PATH);
+        
+        System.out.println("Baked Goods");
+        printTable(BAKED_PATH);
+        
+        System.out.println("Canned Foods");
+        printTable(CANNED_PATH);
+        
+        System.out.println("Dry Goods");
+        printTable(DRY_PATH);
+        
+        System.out.println("Essentials");
+        printTable(ESS_PATH);
+        
+        System.out.println("--- APPAREL ---");
+        System.out.println("Jackets");
+        printTable(JACKET_PATH);
+        
+        System.out.println("PANT");
+        printTable(PANT_PATH);
+        
+        System.out.println("Shirt");
+        printTable(SHIRT_PATH);
+        
+        System.out.println("Shoes");
+        printTable(SHOES_PATH);
+        
+        System.out.println("Socks");
+        printTable(SOCKS_PATH);
+        
+    }
+    
+    public static void printTable(String filePath){
+        ManageItem<Item> list = new ManageItem<>();
+        list.loadFromFile(filePath);
+        if(list.isEmpty()){
+            System.out.println("No item available.\n");
+        }else{
+            System.out.println(list.toString());
+        }
     }
     
     // ----------------------------------------
     // Part 6: List donation by different donor
     // ----------------------------------------
     public static void listByDiffDonor(){
-    
+        ManageItem<Item> itemlist = loadAllItemIntoList(); // Assuming this method exists and works
+        ManageDonors<Donor> donorList = new ManageDonors<>();
+        donorList.loadFromFile("donors.txt");
+
+        LinkedList<Donor> individualList = donorList.filterByCategory(Individual.class);
+        LinkedList<Donor> organizationList = donorList.filterByCategory(Organization.class);
+
+        System.out.println("--- INDIVIDUAL ---");
+        Node<Donor> currentNode = individualList.head;
+        while (currentNode != null) {
+            System.out.println(currentNode.data.getId());
+            currentNode = currentNode.next; 
+        }
+
+        System.out.println("--- ORGANIZATION ---");
+        currentNode = organizationList.head;
+        while (currentNode != null) {
+            System.out.println(currentNode.data.getId());
+            currentNode = currentNode.next;
+        }
     }
     
-    // --------------------------
-    // Part 7: List all donations
-    // --------------------------
-    public static void listAll(){
+    public static ManageItem<Item> loadAllItemIntoList(){
         ManageItem<Item> list = new ManageItem<>();
         String[] appendList = {BANK_PATH, CASH_PATH, JACKET_PATH, PANT_PATH, SHIRT_PATH, SHOES_PATH, SOCKS_PATH, BAKED_PATH, BOXED_PATH, CANNED_PATH, DRY_PATH, ESS_PATH};
 
@@ -1934,7 +1970,15 @@ public class DonationManagement {
             currentList.loadFromFile(appendList[i]);
             list.appendList(currentList);
         }
-
+        return list;
+    }
+    
+    // --------------------------
+    // Part 7: List all donations
+    // --------------------------
+    public static void listAll(){
+        ManageItem<Item> list = loadAllItemIntoList();
+        
         System.out.println("--- Item List ---");
         if (list.isEmpty()){
             System.out.println("No item in the stock.");
@@ -1948,9 +1992,13 @@ public class DonationManagement {
     // Part 8: Filter donation based on criteria
     // -----------------------------------------
     public static void filterDonation(){
+        // money filter descending
+        // money filter ascending
         // food expiry date
         // food condition
+        // food type
         // cloth condition
+        // cloth type
     }
     
     // --------------------------------
