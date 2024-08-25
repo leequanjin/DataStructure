@@ -45,4 +45,18 @@ public class ManageItem<T extends Item> extends LinkedList<T> {
         }
             return null; // Item not found
     }
+    
+    @Override
+    public String toString(){
+        
+        String result = "";
+        
+        Node<T> current = head;
+        while (current != null) {
+            result += ((current.data.toString()) + ("\n"));
+            current = current.next;
+        }
+        
+        return result.toString();
+    }
 }
