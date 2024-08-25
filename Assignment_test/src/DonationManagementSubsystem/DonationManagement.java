@@ -1830,7 +1830,7 @@ public class DonationManagement {
         String[] appendList = null;
         switch(itemCat){
             case 1: 
-                appendList = new String[]{"BANK_PATH", "CASH_PATH"};
+                appendList = new String[]{BANK_PATH, CASH_PATH};
                 break;
             case 2:
                 list.loadFromFile(CASH_PATH);
@@ -1846,7 +1846,6 @@ public class DonationManagement {
                 list.appendList(currentList);
                 
             }
-            
             System.out.println(list.toString());
         }
     }
