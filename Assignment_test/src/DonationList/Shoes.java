@@ -17,6 +17,14 @@ public class Shoes extends Apparel{
         super(id, qty, note, color, condition, brand);
         this.detail = detail;
     }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
     
     @Override
     public String getType() {
