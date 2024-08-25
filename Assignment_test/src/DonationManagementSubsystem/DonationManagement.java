@@ -467,6 +467,44 @@ public class DonationManagement {
         Scanner scan = new Scanner(System.in);
         
         // amount
+        double amt = amountValidation();
+        
+        if (itemCat == 1){
+        
+            // bank name
+            String bankName = bankTypeValidation();
+
+            
+            LinkedList<Item> list = new LinkedList();
+            list.loadFromFile(BANK_PATH);
+        
+            // id
+            String id = idGenerator("MB", list);
+            
+            Bank tempBank = new Bank(id, amt, bankName);
+            list.insert(tempBank);
+            list.saveToFile(BANK_PATH);
+            
+            newItemList.insert(tempBank);
+        
+        }else{
+            LinkedList<Item> list = new LinkedList();
+            list.loadFromFile(CASH_PATH);
+            
+            // id
+            String id = idGenerator("MC", list);
+            
+            Cash tempCash = new Cash(id, amt);
+            list.insert(tempCash);
+            list.saveToFile(CASH_PATH);
+            
+            newItemList.insert(tempCash);
+        }
+        
+    }
+    
+    public static double amountValidation(){
+        Scanner scan = new Scanner(System.in);
         System.out.print("Amount Donated: RM ");
         double amt = 0;
         boolean validAmt = false;
@@ -498,92 +536,59 @@ public class DonationManagement {
                 }
             }
         }
-        
-        if (itemCat == 1){
-        
-            // bank name
-            System.out.println("\nBank Type");
-            String[] bankTypeMenu = {
-                "Affin Bank", 
-                "Alliance Bank", 
-                "AmBank", 
-                "CIMB", 
-                "Hong Leong Bank", 
-                "May Bank", 
-                "Public Bank", 
-                "RHB Bank"};
-            int bankType = menuIntReturn(bankTypeMenu);
-            
-            String bankName = null;
-            switch(bankType){
-                case 1: 
-                    bankName = "Affin Bank";
-                    break;
-                case 2:
-                    bankName = "Alliance Bank";
-                    break;
-                case 3:
-                    bankName = "AmBank";
-                    break;
-                case 4:
-                    bankName = "CIMB";
-                    break;
-                case 5:
-                    bankName = "Hong Leong Bank";
-                    break;
-                case 6:
-                    bankName = "May Bank";
-                    break;
-                case 7:
-                    bankName = "Public Bank";
-                    break;
-                case 8:
-                    bankName = "RHB Bank";
-                    break;
-                default:
-                    System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
-            }
+        return amt;
+    }
+    
+    public static String bankTypeValidation(){
+        System.out.println("\nBank Type");
+        String[] bankTypeMenu = {
+            "Affin Bank", 
+            "Alliance Bank", 
+            "AmBank", 
+            "CIMB", 
+            "Hong Leong Bank", 
+            "May Bank", 
+            "Public Bank", 
+            "RHB Bank"};
+        int bankType = menuIntReturn(bankTypeMenu);
 
-            
-            LinkedList<Item> list = new LinkedList();
-            list.loadFromFile(BANK_PATH);
-        
-            // id
-            String id = idGenerator("MB", list);
-            
-            Bank tempBank = new Bank(id, amt, bankName);
-            list.insert(tempBank);
-            list.saveToFile(BANK_PATH);
-            
-            newItemList.insert(tempBank);
-        
-        }else{
-            LinkedList<Item> list = new LinkedList();
-            list.loadFromFile(CASH_PATH);
-            
-            // id
-            String id = idGenerator("MC", list);
-            
-            Cash tempCash = new Cash(id, amt);
-            list.insert(tempCash);
-            list.saveToFile(CASH_PATH);
-            
-            newItemList.insert(tempCash);
+        String bankName = null;
+        switch(bankType){
+            case 1: 
+                bankName = "Affin Bank";
+                break;
+            case 2:
+                bankName = "Alliance Bank";
+                break;
+            case 3:
+                bankName = "AmBank";
+                break;
+            case 4:
+                bankName = "CIMB";
+                break;
+            case 5:
+                bankName = "Hong Leong Bank";
+                break;
+            case 6:
+                bankName = "May Bank";
+                break;
+            case 7:
+                bankName = "Public Bank";
+                break;
+            case 8:
+                bankName = "RHB Bank";
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
         }
         
+        return bankName;
     }
     
     public static void inputFood(LinkedList<Item> newItemList){
         
         // food category
-        System.out.println("\nFood Category");
-        String[] foodCatMenu = {
-            "Baked Goods", 
-            "Boxed Goods", 
-            "Canned Food", 
-            "Dry Goods", 
-            "Essentials"};
-        int foodCat = menuIntReturn(foodCatMenu);
+        int foodCat = foodCatValidation();
         
         switch(foodCat){
             case 1: 
@@ -610,17 +615,21 @@ public class DonationManagement {
         
     }
     
+    public static int foodCatValidation(){
+        System.out.println("\nFood Category");
+        String[] foodCatMenu = {
+            "Baked Goods", 
+            "Boxed Goods", 
+            "Canned Food", 
+            "Dry Goods", 
+            "Essentials"};
+        return menuIntReturn(foodCatMenu);
+    }
+    
     public static void inputApparel(LinkedList<Item> newItemList){
         
-        // food category
-        System.out.println("\nApparel Category");
-        String[] appCatMenu = {
-            "Jacket", 
-            "Pant", 
-            "Shirt", 
-            "Shoes", 
-            "Socks"};
-        int appCat = menuIntReturn(appCatMenu);
+        // apparel category
+        int appCat = appCatValidation();
         
         switch(appCat){
             case 1: 
@@ -647,6 +656,17 @@ public class DonationManagement {
         
     }
     
+    public static int appCatValidation(){
+        System.out.println("\nApparel Category");
+        String[] appCatMenu = {
+            "Jacket", 
+            "Pant", 
+            "Shirt", 
+            "Shoes", 
+            "Socks"};
+        return menuIntReturn(appCatMenu);
+    }
+    
     public static void commonItemInput(LinkedList<Item> newItemList, int detailCat, int itemCat){
         
         Scanner scan = new Scanner(System.in);
@@ -654,6 +674,28 @@ public class DonationManagement {
         System.out.println("Item with '*' is compulsary to be enter.");
         
         // quantity
+        int qty = qtyValidation();
+        
+        //note
+        System.out.print("Remarks: ");
+        String note = scan.nextLine();
+        
+        switch(itemCat){
+            case 1:
+                // food
+                commonFoodInput(newItemList, detailCat, qty, note);
+                break;
+            case 2:
+                // apparel
+                commonApparelInput(newItemList, detailCat, qty, note);
+                break;
+        }
+        
+    }
+    
+    public static int qtyValidation(){
+        Scanner scan = new Scanner(System.in);
+        
         System.out.print("Quantity*: ");
         int qty = 0;
         boolean validQty = false;
@@ -689,128 +731,20 @@ public class DonationManagement {
                 }
             }
         }
-        
-        //note
-        System.out.print("Remarks: ");
-        String note = scan.nextLine();
-        
-        switch(itemCat){
-            case 1:
-                // food
-                commonFoodInput(newItemList, detailCat, qty, note);
-                break;
-            case 2:
-                // apparel
-                commonApparelInput(newItemList, detailCat, qty, note);
-                break;
-        }
-        
+        return qty;
     }
     
     public static void commonFoodInput(LinkedList<Item> newItemList, int foodCat, int qty, String note){
         Scanner scan = new Scanner(System.in);
         
         //expiryDate
-        System.out.print("Expiry Date (dd/mm/yyyy)*: ");
-        Date expiryDate = null;
-        boolean validExp = false;
-        
-        while(validExp == false){
-            String exp = scan.nextLine();
-            
-            if (exp.isEmpty()){
-                
-                System.out.println(ANSI_RED + "Expiry date cannot leave blank.\n" + ANSI_RESET);
-                System.out.print("Enter again: ");
-                
-            } else{
-                
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                dateFormat.setLenient(false); 
-
-                try {
-                    
-                    expiryDate = dateFormat.parse(exp);
-
-                    Date today = new Date();
-
-                    if (expiryDate.before(today)) {
-                        
-                        System.out.println(ANSI_RED + "The food had expired.\n" + ANSI_RESET);
-                        String[] menu = {"Enter again", "Discard"};
-                        int selection = menuIntReturn(menu);
-                        
-                        if(selection == 1){
-                            System.out.print("Enter date again: ");
-                        }else{
-                            inputFood(newItemList);
-                        }
-                        
-                    } else {
-                        validExp = true;
-                    }
-                    
-                } catch (ParseException e) {
-                    System.out.println("Invalid date format. Please enter the date in dd/MM/yyyy format.");
-                    System.out.print("Enter date again: ");
-                }
-                
-            }
-        }
+        Date expiryDate = expiryDateValidation(newItemList);
         
         //weight
-        System.out.print("Weight(gram)*: ");
-        int w = 0;
-        boolean validW = false;
-        while(validW == false){
-            String wS = scan.nextLine();
-            
-            if(wS.isEmpty()){
-
-                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
-                System.out.print("Enter again: ");
-
-            }else{
-                try {
-                    w = Integer.parseInt(wS);
-
-                    if (w == 0) {
-                        
-                        System.out.println(ANSI_RED + "Weight cannot be 0.\n" + ANSI_RESET);
-                        System.out.print("Enter again: ");
-
-                    } else if(w  < 0){
-                        System.out.println(ANSI_RED + "Weight cannot be negative.\n" + ANSI_RESET);
-                        System.out.print("Enter again: ");
-                    }else {
-                        validW = true;
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    System.out.println(ANSI_RED + "Invalid input. Please enter correct weight.\n" + ANSI_RESET);
-                    System.out.print("Enter again: ");
-
-                }
-            }
-        }
+        int w = weightValidation();
         
         //status
-        System.out.println("\nFood Status");
-        String[] foodStatusMenu = {"Good", "Spoil"};
-        int foodSta = menuIntReturn(foodStatusMenu);
-        
-        String foodStaName = null;
-        switch(foodSta){
-            case 1: 
-                foodStaName = "Good";
-                break;
-            case 2:
-                foodStaName = "Spoil";
-                break;
-            default:
-                System.out.println(ANSI_RED + "Invalid food status.\n" + ANSI_RESET);
-        }
+        String foodStaName = foodStaValidation();
         
         LinkedList<Item> list = new LinkedList();
         String id = null;
@@ -884,6 +818,123 @@ public class DonationManagement {
                 System.out.println(ANSI_RED + "Invalid food category.\n" + ANSI_RESET);
         }
         
+    }
+    
+    public static Date expiryDateValidation(LinkedList<Item> newItemList){
+        Scanner scan = new Scanner(System.in);
+        
+        System.out.print("Expiry Date (dd/mm/yyyy)*: ");
+        Date expiryDate = null;
+        boolean validExp = false;
+        
+        while(validExp == false){
+            String exp = scan.nextLine();
+            
+            if (exp.isEmpty()){
+                
+                System.out.println(ANSI_RED + "Expiry date cannot leave blank.\n" + ANSI_RESET);
+                System.out.print("Enter again: ");
+                
+            } else{
+                
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                dateFormat.setLenient(false); 
+
+                try {
+                    
+                    expiryDate = dateFormat.parse(exp);
+
+                    Date today = new Date();
+
+                    if (expiryDate.before(today)) {
+                        
+                        System.out.println(ANSI_RED + "The food had expired.\n" + ANSI_RESET);
+                        String[] menu = {"Enter again", "Discard"};
+                        int selection = menuIntReturn(menu);
+                        
+                        if(selection == 1){
+                            System.out.print("Enter date again: ");
+                        }else{
+                            inputFood(newItemList);
+                        }
+                        
+                    } else {
+                        validExp = true;
+                    }
+                    
+                } catch (ParseException e) {
+                    System.out.println("Invalid date format. Please enter the date in dd/MM/yyyy format.");
+                    System.out.print("Enter date again: ");
+                }
+                
+            }
+        }
+        
+        return expiryDate;
+        
+    }
+    
+    public static int weightValidation(){
+        Scanner scan = new Scanner(System.in);
+        
+        System.out.print("Weight(gram)*: ");
+        int w = 0;
+        boolean validW = false;
+        while(validW == false){
+            String wS = scan.nextLine();
+            
+            if(wS.isEmpty()){
+
+                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                System.out.print("Enter again: ");
+
+            }else{
+                try {
+                    w = Integer.parseInt(wS);
+
+                    if (w == 0) {
+                        
+                        System.out.println(ANSI_RED + "Weight cannot be 0.\n" + ANSI_RESET);
+                        System.out.print("Enter again: ");
+
+                    } else if(w  < 0){
+                        System.out.println(ANSI_RED + "Weight cannot be negative.\n" + ANSI_RESET);
+                        System.out.print("Enter again: ");
+                    }else {
+                        validW = true;
+                    }
+
+                } catch (NumberFormatException e) {
+
+                    System.out.println(ANSI_RED + "Invalid input. Please enter correct weight.\n" + ANSI_RESET);
+                    System.out.print("Enter again: ");
+
+                }
+            }
+        }
+        
+        return w;
+    }
+    
+    public static String foodStaValidation(){
+        
+        System.out.println("\nFood Status");
+        String[] foodStatusMenu = {"Good", "Spoil"};
+        int foodSta = menuIntReturn(foodStatusMenu);
+        
+        String foodStaName = null;
+        switch(foodSta){
+            case 1: 
+                foodStaName = "Good";
+                break;
+            case 2:
+                foodStaName = "Spoil";
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid food status.\n" + ANSI_RESET);
+        }
+        
+        return foodStaName;
     }
     
     public static String inputBaked() {
@@ -1044,94 +1095,13 @@ public class DonationManagement {
         Scanner scan = new Scanner(System.in);
         
         // color
-        System.out.println("\nApparel Color");
-        String[] appColorMenu = {"Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Silver", "White", "Black"};
-        int appColor = menuIntReturn(appColorMenu);
-        
-        String color = null;
-        switch(appColor){
-            case 1: 
-                color = "Red";
-                break;
-            case 2:
-                color = "Orange";
-                break;
-            case 3:
-                color = "Yellow";
-                break;
-            case 4:
-                color = "Green";
-                break;
-            case 5:
-                color = "Blue";
-                break;
-            case 6:
-                color = "Purple";
-                break;
-            case 7:
-                color = "Silver";
-                break;
-            case 8:
-                color = "White";
-                break;
-            case 9:
-                color = "Black";
-                break;
-            default:
-                System.out.println(ANSI_RED + "Invalid apparel color.\n" + ANSI_RESET);
-        }
+        String color = colorValidation();
         
         // condition
-        System.out.println("\nApparel Condition");
-        String[] appConMenu = {"New", "Good", "Fair", "Poor"};
-        int appCon = menuIntReturn(appConMenu);
-        
-        String condition = null;
-        switch(appCon){
-            case 1: 
-                condition = "New";
-                break;
-            case 2:
-                condition = "Good";
-                break;
-            case 3:
-                condition = "Fair";
-                break;
-            case 4:
-                condition = "Poor";
-                break;
-            default:
-                System.out.println(ANSI_RED + "Invalid apparel condition.\n" + ANSI_RESET);
-        }
+        String condition = conditionValidation();
         
         // brand
-        System.out.println("\nApparel Brand");
-        String[] appBrandMenu = {"Adidas", "H & M", "Nike", "Puma", "Uniclo", "Others"};
-        int appBrand = menuIntReturn(appBrandMenu);
-        
-        String brand = null;
-        switch(appBrand){
-            case 1: 
-                brand = "Adidas";
-                break;
-            case 2:
-                brand = "H & M";
-                break;
-            case 3:
-                brand = "Nike";
-                break;
-            case 4:
-                brand = "Puma";
-                break;
-            case 5:
-                brand = "Uniclo";
-                break;
-            case 6:
-                brand = "Others";
-                break;
-            default:
-                System.out.println(ANSI_RED + "Invalid apparel brand.\n" + ANSI_RESET);
-        }
+        String brand = brandValidation();
         
         LinkedList<Item> list = new LinkedList();
         String id = null;
@@ -1202,6 +1172,109 @@ public class DonationManagement {
         }
     }
     
+    public static String colorValidation(){
+        Scanner scan = new Scanner(System.in);
+        
+        System.out.println("\nApparel Color");
+        String[] appColorMenu = {"Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Silver", "White", "Black"};
+        int appColor = menuIntReturn(appColorMenu);
+        
+        String color = null;
+        switch(appColor){
+            case 1: 
+                color = "Red";
+                break;
+            case 2:
+                color = "Orange";
+                break;
+            case 3:
+                color = "Yellow";
+                break;
+            case 4:
+                color = "Green";
+                break;
+            case 5:
+                color = "Blue";
+                break;
+            case 6:
+                color = "Purple";
+                break;
+            case 7:
+                color = "Silver";
+                break;
+            case 8:
+                color = "White";
+                break;
+            case 9:
+                color = "Black";
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid apparel color.\n" + ANSI_RESET);
+        }
+        
+        return color;
+    }
+    
+    public static String conditionValidation(){
+        Scanner scan = new Scanner(System.in);
+        
+        System.out.println("\nApparel Condition");
+        String[] appConMenu = {"New", "Good", "Fair", "Poor"};
+        int appCon = menuIntReturn(appConMenu);
+        
+        String condition = null;
+        switch(appCon){
+            case 1: 
+                condition = "New";
+                break;
+            case 2:
+                condition = "Good";
+                break;
+            case 3:
+                condition = "Fair";
+                break;
+            case 4:
+                condition = "Poor";
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid apparel condition.\n" + ANSI_RESET);
+        }
+        
+        return condition;
+    }
+    
+    public static String brandValidation(){
+        System.out.println("\nApparel Brand");
+        String[] appBrandMenu = {"Adidas", "H & M", "Nike", "Puma", "Uniclo", "Others"};
+        int appBrand = menuIntReturn(appBrandMenu);
+        
+        String brand = null;
+        switch(appBrand){
+            case 1: 
+                brand = "Adidas";
+                break;
+            case 2:
+                brand = "H & M";
+                break;
+            case 3:
+                brand = "Nike";
+                break;
+            case 4:
+                brand = "Puma";
+                break;
+            case 5:
+                brand = "Uniclo";
+                break;
+            case 6:
+                brand = "Others";
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid apparel brand.\n" + ANSI_RESET);
+        }
+        
+        return brand;
+    }
+    
     public static String inputShoes(){
         
         System.out.println("\nShoes Category");
@@ -1218,7 +1291,9 @@ public class DonationManagement {
         }
     }
     
+    // -------------------------
     // Part 2: Remove a donation
+    // -------------------------
     public static void remDonation(){
         System.out.println("\nItem to remove:");
         String[] itemRemoveMenu = {"Bank", "Cash", "Food", "Apparel"};
@@ -1354,7 +1429,9 @@ public class DonationManagement {
         
     }
     
+    // -------------------------------
     // Part 3: Search donation details
+    // -------------------------------
     public static void searchDonation() {
         Scanner scan = new Scanner(System.in);
         System.out.print("\nWhich item do you wish to search?\n" + "Enter ID: ");
@@ -1363,106 +1440,209 @@ public class DonationManagement {
         while (!validID) {
             String inputID = scan.nextLine();
 
-            if (inputID.isEmpty()) {
-                System.out.println(ANSI_RED + "Cannot leave blank." + ANSI_RESET);
+            validID = searchingIdValidation(inputID);
+        }
+    }
+    
+    public static boolean searchingIdValidation(String inputID){
+        boolean validID = false;
+        
+        if (inputID.isEmpty()) {
+            System.out.println(ANSI_RED + "Cannot leave blank." + ANSI_RESET);
+            System.out.print("\nEnter again: ");
+        } else {
+            if (inputID.length() != 7) {
+                System.out.println(ANSI_RED + "Invalid length. The length should be 7 and format AA00000." + ANSI_RESET);
                 System.out.print("\nEnter again: ");
             } else {
-                if (inputID.length() != 7) {
-                    System.out.println(ANSI_RED + "Invalid length. The length should be 7 and format AA00000." + ANSI_RESET);
+                inputID = inputID.substring(0, 2).toUpperCase() + inputID.substring(2, 7);
+
+                String prefix = inputID.substring(0, 2);
+                Set<String> validPrefixes = new HashSet<>(
+                        Arrays.asList("MB", "MC", "FA", "FO", "FC", "FD", "FE", "AJ", "AP", "AI", "AO", "AS"));
+
+                if (!validPrefixes.contains(prefix)) {
+                    System.out.println(ANSI_RED + "Invalid format. The format should be AA00000." + ANSI_RESET);
                     System.out.print("\nEnter again: ");
                 } else {
-                    inputID = inputID.substring(0, 2).toUpperCase() + inputID.substring(2, 7);
+                    String filePath = null;
 
-                    String prefix = inputID.substring(0, 2);
-                    Set<String> validPrefixes = new HashSet<>(
-                            Arrays.asList("MB", "MC", "FA", "FO", "FC", "FD", "FE", "AJ", "AP", "AI", "AO", "AS"));
+                    switch (prefix) {
+                        case "MB":
+                            filePath = BANK_PATH;
+                            break;
+                        case "MC":
+                            filePath = CASH_PATH;
+                            break;
+                        case "FA":
+                            filePath = BAKED_PATH;
+                            break;
+                        case "FO":
+                            filePath = BOXED_PATH;
+                            break;
+                        case "FC":
+                            filePath = CANNED_PATH;
+                            break;
+                        case "FD":
+                            filePath = DRY_PATH;
+                            break;
+                        case "FE":
+                            filePath = ESS_PATH; 
+                            break;
+                        case "AJ":
+                            filePath = JACKET_PATH;
+                            break;
+                        case "AP":
+                            filePath = PANT_PATH;
+                            break;
+                        case "AI":
+                            filePath = SHIRT_PATH;
+                            break;
+                        case "AO":
+                            filePath = SHOES_PATH;
+                            break;
+                        case "AS":
+                            filePath = SOCKS_PATH;
+                            break;
+                        default:
+                            System.out.println(ANSI_RED + "Invalid ID." + ANSI_RESET);
+                    }
 
-                    if (!validPrefixes.contains(prefix)) {
-                        System.out.println(ANSI_RED + "Invalid format. The format should be AA00000." + ANSI_RESET);
-                        System.out.print("\nEnter again: ");
-                    } else {
-                        String filePath = null;
-
-                        switch (prefix) {
-                            case "MB":
-                                filePath = BANK_PATH;
-                                break;
-                            case "MC":
-                                filePath = CASH_PATH;
-                                break;
-                            case "FA":
-                                filePath = BAKED_PATH;
-                                break;
-                            case "FO":
-                                filePath = BOXED_PATH;
-                                break;
-                            case "FC":
-                                filePath = CANNED_PATH;
-                                break;
-                            case "FD":
-                                filePath = DRY_PATH;
-                                break;
-                            case "FE":
-                                filePath = ESS_PATH;  // This was corrected from "ME" to "FE"
-                                break;
-                            case "AJ":
-                                filePath = JACKET_PATH;
-                                break;
-                            case "AP":
-                                filePath = PANT_PATH;
-                                break;
-                            case "AI":
-                                filePath = SHIRT_PATH;
-                                break;
-                            case "AO":
-                                filePath = SHOES_PATH;
-                                break;
-                            case "AS":
-                                filePath = SOCKS_PATH;
-                                break;
-                            default:
-                                System.out.println(ANSI_RED + "Invalid ID." + ANSI_RESET);
-                        }
-
-                        // valid format, check if this id exists, show it if yes
-                        if (filePath != null) {
-                            ManageItem<Item> list = new ManageItem<>();
-                            list.loadFromFile(filePath);
-                            Item item = list.findById(inputID);
-                            if (item != null) {
-                                // show that particular item
-                                System.out.println(item.toString());
-                                validID = true; // Assuming you want to exit the loop after a successful search
-                            } else {
-                                System.out.println(ANSI_RED + "Item does not exist or had been deleted." + ANSI_RESET);
-                                System.out.print("\nEnter again: ");
-                            }
+                    // valid format, check if this id exists, show it if yes
+                    if (filePath != null) {
+                        ManageItem<Item> list = new ManageItem<>();
+                        list.loadFromFile(filePath);
+                        Item item = list.findById(inputID);
+                        if (item != null) {
+                            // show that particular item
+                            System.out.println(item.toString());
+                            validID = true; // Assuming you want to exit the loop after a successful search
+                        } else {
+                            System.out.println(ANSI_RED + "Item does not exist or had been deleted." + ANSI_RESET);
+                            System.out.print("\nEnter again: ");
                         }
                     }
                 }
             }
         }
+        return validID;
     }
     
+    // ------------------------------
     // Part 4: Amend donation details
+    // ------------------------------
     public static void amendDonation(){
+        Scanner scan = new Scanner(System.in);
+        
         System.out.println("Which kind of item you would like to amend?");
         System.out.print("Enter item ID: ");
+        boolean validID = false;
+
+        String id = null;
+        while (!validID) {
+            id = scan.nextLine();
+
+            validID = searchingIdValidation(id);
+        }
+        
+        String prefix = id.substring(0, 2).toUpperCase();
+        String filePath = null;
+        String[] amendList = null;
+        String[] cloth = new String[]{"Type", "Quantity", "Remarks", "Color", "Condition", "Brand"};
+        String[] food = new String[]{"Type", "Quantity", "Remarks", "Expiry date", "Weight", "Status", "Details"};
+        switch (prefix) {
+            case "MB":
+                filePath = BANK_PATH;
+                amendList = new String[]{"Type", "Amount"};
+                break;
+            case "MC":
+                filePath = CASH_PATH;
+                amendList = new String[]{"Amount"};
+                break;
+            case "FA":
+                filePath = BAKED_PATH;
+                amendList = food;
+                break;
+            case "FO":
+                filePath = BOXED_PATH;
+                amendList = food;
+                break;
+            case "FC":
+                filePath = CANNED_PATH;
+                amendList = food;
+                break;
+            case "FD":
+                filePath = DRY_PATH;
+                amendList = food;
+                break;
+            case "FE":
+                filePath = ESS_PATH;
+                amendList = food;
+                break;
+            case "AJ":
+                filePath = JACKET_PATH;
+                amendList = cloth;
+                break;
+            case "AP":
+                filePath = PANT_PATH;
+                amendList = cloth;
+                break;
+            case "AI":
+                filePath = SHIRT_PATH;
+                amendList = cloth;
+                break;
+            case "AO":
+                filePath = SHOES_PATH;
+                amendList = new String[]{"Type", "Quantity", "Remarks", "Color", "Condition", "Brand", "Details"};
+                break;
+            case "AS":
+                filePath = SOCKS_PATH;
+                amendList = cloth;
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid ID." + ANSI_RESET);
+        }
+        
+        ManageItem<Item> list = new ManageItem<>();
+        list.loadFromFile(filePath);
+        Item item = list.findById(id);
+        if (item != null) {
+            // show that particular item
+            System.out.println("Item to be edit: ");
+            System.out.println(item.toString());
+        } else {
+            System.out.println(ANSI_RED + "Item does not exist or had been deleted." + ANSI_RESET);
+            System.out.print("\nEnter again: ");
+        }
+        
+        System.out.println("Option available");
+        int amendOption = menuIntReturn(amendList);
+        
     }
     
+    // -----------------------------------------
     // Part 5: Track donated items in categories
+    // -----------------------------------------
     public static void trackItemByCategory(){}
     
+    // ----------------------------------------
     // Part 6: List donation by different donor
+    // ----------------------------------------
     public static void listByDiffDonor(){}
     
+    // --------------------------
     // Part 7: List all donations
+    // --------------------------
     public static void listAll(){}
     
+    // -----------------------------------------
     // Part 8: Filter donation based on criteria
+    // -----------------------------------------
     public static void filterDonation(){}
     
+    // --------------------------------
     // Part 9: Generate summary reports 
+    // --------------------------------
     public static void report(){}
     
 }
