@@ -52,4 +52,7 @@ public interface LinkedListInterface<T> {
 
     // Method to check if the linked list is empty
     boolean isEmpty();
+    
+    // Method to append two list
+    void appendList(LinkedList anotherList);
 }

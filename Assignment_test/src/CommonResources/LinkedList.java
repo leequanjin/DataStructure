@@ -145,6 +145,7 @@ public class LinkedList<T> implements LinkedListInterface<T> {
     }
 
     // Method to remove elements based on a condition
+    // Time Complexity : O(n)
     @Override
     public void removeIf(Predicate<T> filter) {
         Node<T> current = head;
@@ -166,6 +167,7 @@ public class LinkedList<T> implements LinkedListInterface<T> {
     }
 
     // Method to print out all nodes in the list
+    // Time Complexity : O(n)
     @Override
     public void show() {
         Node current = head;
@@ -258,5 +260,32 @@ public class LinkedList<T> implements LinkedListInterface<T> {
     @Override
     public boolean isEmpty() {
         return head == null;
+    }
+    
+    // Method to append both linked list
+    @Override
+    public void appendList(LinkedList anotherList){
+        
+        if(!isEmpty()){
+            Node<T> currentNode = head;
+            if (head == null){
+                while(currentNode == null){
+                    currentNode = currentNode.next;
+                }
+            }
+
+            while (currentNode != tail){
+
+                if(currentNode.next.data == null){
+                    currentNode.next = currentNode.next.next;
+                }
+
+                currentNode = currentNode.next;
+
+            }
+            
+            this.tail.next = anotherList.head.previous;
+        
+        }
     }
 }
