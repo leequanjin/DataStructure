@@ -154,7 +154,7 @@ public class DonationManagement {
         dList.insert(idv);
         dList.insert(org);
         
-        //idvList.show();
+        //dList.show();
         
         //load into file
         dList.saveToFile(DONOR_PATH);
@@ -346,9 +346,9 @@ public class DonationManagement {
             boolean contAddItem = true;
             while(contAddItem){
             
-                addItem();
+                addItem(dID);
                 
-                contAddItem = YN("Do you want to continue add item?");
+                contAddItem = YN("Do you want to continue add item for the same donor?");
                 if (contAddItem == false){
                     break;
                 }
@@ -404,7 +404,7 @@ public class DonationManagement {
         return false;
     }
     
-    public static void addItem(){
+    public static void addItem(String dID){
         Scanner scan = new Scanner(System.in);
         
         System.out.print("Number of item wish to add: ");
@@ -449,16 +449,16 @@ public class DonationManagement {
             
             switch(itemCat){
                 case 1:
-                    inputMoney(newItemList, itemCat);
+                    inputMoney(newItemList, itemCat, dID);
                     break;
                 case 2:
-                    inputMoney(newItemList, itemCat);
+                    inputMoney(newItemList, itemCat, dID);
                     break;
                 case 3:
-                    inputFood(newItemList);
+                    inputFood(newItemList, dID);
                     break;
                 case 4:
-                    inputApparel(newItemList);
+                    inputApparel(newItemList, dID);
                     break;
                 default:
                     System.out.println(ANSI_RED + "Invalid choice." + ANSI_RESET);
@@ -470,8 +470,7 @@ public class DonationManagement {
         newItemList.show();
     }
     
-    public static void inputMoney(LinkedList<Item> newItemList, int itemCat){
-        Scanner scan = new Scanner(System.in);
+    public static void inputMoney(LinkedList<Item> newItemList, int itemCat, String dID){
         
         // amount
         double amt = amountValidation();
@@ -488,7 +487,7 @@ public class DonationManagement {
             // id
             String id = idGenerator("MB", list);
             
-            Bank tempBank = new Bank(id, amt, bankName);
+            Bank tempBank = new Bank(id, dID, amt, bankName);
             list.insert(tempBank);
             list.saveToFile(BANK_PATH);
             
@@ -501,7 +500,7 @@ public class DonationManagement {
             // id
             String id = idGenerator("MC", list);
             
-            Cash tempCash = new Cash(id, amt);
+            Cash tempCash = new Cash(id, dID, amt);
             list.insert(tempCash);
             list.saveToFile(CASH_PATH);
             
@@ -592,7 +591,7 @@ public class DonationManagement {
         return bankName;
     }
     
-    public static void inputFood(LinkedList<Item> newItemList){
+    public static void inputFood(LinkedList<Item> newItemList, String dID){
         
         // food category
         int foodCat = foodCatValidation();
@@ -618,7 +617,7 @@ public class DonationManagement {
                 break;
         }
         
-        commonItemInput(newItemList, foodCat, 1);
+        commonItemInput(newItemList, foodCat, 1, dID);
         
     }
     
@@ -633,7 +632,7 @@ public class DonationManagement {
         return menuIntReturn(foodCatMenu);
     }
     
-    public static void inputApparel(LinkedList<Item> newItemList){
+    public static void inputApparel(LinkedList<Item> newItemList, String dID){
         
         // apparel category
         int appCat = appCatValidation();
@@ -659,7 +658,7 @@ public class DonationManagement {
                 break;
         }
         
-        commonItemInput(newItemList, appCat, 2);
+        commonItemInput(newItemList, appCat, 2, dID);
         
     }
     
@@ -674,7 +673,7 @@ public class DonationManagement {
         return menuIntReturn(appCatMenu);
     }
     
-    public static void commonItemInput(LinkedList<Item> newItemList, int detailCat, int itemCat){
+    public static void commonItemInput(LinkedList<Item> newItemList, int detailCat, int itemCat, String dID){
         
         Scanner scan = new Scanner(System.in);
         
@@ -690,11 +689,11 @@ public class DonationManagement {
         switch(itemCat){
             case 1:
                 // food
-                commonFoodInput(newItemList, detailCat, qty, note);
+                commonFoodInput(newItemList, detailCat, qty, note, dID);
                 break;
             case 2:
                 // apparel
-                commonApparelInput(newItemList, detailCat, qty, note);
+                commonApparelInput(newItemList, detailCat, qty, note, dID);
                 break;
         }
         
@@ -741,11 +740,10 @@ public class DonationManagement {
         return qty;
     }
     
-    public static void commonFoodInput(LinkedList<Item> newItemList, int foodCat, int qty, String note){
-        Scanner scan = new Scanner(System.in);
+    public static void commonFoodInput(LinkedList<Item> newItemList, int foodCat, int qty, String note, String dID){
         
         //expiryDate
-        Date expiryDate = expiryDateValidation(newItemList);
+        Date expiryDate = expiryDateValidation(newItemList, dID);
         
         //weight
         int w = weightValidation();
@@ -762,7 +760,7 @@ public class DonationManagement {
                 
                 id = idGenerator("FA", list);
                 String bakedName = inputBaked();
-                BakedGoods baG = new BakedGoods(id, qty, note, expiryDate, w, foodStaName, bakedName);
+                BakedGoods baG = new BakedGoods(id, dID, qty, note, expiryDate, w, foodStaName, bakedName);
                 
                 list.insert(baG);
                 list.saveToFile(BAKED_PATH);
@@ -775,7 +773,7 @@ public class DonationManagement {
                 
                 id = idGenerator("FO", list);
                 String boxedName = inputBoxed();
-                BoxedGoods boG = new BoxedGoods(id, qty, note, expiryDate, w, foodStaName, boxedName);
+                BoxedGoods boG = new BoxedGoods(id, dID, qty, note, expiryDate, w, foodStaName, boxedName);
                 
                 list.insert(boG);
                 list.saveToFile(BOXED_PATH);
@@ -788,7 +786,7 @@ public class DonationManagement {
                 
                 id = idGenerator("FC", list);
                 String cannedName = inputCanned();
-                CannedFood cF = new CannedFood(id, qty, note, expiryDate, w, foodStaName, cannedName);
+                CannedFood cF = new CannedFood(id, dID, qty, note, expiryDate, w, foodStaName, cannedName);
                 
                 list.insert(cF);
                 list.saveToFile(CANNED_PATH);
@@ -801,7 +799,7 @@ public class DonationManagement {
                 
                 id = idGenerator("FD", list);
                 String dryName = inputDry();
-                DryGoods dG = new DryGoods(id, qty, note, expiryDate, w, foodStaName, dryName);
+                DryGoods dG = new DryGoods(id, dID, qty, note, expiryDate, w, foodStaName, dryName);
                 
                 list.insert(dG);
                 list.saveToFile(DRY_PATH);
@@ -814,7 +812,7 @@ public class DonationManagement {
                 
                 id = idGenerator("FE", list);
                 String essName = inputEss();
-                Essentials eG = new Essentials(id, qty, note, expiryDate, w, foodStaName, essName);
+                Essentials eG = new Essentials(id, dID, qty, note, expiryDate, w, foodStaName, essName);
 
                 list.insert(eG);
                 list.saveToFile(ESS_PATH);
@@ -827,7 +825,7 @@ public class DonationManagement {
         
     }
     
-    public static Date expiryDateValidation(LinkedList<Item> newItemList){
+    public static Date expiryDateValidation(LinkedList<Item> newItemList, String dID){
         Scanner scan = new Scanner(System.in);
         
         System.out.print("Expiry Date (dd/mm/yyyy)*: ");
@@ -862,7 +860,7 @@ public class DonationManagement {
                         if(selection == 1){
                             System.out.print("Enter date again: ");
                         }else{
-                            inputFood(newItemList);
+                            inputFood(newItemList, dID);
                         }
                         
                     } else {
@@ -870,7 +868,7 @@ public class DonationManagement {
                     }
                     
                 } catch (ParseException e) {
-                    System.out.println("Invalid date format. Please enter the date in dd/MM/yyyy format.");
+                    System.out.println(ANSI_RED + "Invalid date format. Please enter the date in dd/MM/yyyy format.\n" + ANSI_RESET);
                     System.out.print("Enter date again: ");
                 }
                 
@@ -926,16 +924,16 @@ public class DonationManagement {
     public static String foodStaValidation(){
         
         System.out.println("\nFood Status");
-        String[] foodStatusMenu = {"Good", "Spoil"};
+        String[] foodStatusMenu = {"New (made within 1 weeks)", "Good"};
         int foodSta = menuIntReturn(foodStatusMenu);
         
         String foodStaName = null;
         switch(foodSta){
             case 1: 
-                foodStaName = "Good";
+                foodStaName = "New";
                 break;
             case 2:
-                foodStaName = "Spoil";
+                foodStaName = "Good";
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid food status.\n" + ANSI_RESET);
@@ -1098,8 +1096,14 @@ public class DonationManagement {
         return name;
     }
     
-    public static void commonApparelInput(LinkedList<Item> newItemList, int appCat, int qty, String note){
-        Scanner scan = new Scanner(System.in);
+    public static void commonApparelInput(LinkedList<Item> newItemList, int appCat, int qty, String note, String dID){
+        //size
+        String size;
+        if(appCat == 4){
+            size = shoesSizeValidation();
+        }else{
+            size = sizeValidation();
+        }
         
         // color
         String color = colorValidation();
@@ -1118,7 +1122,7 @@ public class DonationManagement {
                 list.loadFromFile(JACKET_PATH);
                 
                 id = idGenerator("AJ", list);
-                Jacket j = new Jacket(id, qty, note, color, condition, brand);
+                Jacket j = new Jacket(id, dID, qty, note, size, color, condition, brand);
                 
                 list.insert(j);
                 list.saveToFile(JACKET_PATH);
@@ -1130,7 +1134,7 @@ public class DonationManagement {
                 list.loadFromFile(PANT_PATH);
                 
                 id = idGenerator("AP", list);
-                Pant p = new Pant(id, qty, note, color, condition, brand);
+                Pant p = new Pant(id, dID, qty, note, size, color, condition, brand);
                 
                 list.insert(p);
                 list.saveToFile(PANT_PATH);
@@ -1142,7 +1146,7 @@ public class DonationManagement {
                 list.loadFromFile(SHIRT_PATH);
                 
                 id = idGenerator("AI", list);
-                Shirt shirt = new Shirt(id, qty, note, color, condition, brand);
+                Shirt shirt = new Shirt(id, dID, qty, note, size, color, condition, brand);
                 
                 list.insert(shirt);
                 list.saveToFile(SHIRT_PATH);
@@ -1155,7 +1159,7 @@ public class DonationManagement {
                 
                 id = idGenerator("AO", list);
                 String detailType = inputShoes();
-                Shoes shoes = new Shoes(id, qty, note, color, condition, brand, detailType);
+                Shoes shoes = new Shoes(id, dID, qty, note, size, color, condition, brand, detailType);
                 
                 list.insert(shoes);
                 list.saveToFile(SHOES_PATH);
@@ -1167,7 +1171,7 @@ public class DonationManagement {
                 list.loadFromFile(SOCKS_PATH);
                 
                 id = idGenerator("AS", list);
-                Socks socks = new Socks(id, qty, note, color, condition, brand);
+                Socks socks = new Socks(id, dID, qty, note, size, color, condition, brand);
                 
                 list.insert(socks);
                 list.saveToFile(SOCKS_PATH);
@@ -1179,8 +1183,78 @@ public class DonationManagement {
         }
     }
     
-    public static String colorValidation(){
+    public static String sizeValidation(){
+        System.out.println("\nApparel size");
+        String[] sizeMenu = {"XS", "S", "M", "L", "XL", "Free Size"};
+        int appSize = menuIntReturn(sizeMenu);
+        
+        String size = null;
+        switch(appSize){
+            case 1: 
+                size = "XS";
+                break;
+            case 2:
+                size = "S";
+                break;
+            case 3:
+                size = "M";
+                break;
+            case 4:
+                size = "L";
+                break;
+            case 5:
+                size = "XL";
+                break;
+            case 6:
+                size = "Free Size";
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid apparel size.\n" + ANSI_RESET);
+        }
+        
+        return size;
+    }
+    
+    public static String shoesSizeValidation(){
         Scanner scan = new Scanner(System.in);
+        
+        System.out.print("\nApparel size (1 - 16): ");
+        String sizeStr = null;
+        boolean validSize = false;
+        while(validSize == false){
+            sizeStr = scan.nextLine();
+            
+            if(sizeStr.isEmpty()){
+
+                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                System.out.print("Enter again: ");
+
+            }else{
+                try {
+                    int size = Integer.parseInt(sizeStr);
+
+                    if (size < 1 || size > 16) {
+                        System.out.println(ANSI_RED + "Invalid integer. Please enter between 1 to 16.\n" + ANSI_RESET);
+
+                        System.out.print("Enter again: ");
+
+                    } else {
+                        validSize = true; 
+                    }
+
+                } catch (NumberFormatException e) {
+
+                    System.out.println(ANSI_RED + "Invalid input. Please enter correct integer.\n" + ANSI_RESET);
+                    System.out.print("Enter again: ");
+
+                }
+            }
+        }
+        
+        return sizeStr;
+    }
+    
+    public static String colorValidation(){
         
         System.out.println("\nApparel Color");
         String[] appColorMenu = {"Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Silver", "White", "Black"};
@@ -1223,7 +1297,6 @@ public class DonationManagement {
     }
     
     public static String conditionValidation(){
-        Scanner scan = new Scanner(System.in);
         
         System.out.println("\nApparel Condition");
         String[] appConMenu = {"New", "Good", "Fair", "Poor"};
@@ -1568,10 +1641,11 @@ public class DonationManagement {
             validID = searchingIdValidation(id);
         }
         
-        String prefix = id.substring(0, 2).toUpperCase();
+        id = id.substring(0, 2).toUpperCase() + id.substring(2, 7);
+        String prefix = id.substring(0, 2);
         String filePath = null;
         String[] amendList = null;
-        String[] cloth = new String[]{"Quantity", "Remarks", "Color", "Condition", "Brand"};
+        String[] cloth = new String[]{"Quantity", "Remarks", "Size", "Color", "Condition", "Brand"};
         String[] food = new String[]{"Quantity", "Remarks", "Expiry date", "Weight", "Status", "Food Details"};
         switch (prefix) {
             case "MB":
@@ -1625,7 +1699,6 @@ public class DonationManagement {
             default:
                 System.out.println(ANSI_RED + "Invalid ID." + ANSI_RESET);
         }
-        
         ManageItem<Item> list = new ManageItem<>();
         list.loadFromFile(filePath);
         Item item = list.findById(id);
@@ -1645,6 +1718,8 @@ public class DonationManagement {
             }
             
         }
+        
+        list.saveToFile(filePath);
         
     }
     
@@ -1801,16 +1876,29 @@ public class DonationManagement {
     }
     
     public static void apparelAmend(int amendOption, Item item){
-        if (amendOption == 3){
+        
+        if(amendOption == 3){
+            //size
+            String size;
+            if(item instanceof Shoes){
+                size = shoesSizeValidation();
+            }else{
+                size = sizeValidation();
+            }
+            
+            ((Apparel) item).setSize(size);
+        }
+        
+        if (amendOption == 4){
             //color
             String color = colorValidation();
             ((Apparel) item).setColor(color);
-        } else if (amendOption == 4){
+        } else if (amendOption == 5){
             //condition
             String condition = conditionValidation();
             ((Apparel) item).setCondition(condition);
             
-        } else if (amendOption == 5 && item instanceof Shoes){
+        } else if (amendOption == 6 && item instanceof Shoes){
             String detail = inputShoes();
             ((Shoes) item).setDetail(detail);
         } else{
@@ -1822,48 +1910,48 @@ public class DonationManagement {
     // Part 5: Track donated items in categories
     // -----------------------------------------
     public static void trackItemByCategory(){
-        System.out.println("Which category of item do you wish to track?");
-        String[] itemCatMenu = {"Money", "Physical Item", "More details selection"};
-        int itemCat = menuIntReturn(itemCatMenu);
         
-        ManageItem<Item> list = new ManageItem<>();
-        String[] appendList = null;
-        switch(itemCat){
-            case 1: 
-                appendList = new String[]{BANK_PATH, CASH_PATH};
-                break;
-            case 2:
-                list.loadFromFile(CASH_PATH);
-                break;
-        }
-        
-        if(appendList != null){
-            list.loadFromFile(appendList[0]);
-            
-            LinkedList currentList = new LinkedList();
-            for (int i = 1; i < appendList.length; i++){
-                currentList.loadFromFile(appendList[i]);
-                list.appendList(currentList);
-                
-            }
-            System.out.println(list.toString());
-        }
     }
     
     // ----------------------------------------
     // Part 6: List donation by different donor
     // ----------------------------------------
-    public static void listByDiffDonor(){}
+    public static void listByDiffDonor(){
+    
+    }
     
     // --------------------------
     // Part 7: List all donations
     // --------------------------
-    public static void listAll(){}
+    public static void listAll(){
+        ManageItem<Item> list = new ManageItem<>();
+        String[] appendList = {BANK_PATH, CASH_PATH, JACKET_PATH, PANT_PATH, SHIRT_PATH, SHOES_PATH, SOCKS_PATH, BAKED_PATH, BOXED_PATH, CANNED_PATH, DRY_PATH, ESS_PATH};
+
+        list.loadFromFile(appendList[0]);
+
+        for (int i = 1; i < appendList.length; i++) {
+            LinkedList<Item> currentList = new LinkedList<>();
+            currentList.loadFromFile(appendList[i]);
+            list.appendList(currentList);
+        }
+
+        System.out.println("--- Item List ---");
+        if (list.isEmpty()){
+            System.out.println("No item in the stock.");
+        }else{
+            System.out.println(list.toString());
+        }
+
+    }
     
     // -----------------------------------------
     // Part 8: Filter donation based on criteria
     // -----------------------------------------
-    public static void filterDonation(){}
+    public static void filterDonation(){
+        // food expiry date
+        // food condition
+        // cloth condition
+    }
     
     // --------------------------------
     // Part 9: Generate summary reports 
