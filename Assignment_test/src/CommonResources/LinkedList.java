@@ -265,35 +265,50 @@ public class LinkedList<T> implements LinkedListInterface<T> {
     // Method to append both linked list
     @Override
     public void appendList(LinkedList anotherList){
-        
+        this.removeEmptyData();
+        anotherList.removeEmptyData();
+
+        // If anotherList is empty after removing empty data, there's nothing to append
+        if (anotherList.head == null) {
+            return;
+        }
+
+        // If the current list is empty, simply set head and tail to anotherList's head and tail
+        if (this.tail == null) {
+            this.head = anotherList.head;
+            this.tail = anotherList.tail;
+        } else {
+            // Otherwise, append anotherList to the current list
+            this.tail.next = anotherList.head;
+            anotherList.head.previous = this.tail;
+            this.tail = anotherList.tail;
+        }
+    }
+    
+    // Method to remove empty data in between list
+    public void removeEmptyData(){
         if(!isEmpty()){
             
             // check whether first node is empty, if empty, search for the first node that is not empty
-            Node<T> currentNode = head;
-            if (head == null){
-                while(currentNode == null){
+            while(head != null && head.data == null){
+                head = head.next;
+            }
+            
+            if(head.data != null){
+                
+                Node<T> currentNode = head;
+                while(currentNode != tail){
+                    if(currentNode.next.data == null){
+                        currentNode.next = currentNode.next.next;
+                    }
+                        
                     currentNode = currentNode.next;
                 }
             }
-
-            while (currentNode != tail){
-
-                if(currentNode.next.data == null){
-                    currentNode.next = currentNode.next.next;
-                }
-
-                currentNode = currentNode.next;
-
-            }
             
-            if (currentNode == tail){
-                if(currentNode == null){
-                    
-                }
+            while(tail.data == null){
+                tail = tail.previous;
             }
-            
-            this.tail.next = anotherList.head.previous;
-        
         }
     }
 }
