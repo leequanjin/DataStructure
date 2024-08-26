@@ -51,11 +51,11 @@ public class Food extends PhysicalItem {
         this.status = status;
     }
 
-    public String getdetail() {
+    public String getDetail() {
         return detail;
     }
 
-    public void setdetail(String detail) {
+    public void setDetail(String detail) {
         this.detail = detail;
     }
 

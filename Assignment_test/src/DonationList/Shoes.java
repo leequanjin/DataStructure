@@ -34,6 +34,6 @@ public class Shoes extends Apparel{
     @Override
     public String toString(){
         return super.toString() +
-                "\nDetails: " + detail;
+                "\nDetail: " + detail;
     }
 }

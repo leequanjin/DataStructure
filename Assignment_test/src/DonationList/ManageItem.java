@@ -54,6 +54,21 @@ public class ManageItem<T extends Item> extends LinkedList<T> {
     }
     
     @Override
+    public ManageItem filterByCategory(Class categoryClass) {
+        ManageItem filteredList = new ManageItem<>();
+        Node current = head;
+
+        while (current != null) {
+            if (categoryClass.isInstance(current.data)) {
+                filteredList.insert(categoryClass.cast(current.data));
+            }
+            current = current.next;
+        }
+
+        return filteredList;
+    }
+    
+    @Override
     public String toString(){
         
         String result = "";
