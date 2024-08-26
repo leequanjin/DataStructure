@@ -49,7 +49,7 @@ import java.util.Set;
  */
 public class DonationManagement {
     
-    private static final String DONOR_PATH = "donor.txt";
+    private static final String DONOR_PATH = "donors.txt";
     private static final String BANK_PATH = "bank.txt";
     private static final String CASH_PATH = "cash.txt";
     private static final String BAKED_PATH = "bakedFood.txt";
@@ -309,6 +309,7 @@ public class DonationManagement {
                         if(validDonor == true){
                             System.out.println("\n - - - Current Donor - - -");
                             donorList.show();
+                            validID = true;
                         }else{ // if does not exist, enter other
                             System.out.println(ANSI_RED + "\nDonor does not exist." + ANSI_RESET);
                             String[] contMenu = {"Enter Other Donor", "Exit"};
@@ -1937,26 +1938,48 @@ public class DonationManagement {
     // Part 6: List donation by different donor
     // ----------------------------------------
     public static void listByDiffDonor(){
-        ManageItem<Item> itemlist = loadAllItemIntoList(); // Assuming this method exists and works
+        ManageItem<Item> itemList = loadAllItemIntoList(); // Assuming this method exists and works
         ManageDonors<Donor> donorList = new ManageDonors<>();
         donorList.loadFromFile("donors.txt");
 
         LinkedList<Donor> individualList = donorList.filterByCategory(Individual.class);
         LinkedList<Donor> organizationList = donorList.filterByCategory(Organization.class);
+        
+        // remove all empty space
+        itemList.removeEmptyData();
+        individualList.removeEmptyData();
+        organizationList.removeEmptyData();
 
         System.out.println("--- INDIVIDUAL ---");
-        Node<Donor> currentNode = individualList.head;
-        while (currentNode != null) {
-            System.out.println(currentNode.data.getId());
-            currentNode = currentNode.next; 
-        }
+        filterByDonor(itemList, individualList);
 
         System.out.println("--- ORGANIZATION ---");
-        currentNode = organizationList.head;
-        while (currentNode != null) {
-            System.out.println(currentNode.data.getId());
-            currentNode = currentNode.next;
+        filterByDonor(itemList, organizationList);
+    }
+    
+    public static void filterByDonor(ManageItem<Item> itemList, LinkedList<Donor> donorList){
+        itemList.removeEmptyData();
+        donorList.removeEmptyData();
+        
+        Node<Donor> currentDonor = donorList.head;
+        String donorID;
+        
+        while (currentDonor != null) {
+            System.out.println(currentDonor.data.getId());
+            donorID = currentDonor.data.getId();
+            
+            Node<Item> currentItem = itemList.head;
+            while (currentItem != null){
+                if( donorID.equals( currentItem.data.getDonorID() ) ){
+                    System.out.println(currentItem.data.toString() + "\n");
+                }
+                currentItem = currentItem.next;
+            }
+            
+            currentDonor = currentDonor.next; 
         }
+            
+        System.out.println();
     }
     
     public static ManageItem<Item> loadAllItemIntoList(){
@@ -1992,13 +2015,196 @@ public class DonationManagement {
     // Part 8: Filter donation based on criteria
     // -----------------------------------------
     public static void filterDonation(){
-        // money filter descending
-        // money filter ascending
-        // food expiry date
-        // food condition
-        // food type
-        // cloth condition
-        // cloth type
+        System.out.println("--- Filter Donation ---");
+        String[] filterMenu = {
+            "Filter All Money in Ascending", 
+            "Filter All Money in Descending", 
+            "Filter All Bank in Ascending",
+            "Filter All Bank in Descending",
+            "Filter All Cash in Ascending", 
+            "Filter All Cash in Descending",
+            "Filter All Food according Expiry Date with Category of Food Type",
+            "Filter All Cloth according Condition with Category of Cloth Ctype"
+        };
+        int filterSelection = menuIntReturn(filterMenu);
+        
+        ManageItem<Money> bankList = new ManageItem<>(BANK_PATH);
+        ManageItem<Money> cashList = new ManageItem<>(CASH_PATH);
+        ManageItem<Money> moneyList;
+        moneyList = bankList;
+        moneyList.appendList(cashList);
+        
+        String[] foodFile = {BAKED_PATH, BOXED_PATH, CANNED_PATH, DRY_PATH, ESS_PATH}; 
+        ManageItem<Food> foodList = new ManageItem<>(foodFile[0]);
+        for(int i = 1; i < foodFile.length; i++){
+            ManageItem<Food> tempFoodList = new ManageItem<>(foodFile[i]);
+            foodList.appendList(tempFoodList);
+        }
+        
+        String[] apparelFile = {JACKET_PATH, PANT_PATH, SHIRT_PATH, SHOES_PATH, SOCKS_PATH}; 
+        ManageItem<Apparel> apparelList = new ManageItem<>(apparelFile[0]);
+        for(int i = 1; i < apparelFile.length; i++){
+            ManageItem<Apparel> tempAppList = new ManageItem<>(apparelFile[i]);
+            apparelList.appendList(tempAppList);
+        }
+        
+        switch(filterSelection){
+            case 1: 
+                filterMoneyAscending(moneyList);
+                break;
+            case 2: 
+                filterMoneyDescending(moneyList);
+                break;
+            case 3:
+                filterMoneyAscending(bankList);
+                break;
+            case 4:
+                filterMoneyDescending(bankList);
+                break;
+            case 5:
+                filterMoneyAscending(cashList);
+                break;
+            case 6:
+                filterMoneyDescending(cashList);
+            case 7:
+                filterFood(foodList);
+                break;
+            case 8:
+                filterApparel(apparelList);
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid filter selection." + ANSI_RESET);
+        }
+    }
+    
+    public static void filterMoneyAscending(ManageItem<Money> moneyList) {
+        moneyList.removeEmptyData();
+
+        if (moneyList.head == null) {
+            System.out.println(ANSI_RED + "No such donated item." + ANSI_RESET);
+            return;
+        }
+        
+        if (moneyList.head.next == null){
+            System.out.println(moneyList.head.data.toString());
+            return;
+        }
+
+        // Loop through all data in the list
+        Node<Money> currentMoney = moneyList.head.next; // Start from the second node
+        while (currentMoney != null) {
+            
+            // Get the position data should be inserted
+            Node<Money> newPosition = moneyList.head;
+            while (newPosition != currentMoney) {
+                if (currentMoney.data.getAmount() < newPosition.data.getAmount()) {
+                    break;
+                }
+                newPosition = newPosition.next;
+            }
+
+            // If the currentMoney is already in the correct position, continue
+            if (newPosition == currentMoney) {
+                currentMoney = currentMoney.next;
+                continue;
+            }
+
+            // Remove currentMoney from its current position
+            currentMoney.previous.next = currentMoney.next;
+            if (currentMoney.next != null) {
+                currentMoney.next.previous = currentMoney.previous;
+            }
+
+            // Insert currentMoney before newPosition
+            if (newPosition == moneyList.head) {
+                currentMoney.previous = null;
+                currentMoney.next = moneyList.head;
+                moneyList.head.previous = currentMoney;
+                moneyList.head = currentMoney;
+            } else {
+                currentMoney.previous = newPosition.previous;
+                currentMoney.next = newPosition;
+                newPosition.previous.next = currentMoney;
+                newPosition.previous = currentMoney;
+            }
+
+            currentMoney = currentMoney.next;
+        }
+
+        Node<Money> node = moneyList.head;
+        while (node != null) {
+            System.out.println(node.data.toString() + "\n");
+            node = node.next;
+        }
+    }
+
+    public static void filterMoneyDescending(ManageItem<Money> moneyList) {
+        moneyList.removeEmptyData();
+
+        if (moneyList.head == null) {
+            System.out.println(ANSI_RED + "No such donated item." + ANSI_RESET);
+            return;
+        }
+        
+        if (moneyList.head.next == null){
+            System.out.println(moneyList.head.data.toString());
+            return;
+        }
+
+        // Loop through all data in the list
+        Node<Money> currentMoney = moneyList.head.next; // Start from the second node
+        while (currentMoney != null) {
+            
+            // Get the position data should be inserted
+            Node<Money> newPosition = moneyList.head;
+            while (newPosition != currentMoney) {
+                if (currentMoney.data.getAmount() > newPosition.data.getAmount()) {
+                    break;
+                }
+                newPosition = newPosition.next;
+            }
+
+            // If the currentMoney is already in the correct position, continue
+            if (newPosition == currentMoney) {
+                currentMoney = currentMoney.next;
+                continue;
+            }
+
+            // Remove currentMoney from its current position
+            currentMoney.previous.next = currentMoney.next;
+            if (currentMoney.next != null) {
+                currentMoney.next.previous = currentMoney.previous;
+            }
+
+            // Insert currentMoney before newPosition
+            if (newPosition == moneyList.head) {
+                currentMoney.previous = null;
+                currentMoney.next = moneyList.head;
+                moneyList.head.previous = currentMoney;
+                moneyList.head = currentMoney;
+            } else {
+                currentMoney.previous = newPosition.previous;
+                currentMoney.next = newPosition;
+                newPosition.previous.next = currentMoney;
+                newPosition.previous = currentMoney;
+            }
+
+            currentMoney = currentMoney.next;
+        }
+
+        Node<Money> node = moneyList.head;
+        while (node != null) {
+            System.out.println(node.data.toString() + "\n");
+            node = node.next;
+        }
+    }
+    
+    public static void filterFood(ManageItem<Food> foodList){
+    
+    }
+    
+    public static void filterApparel(ManageItem<Apparel> appList){
+    
     }
     
     // --------------------------------
