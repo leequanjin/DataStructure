@@ -12,6 +12,13 @@ import CommonResources.Node;
  * @author Asus
  */
 public class ManageItem<T extends Item> extends LinkedList<T> {
+
+    public ManageItem(){}
+    
+    public ManageItem(String filePath) {
+        super.loadFromFile(filePath);
+    }
+    
     // Method to delete data by ID
     public void deleteById(String id) {
         if (head == null) {
