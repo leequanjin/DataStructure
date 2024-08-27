@@ -9,7 +9,7 @@ import CommonResources.Node;
 
 /**
  *
- * @author Asus
+ * @author Heng Pei Lin
  */
 public class ManageItem<T extends Item> extends LinkedList<T> {
 
