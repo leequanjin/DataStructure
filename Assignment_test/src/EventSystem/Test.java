@@ -184,12 +184,7 @@ private static void addEventDetails(Scanner scanner, LinkedList<Event> eventList
     System.out.print("Location: ");
     String location = scanner.nextLine().trim();
 
-    Event event = new Event(eventID, eventName, date, time, location) {
-        @Override
-        public String getType() {
-            return "General Event";
-        }
-    };
+    Event event = new Event(eventID, eventName, date, time, location);
 
     eventList.insert(event);
     System.out.println(ANSI_GREEN + "Event added successfully!" + ANSI_RESET);

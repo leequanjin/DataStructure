@@ -47,7 +47,6 @@ public class Ticket extends Event {
         this.ticketPrice = ticketPrice;
     }
     
-    @Override
     public String getType() {
         return "Ticket";
     }

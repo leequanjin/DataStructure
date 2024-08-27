@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-public abstract class Event implements Serializable {
+public class Event implements Serializable {
     private String eventID;
     private String eventName;
     private Date date;
@@ -63,7 +63,9 @@ public abstract class Event implements Serializable {
         this.location = location;
     }
     
-    public abstract String getType();
+    public String getType(){
+        return "General Event";
+    };
 
 
     @Override
