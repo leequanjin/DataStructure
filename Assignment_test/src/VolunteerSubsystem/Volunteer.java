@@ -16,7 +16,6 @@ public class Volunteer {
         this.gender = gender;
         this.age = age; 
         this.contactNo = contactNo;
-        //this.assignedEvents = new LinkedList<>();
     }
 
     
@@ -59,15 +58,6 @@ public class Volunteer {
     public void setContactNo(String contactNo) {
         this.contactNo = contactNo;
     }
-    
-//    public LinkedList<Event> getAssignedEvents() {
-//        return assignedEvents;
-//    }
-//
-//    public void assignEvent(Event event) {
-//        this.assignedEvents.insert(event);
-//    }
-
     
     @Override
     public String toString() {
