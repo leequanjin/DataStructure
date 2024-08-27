@@ -7,6 +7,7 @@ package EventSystem;
 
 import CommonResources.LinkedList;
 import CommonResources.Node;
+import VolunteerSubsystem.Volunteer;
 
 
 /**
@@ -40,6 +41,7 @@ public class Test {
     private static final String EVENT_FILE = "C:\\Users\\Clarist Liew\\Downloads\\DataStruc\\DataStructure\\Assignment_test\\event.txt";
     private static final String TICKET_FILE = "C:\\Users\\Clarist Liew\\Downloads\\DataStruc\\DataStructure\\Assignment_test\\ticket.txt";
     private static final String SPONSORSHIP_FILE = "C:\\Users\\Clarist Liew\\Downloads\\DataStruc\\DataStructure\\Assignment_test\\sponsorship.txt";
+    private static final String VOLUNTEER_FILE = "C:\\Users\\Clarist Liew\\Downloads\\DataStruc\\DataStructure\\Assignment_test\\volunteer.txt";
 
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in); 
@@ -66,12 +68,15 @@ public class Test {
                     listAllEvents();
                     break;
                 case 6:
-                    filterEvents();
+                    removeEventFromAVolunteer();
                     break;
                 case 7:
-                    generateSummaryReports();
+                    listAllEventsForAVolunteer();
                     break;
                 case 8:
+                    generateSummaryReports();
+                    break;
+                case 9:
                     System.out.println("Exiting...");
                     break;
             }
@@ -91,9 +96,10 @@ public class Test {
             System.out.println("3. Search an event");
             System.out.println("4. Amend event details");
             System.out.println("5. List all events");
-            System.out.println("6. Filter events based on criteria");
-            System.out.println("7. Generate summary reports");
-            System.out.println("8. Exit");
+            System.out.println("6. Remove an event from a volunteer");
+            System.out.println("7. List all events for a volunteer");
+            System.out.println("8. Generate summary reports");
+            System.out.println("9. Exit");
             System.out.print("\nEnter your choice: ");
 
             String menuInput = scanner.nextLine().trim();
@@ -103,10 +109,10 @@ public class Test {
             } else {
                 try {
                     choice = Integer.parseInt(menuInput);
-                    if (choice >= 1 && choice <= 8) {
+                    if (choice >= 1 && choice <= 9) {
                         validInput = true;
                     } else {
-                        System.out.println(ANSI_RED + "Invalid choice. Please choose a number between 1 and 8." + ANSI_RESET);
+                        System.out.println(ANSI_RED + "Invalid choice. Please choose a number between 1 and 9." + ANSI_RESET);
                     }
                 } catch (NumberFormatException e) {
                     System.out.println(ANSI_RED + "Invalid input. Please enter a valid integer number." + ANSI_RESET);
@@ -441,9 +447,9 @@ public static void removeEvent() {
         LinkedList<Ticket> ticketList = new LinkedList<>();
         LinkedList<Sponsorship> sponsorshipList = new LinkedList<>();
         
-        eventList.loadFromFile("event.txt");
-        ticketList.loadFromFile("ticket.txt");
-        sponsorshipList.loadFromFile("sponsorship.txt");
+        eventList.loadFromFile(EVENT_FILE);
+        ticketList.loadFromFile(TICKET_FILE);
+        sponsorshipList.loadFromFile(SPONSORSHIP_FILE);
 
         Scanner scanner = new Scanner(System.in);
 
@@ -472,10 +478,179 @@ public static void removeEvent() {
         System.out.println("Event with ID " + eventID + " and all associated tickets and sponsorships have been removed ");
     }
     
-    private static void searchEvent() {
-        
+    private static void searchEvent() { 
+    // Load data from files
+    LinkedList<Event> eventList = new LinkedList<>();
+    LinkedList<Ticket> ticketList = new LinkedList<>();
+    LinkedList<Sponsorship> sponsorshipList = new LinkedList<>();
     
+    eventList.loadFromFile(EVENT_FILE);
+    ticketList.loadFromFile(TICKET_FILE);
+    sponsorshipList.loadFromFile(SPONSORSHIP_FILE);
+    
+    Scanner scanner = new Scanner(System.in);
+
+    // Check if there are any events
+    if (eventList.isEmpty()) {
+        System.out.println(ANSI_YELLOW + "No events found." + ANSI_RESET);
+        return;
+    }
+
+    int searchChoice = 0;
+     while (searchChoice != 1 && searchChoice != 2) {
+        System.out.println("Search Event by:");
+        System.out.println("1. Event ID");
+        System.out.println("2. Event Name");
+        System.out.print("Enter your choice: ");
+        
+        String searchChoiceStr = scanner.nextLine().trim();
+
+        
+        if (searchChoiceStr.isEmpty()) {
+            System.out.println(ANSI_RED + "Input cannot be empty. Please enter a number." + ANSI_RESET);
+            continue;
+        }
+
+        try {
+            searchChoice = Integer.parseInt(searchChoiceStr);
+            if (searchChoice != 1 && searchChoice != 2) {
+                System.out.println(ANSI_RED + "Invalid choice. Please select either 1 or 2." + ANSI_RESET);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println(ANSI_RED + "Invalid choice. Please enter a number." + ANSI_RESET);
+        }
+    }
+
+    System.out.print("Enter your search query: ");
+    String searchQuery = scanner.nextLine().trim();
+
+
+    Event foundEvent = null;
+
+        switch (searchChoice) {
+            case 1:
+                foundEvent = searchEventByID(eventList, searchQuery);
+                break;
+            case 2:
+                foundEvent = searchEventByName(eventList, searchQuery);
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid choice. Please select either 1 or 2." + ANSI_RESET);
+                return;
+        }
+
+    if (foundEvent != null) {
+        System.out.println(ANSI_CYAN + "Event Found: " + ANSI_RESET);
+        System.out.println(foundEvent);
+
+        // List associated tickets
+        System.out.println(ANSI_BLUE + "\nTickets for Event ID " + foundEvent.getEventID() + ":" + ANSI_RESET);
+        Node<Ticket> ticketNode = ticketList.head;
+        boolean ticketsFound = false;
+        while (ticketNode != null) {
+            if (ticketNode.data.getEventID().equals(foundEvent.getEventID())) {
+                System.out.println(ticketNode.data);
+                ticketsFound = true;
+            }
+            ticketNode = ticketNode.next;
+        }
+        if (!ticketsFound) {
+            System.out.println(ANSI_YELLOW + "No tickets found for this event." + ANSI_RESET);
+        }
+
+        // List associated sponsorships
+        System.out.println(ANSI_PURPLE + "\nSponsorships for Event ID " + foundEvent.getEventID() + ":" + ANSI_RESET);
+        Node<Sponsorship> sponsorshipNode = sponsorshipList.head;
+        boolean sponsorshipsFound = false;
+        while (sponsorshipNode != null) {
+            if (sponsorshipNode.data.getEventID().equals(foundEvent.getEventID())) {
+                System.out.println(sponsorshipNode.data);
+                sponsorshipsFound = true;
+            }
+            sponsorshipNode = sponsorshipNode.next;
+        }
+        if (!sponsorshipsFound) {
+            System.out.println(ANSI_YELLOW + "No sponsorships found for this event." + ANSI_RESET);
+        }
+    } else {
+        System.out.println(ANSI_RED + "No event found matching the search criteria." + ANSI_RESET);
+    }
 }
+
+private static Event searchEventByID(LinkedList<Event> eventList, String eventID) {
+    Node<Event> currentNode = eventList.head;
+    Event[] eventArray = new Event[eventList.length()];
+    for (int i = 0; i < eventList.length(); i++) {
+        eventArray[i] = currentNode.data;
+        currentNode = currentNode.next;
+    }
+
+    // Sort the array using bubble sort by event ID
+    for (int i = 0; i < eventArray.length - 1; i++) {
+        for (int j = 0; j < eventArray.length - 1 - i; j++) {
+            if (eventArray[j].getEventID().compareTo(eventArray[j + 1].getEventID()) > 0) {
+                Event temp = eventArray[j];
+                eventArray[j] = eventArray[j + 1];
+                eventArray[j + 1] = temp;
+            }
+        }
+    }
+
+    // Perform binary search on the sorted array by event ID
+    int low = 0, high = eventArray.length - 1;
+    while (low <= high) {
+        int mid = (low + high) / 2;
+        Event midEvent = eventArray[mid];
+
+        if (midEvent.getEventID().equals(eventID)) {
+            return midEvent;
+        } else if (midEvent.getEventID().compareTo(eventID) < 0) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+
+    return null;
+}
+
+private static Event searchEventByName(LinkedList<Event> eventList, String eventName) {
+    Node<Event> currentNode = eventList.head;
+    Event[] eventArray = new Event[eventList.length()];
+    for (int i = 0; i < eventList.length(); i++) {
+        eventArray[i] = currentNode.data;
+        currentNode = currentNode.next;
+    }
+
+    // Sort the array using bubble sort by event name
+    for (int i = 0; i < eventArray.length - 1; i++) {
+        for (int j = 0; j < eventArray.length - 1 - i; j++) {
+            if (eventArray[j].getEventName().compareToIgnoreCase(eventArray[j + 1].getEventName()) > 0) {
+                Event temp = eventArray[j];
+                eventArray[j] = eventArray[j + 1];
+                eventArray[j + 1] = temp;
+            }
+        }
+    }
+
+    // Perform binary search on the sorted array by event name
+    int low = 0, high = eventArray.length - 1;
+    while (low <= high) {
+        int mid = (low + high) / 2;
+        Event midEvent = eventArray[mid];
+
+        if (midEvent.getEventName().equalsIgnoreCase(eventName)) {
+            return midEvent; 
+        } else if (midEvent.getEventName().compareToIgnoreCase(eventName) < 0) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+
+    return null;
+}
+
 
 
 
@@ -486,9 +661,9 @@ public static void removeEvent() {
         LinkedList<Sponsorship> sponsorshipList = new LinkedList<>();
         
         
-        eventList.loadFromFile("event.txt");
-        ticketList.loadFromFile("ticket.txt");
-        sponsorshipList.loadFromFile("sponsorship.txt");
+        eventList.loadFromFile(EVENT_FILE);
+        ticketList.loadFromFile(TICKET_FILE);
+        sponsorshipList.loadFromFile(SPONSORSHIP_FILE);
 
         Scanner scanner = new Scanner(System.in);
 
@@ -836,12 +1011,153 @@ private static void listAllEvents() {
 }
 
 
-    private static void filterEvents() {
-        System.out.println("Hello");
-        
-    }
+private static void removeEventFromAVolunteer() {
+//    LinkedList<Volunteer> volunteerList = new LinkedList<>();
+//    LinkedList<Event> eventList = new LinkedList<>();
+//
+//    volunteerList.loadFromFile(VOLUNTEER_FILE );
+//    eventList.loadFromFile(EVENT_FILE);
+//
+//    Scanner scanner = new Scanner(System.in);
+//
+//    
+//    if (volunteerList.isEmpty()) {
+//        System.out.println(ANSI_YELLOW + "No volunteers found." + ANSI_RESET);
+//        return;
+//    }
+//
+//    
+//    System.out.print("Enter the Volunteer ID: ");
+//    String volunteerID = scanner.nextLine().trim();
+//
+//    
+//    Node<Volunteer> volunteerNode = volunteerList.head;
+//    Volunteer foundVolunteer = null;
+//
+//    while (volunteerNode != null) {
+//        if (volunteerNode.data.getVolunteerID().equals(volunteerID)) {
+//            foundVolunteer = volunteerNode.data;
+//            break;
+//        }
+//        volunteerNode = volunteerNode.next;
+//    }
+//
+//    
+//    if (foundVolunteer == null) {
+//        System.out.println(ANSI_RED + "No volunteer found with ID: " + volunteerID + ANSI_RESET);
+//        return;
+//    }
+//
+//    // List all events associated with the volunteer
+//    LinkedList<Event> assignedEvents = foundVolunteer.getAssignedEvents(); // Assuming Volunteer class has this method
+//    if (assignedEvents.isEmpty()) {
+//        System.out.println(ANSI_YELLOW + "No events associated with this volunteer." + ANSI_RESET);
+//        return;
+//    }
+//
+//    System.out.println(ANSI_CYAN + "Volunteer: " + foundVolunteer.getName() + " (" + foundVolunteer.getVolunteerID() + ")" + ANSI_RESET);
+//    System.out.println("Associated Events:");
+//    assignedEvents.show(); // Assuming LinkedList has a show() method to display all events
+//
+//    // Ask the user which event to remove
+//    System.out.print("Enter the Event ID to remove from this volunteer: ");
+//    String eventIDToRemove = scanner.nextLine().trim();
+//
+//    // Find and remove the event from the volunteer's assigned events
+//    Node<Event> currentEventNode = assignedEvents.head;
+//    Event eventToRemove = null;
+//
+//    while (currentEventNode != null) {
+//        if (currentEventNode.data.getEventID().equals(eventIDToRemove)) {
+//            eventToRemove = currentEventNode.data;
+//            break;
+//        }
+//        currentEventNode = currentEventNode.next;
+//    }
+//
+//    
+//    if (eventToRemove == null) {
+//        System.out.println(ANSI_RED + "No event found with ID: " + eventIDToRemove + " in this volunteer's assigned events." + ANSI_RESET);
+//        return;
+//    }
+//
+//    
+//    System.out.print("Are you sure you want to remove this event from the volunteer? (Y/N): ");
+//    String confirmation = scanner.nextLine().trim().toUpperCase();
+//
+//    if (confirmation.equals("Y")) {
+//        // Remove the event
+//        assignedEvents.removeIf(event -> event.getEventID().equals(eventIDToRemove));
+//        System.out.println(ANSI_GREEN + "Event with ID " + eventIDToRemove + " removed from volunteer " + volunteerID + "." + ANSI_RESET);
+//
+//        
+//        volunteerList.saveToFile(VOLUNTEER_FILE );
+//    } else {
+//        System.out.println(ANSI_YELLOW + "Operation cancelled." + ANSI_RESET);
+//    }
+}
+
+
+    
+    private static void listAllEventsForAVolunteer() {
+//    LinkedList<Volunteer> volunteerList = new LinkedList<>();
+//    LinkedList<Event> eventList = new LinkedList<>();
+//
+//    volunteerList.loadFromFile("volunteer.txt");
+//    eventList.loadFromFile("event.txt");
+//
+//    Scanner scanner = new Scanner(System.in);
+//
+//    
+//    if (volunteerList.isEmpty()) {
+//        System.out.println(ANSI_YELLOW + "No volunteers found." + ANSI_RESET);
+//        return;
+//    }
+//
+//    
+//    System.out.print("Enter the Volunteer ID: ");
+//    String volunteerID = scanner.nextLine().trim();
+//
+//    // Find the volunteer based on volunteerID
+//    Node<Volunteer> volunteerNode = volunteerList.head;
+//    Volunteer foundVolunteer = null;
+//
+//    while (volunteerNode != null) {
+//        if (volunteerNode.data.getVolunteerID().equals(volunteerID)) {
+//            foundVolunteer = volunteerNode.data;
+//            break;
+//        }
+//        volunteerNode = volunteerNode.next;
+//    }
+//
+//    
+//    if (foundVolunteer == null) {
+//        System.out.println(ANSI_RED + "No volunteer found with ID: " + volunteerID + ANSI_RESET);
+//        return;
+//    }
+//
+//    // List all events associated with the volunteer
+//    LinkedList<Event> assignedEvents = foundVolunteer.getAssignedEvents(); // Assuming Volunteer class has this method
+//
+//    if (assignedEvents.isEmpty()) {
+//        System.out.println(ANSI_YELLOW + "No events associated with this volunteer." + ANSI_RESET);
+//        return;
+//    }
+//
+//    System.out.println(ANSI_CYAN + "Volunteer: " + foundVolunteer.getName() + " (" + foundVolunteer.getVolunteerID() + ")" + ANSI_RESET);
+//    System.out.println("Associated Events:");
+//
+//    // Display all events
+//    assignedEvents.show(); // Assuming LinkedList has a show() method to display all events
+}
+
+    
+    
+    
 
     private static void generateSummaryReports() {
+        
+        
         
     }
 }
