@@ -6,7 +6,7 @@ package CommonResources;
 
 /**
  *
- * @author Asus
+ * @author Heng Pei Lin
  */
 public interface QueueInterface<T> {
     void add(T newEntry);

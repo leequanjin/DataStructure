@@ -6,7 +6,7 @@ package CommonResources;
 
 /**
  *
- * @author Asus
+ * @author Heng Pei Lin
  */
 public class Queue<T> implements QueueInterface<T>{
     private T[] queue;
