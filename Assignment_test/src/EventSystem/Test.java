@@ -42,13 +42,16 @@ public class Test {
     private static final String TICKET_FILE = "C:\\Users\\Clarist Liew\\Downloads\\DataStruc\\DataStructure\\Assignment_test\\ticket.txt";
     private static final String SPONSORSHIP_FILE = "C:\\Users\\Clarist Liew\\Downloads\\DataStruc\\DataStructure\\Assignment_test\\sponsorship.txt";
     private static final String VOLUNTEER_FILE = "C:\\Users\\Clarist Liew\\Downloads\\DataStruc\\DataStructure\\Assignment_test\\volunteer.txt";
+    private static final String VOLUNTEER_EVENT_FILE = "C:\\Users\\Clarist Liew\\Downloads\\DataStruc\\DataStructure\\Assignment_test\\volunteer_event.txt";
 
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in); 
         int menuChoice;
-
+        
+            addRecord();
             // Display menu and get valid choice
             menuChoice = getValidMenuChoice(scan);
+            
 
             // Execute the corresponding function based on the user's choice
             switch (menuChoice) {
@@ -83,6 +86,30 @@ public class Test {
 
         
     }
+    
+    
+    public static void addRecord(){
+        File file = new File(VOLUNTEER_EVENT_FILE);
+        
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+                System.out.println("File created: VOLUNTEER_EVENT_FILE" );
+            }
+        } catch (IOException e) {
+            System.out.println(ANSI_RED + "Error creating file: " + e.getMessage() + ANSI_RESET);
+        }
+        
+        Volunteer volunteer = new Volunteer("VL00001","c","Female", 20, "01433");
+        LinkedList dList = new LinkedList();
+        dList.insert(volunteer);
+         
+        //load into file
+        dList.saveToFile(VOLUNTEER_FILE);
+        
+    }
+    
+    
 
     private static int getValidMenuChoice(Scanner scanner) {
         int choice = -1;
@@ -1012,150 +1039,208 @@ private static void listAllEvents() {
 
 
 private static void removeEventFromAVolunteer() {
-//    LinkedList<Volunteer> volunteerList = new LinkedList<>();
-//    LinkedList<Event> eventList = new LinkedList<>();
-//
-//    volunteerList.loadFromFile(VOLUNTEER_FILE );
-//    eventList.loadFromFile(EVENT_FILE);
-//
-//    Scanner scanner = new Scanner(System.in);
-//
-//    
-//    if (volunteerList.isEmpty()) {
-//        System.out.println(ANSI_YELLOW + "No volunteers found." + ANSI_RESET);
-//        return;
-//    }
-//
-//    
-//    System.out.print("Enter the Volunteer ID: ");
-//    String volunteerID = scanner.nextLine().trim();
-//
-//    
-//    Node<Volunteer> volunteerNode = volunteerList.head;
-//    Volunteer foundVolunteer = null;
-//
-//    while (volunteerNode != null) {
-//        if (volunteerNode.data.getVolunteerID().equals(volunteerID)) {
-//            foundVolunteer = volunteerNode.data;
-//            break;
-//        }
-//        volunteerNode = volunteerNode.next;
-//    }
-//
-//    
-//    if (foundVolunteer == null) {
-//        System.out.println(ANSI_RED + "No volunteer found with ID: " + volunteerID + ANSI_RESET);
-//        return;
-//    }
-//
-//    // List all events associated with the volunteer
-//    LinkedList<Event> assignedEvents = foundVolunteer.getAssignedEvents(); // Assuming Volunteer class has this method
-//    if (assignedEvents.isEmpty()) {
-//        System.out.println(ANSI_YELLOW + "No events associated with this volunteer." + ANSI_RESET);
-//        return;
-//    }
-//
-//    System.out.println(ANSI_CYAN + "Volunteer: " + foundVolunteer.getName() + " (" + foundVolunteer.getVolunteerID() + ")" + ANSI_RESET);
-//    System.out.println("Associated Events:");
-//    assignedEvents.show(); // Assuming LinkedList has a show() method to display all events
-//
-//    // Ask the user which event to remove
-//    System.out.print("Enter the Event ID to remove from this volunteer: ");
-//    String eventIDToRemove = scanner.nextLine().trim();
-//
-//    // Find and remove the event from the volunteer's assigned events
-//    Node<Event> currentEventNode = assignedEvents.head;
-//    Event eventToRemove = null;
-//
-//    while (currentEventNode != null) {
-//        if (currentEventNode.data.getEventID().equals(eventIDToRemove)) {
-//            eventToRemove = currentEventNode.data;
-//            break;
-//        }
-//        currentEventNode = currentEventNode.next;
-//    }
-//
-//    
-//    if (eventToRemove == null) {
-//        System.out.println(ANSI_RED + "No event found with ID: " + eventIDToRemove + " in this volunteer's assigned events." + ANSI_RESET);
-//        return;
-//    }
-//
-//    
-//    System.out.print("Are you sure you want to remove this event from the volunteer? (Y/N): ");
-//    String confirmation = scanner.nextLine().trim().toUpperCase();
-//
-//    if (confirmation.equals("Y")) {
-//        // Remove the event
-//        assignedEvents.removeIf(event -> event.getEventID().equals(eventIDToRemove));
-//        System.out.println(ANSI_GREEN + "Event with ID " + eventIDToRemove + " removed from volunteer " + volunteerID + "." + ANSI_RESET);
-//
-//        
-//        volunteerList.saveToFile(VOLUNTEER_FILE );
-//    } else {
-//        System.out.println(ANSI_YELLOW + "Operation cancelled." + ANSI_RESET);
-//    }
+    LinkedList<Volunteer> volunteerList = new LinkedList<>();
+    LinkedList<Event> eventList = new LinkedList<>();
+    LinkedList<String> volunteerEventList = new LinkedList<>();
+
+    // Load data from files
+    volunteerList.loadFromFile("volunteer.txt");
+    eventList.loadFromFile("event.txt");
+    volunteerEventList.loadFromFile("volunteer_event.txt");
+
+    Scanner scanner = new Scanner(System.in);
+
+    // Check if there are any volunteers
+    if (volunteerList.isEmpty()) {
+        System.out.println(ANSI_YELLOW + "No volunteers found." + ANSI_RESET);
+        return;
+    }
+
+    // Get the volunteer ID from the user
+    System.out.print("Enter the Volunteer ID: ");
+    String volunteerID = scanner.nextLine().trim();
+
+    // Find the volunteer based on volunteerID
+    Node<Volunteer> volunteerNode = volunteerList.head;
+    Volunteer foundVolunteer = null;
+
+    while (volunteerNode != null) {
+        if (volunteerNode.data.getVolunteerID().equals(volunteerID)) {
+            foundVolunteer = volunteerNode.data;
+            break;
+        }
+        volunteerNode = volunteerNode.next;
+    }
+
+    // If volunteer is not found
+    if (foundVolunteer == null) {
+        System.out.println(ANSI_RED + "No volunteer found with ID: " + volunteerID + ANSI_RESET);
+        return;
+    }
+
+    // List all events associated with the volunteer by checking the VOLUNTEER_EVENT_FILE
+    LinkedList<Event> assignedEvents = new LinkedList<>();
+    Node<String> volunteerEventNode = volunteerEventList.head;
+    while (volunteerEventNode != null) {
+        String[] record = volunteerEventNode.data.split(","); // Assuming the data is stored as "volunteerID,eventID"
+        String recordedVolunteerID = record[0].trim();
+        String recordedEventID = record[1].trim();
+
+        if (recordedVolunteerID.equals(volunteerID)) {
+            // Find the event in the eventList based on eventID
+            Node<Event> eventNode = eventList.head;
+            while (eventNode != null) {
+                if (eventNode.data.getEventID().equals(recordedEventID)) {
+                    assignedEvents.insert(eventNode.data);
+                    break;
+                }
+                eventNode = eventNode.next;
+            }
+        }
+        volunteerEventNode = volunteerEventNode.next;
+    }
+
+    if (assignedEvents.isEmpty()) {
+        System.out.println(ANSI_YELLOW + "No events associated with this volunteer." + ANSI_RESET);
+        return;
+    }
+
+    System.out.println(ANSI_CYAN + "Volunteer: " + foundVolunteer.getName() + " (" + foundVolunteer.getVolunteerID() + ")" + ANSI_RESET);
+    System.out.println("Associated Events:");
+    assignedEvents.show(); // Assuming LinkedList has a show() method to display all events
+
+    // Ask the user which event to remove
+    System.out.print("Enter the Event ID to remove from this volunteer: ");
+    String eventIDToRemove = scanner.nextLine().trim();
+
+    // Find and remove the event from the volunteer's assigned events
+    Node<Event> currentEventNode = assignedEvents.head;
+    Event eventToRemove = null;
+
+    while (currentEventNode != null) {
+        if (currentEventNode.data.getEventID().equals(eventIDToRemove)) {
+            eventToRemove = currentEventNode.data;
+            break;
+        }
+        currentEventNode = currentEventNode.next;
+    }
+
+    // If event is not found
+    if (eventToRemove == null) {
+        System.out.println(ANSI_RED + "No event found with ID: " + eventIDToRemove + " in this volunteer's assigned events." + ANSI_RESET);
+        return;
+    }
+
+    // Confirm removal
+    System.out.print("Are you sure you want to remove this event from the volunteer? (Y/N): ");
+    String confirmation = scanner.nextLine().trim().toUpperCase();
+
+    if (confirmation.equals("Y")) {
+        // Remove the event from the volunteer's assigned events
+        assignedEvents.removeIf(event -> event.getEventID().equals(eventIDToRemove));
+
+        // Also remove the association from the VOLUNTEER_EVENT_FILE
+        volunteerEventList.removeIf(record -> {
+            String[] recordParts = record.split(",");
+            String recordedVolunteerID = recordParts[0].trim();
+            String recordedEventID = recordParts[1].trim();
+            return recordedVolunteerID.equals(volunteerID) && recordedEventID.equals(eventIDToRemove);
+        });
+
+        System.out.println(ANSI_GREEN + "Event with ID " + eventIDToRemove + " removed from volunteer " + volunteerID + "." + ANSI_RESET);
+
+        // Save the updated lists back to the files
+        volunteerEventList.saveToFile("volunteer_event.txt");
+    } else {
+        System.out.println(ANSI_YELLOW + "Operation cancelled." + ANSI_RESET);
+    }
 }
+
 
 
     
     private static void listAllEventsForAVolunteer() {
-//    LinkedList<Volunteer> volunteerList = new LinkedList<>();
-//    LinkedList<Event> eventList = new LinkedList<>();
-//
-//    volunteerList.loadFromFile("volunteer.txt");
-//    eventList.loadFromFile("event.txt");
-//
-//    Scanner scanner = new Scanner(System.in);
-//
-//    
-//    if (volunteerList.isEmpty()) {
-//        System.out.println(ANSI_YELLOW + "No volunteers found." + ANSI_RESET);
-//        return;
-//    }
-//
-//    
-//    System.out.print("Enter the Volunteer ID: ");
-//    String volunteerID = scanner.nextLine().trim();
-//
-//    // Find the volunteer based on volunteerID
-//    Node<Volunteer> volunteerNode = volunteerList.head;
-//    Volunteer foundVolunteer = null;
-//
-//    while (volunteerNode != null) {
-//        if (volunteerNode.data.getVolunteerID().equals(volunteerID)) {
-//            foundVolunteer = volunteerNode.data;
-//            break;
-//        }
-//        volunteerNode = volunteerNode.next;
-//    }
-//
-//    
-//    if (foundVolunteer == null) {
-//        System.out.println(ANSI_RED + "No volunteer found with ID: " + volunteerID + ANSI_RESET);
-//        return;
-//    }
-//
-//    // List all events associated with the volunteer
-//    LinkedList<Event> assignedEvents = foundVolunteer.getAssignedEvents(); // Assuming Volunteer class has this method
-//
-//    if (assignedEvents.isEmpty()) {
-//        System.out.println(ANSI_YELLOW + "No events associated with this volunteer." + ANSI_RESET);
-//        return;
-//    }
-//
-//    System.out.println(ANSI_CYAN + "Volunteer: " + foundVolunteer.getName() + " (" + foundVolunteer.getVolunteerID() + ")" + ANSI_RESET);
-//    System.out.println("Associated Events:");
-//
-//    // Display all events
-//    assignedEvents.show(); // Assuming LinkedList has a show() method to display all events
+    LinkedList<Volunteer> volunteerList = new LinkedList<>();
+    LinkedList<Event> eventList = new LinkedList<>();
+    LinkedList<String> volunteerEventList = new LinkedList<>();
+
+    // Load data from files
+    volunteerList.loadFromFile("volunteer.txt");
+    eventList.loadFromFile("event.txt");
+    volunteerEventList.loadFromFile("volunteer_event.txt");
+
+    Scanner scanner = new Scanner(System.in);
+
+    // Check if there are any volunteers
+    if (volunteerList.isEmpty()) {
+        System.out.println(ANSI_YELLOW + "No volunteers found." + ANSI_RESET);
+        return;
+    }
+
+    // Get the volunteer ID from the user
+    System.out.print("Enter the Volunteer ID: ");
+    String volunteerID = scanner.nextLine().trim();
+
+    // Find the volunteer based on volunteerID
+    Node<Volunteer> volunteerNode = volunteerList.head;
+    Volunteer foundVolunteer = null;
+
+    while (volunteerNode != null) {
+        if (volunteerNode.data.getVolunteerID().equals(volunteerID)) {
+            foundVolunteer = volunteerNode.data;
+            break;
+        }
+        volunteerNode = volunteerNode.next;
+    }
+
+    // If volunteer is not found
+    if (foundVolunteer == null) {
+        System.out.println(ANSI_RED + "No volunteer found with ID: " + volunteerID + ANSI_RESET);
+        return;
+    }
+
+    // List all events associated with the volunteer by checking the VOLUNTEER_EVENT_FILE
+    LinkedList<Event> assignedEvents = new LinkedList<>();
+    Node<String> volunteerEventNode = volunteerEventList.head;
+    while (volunteerEventNode != null) {
+        String[] record = volunteerEventNode.data.split(","); // Assuming the data is stored as "volunteerID,eventID"
+        String recordedVolunteerID = record[0].trim();
+        String recordedEventID = record[1].trim();
+
+        if (recordedVolunteerID.equals(volunteerID)) {
+            // Find the event in the eventList based on eventID
+            Node<Event> eventNode = eventList.head;
+            while (eventNode != null) {
+                if (eventNode.data.getEventID().equals(recordedEventID)) {
+                    assignedEvents.insert(eventNode.data);
+                    break;
+                }
+                eventNode = eventNode.next;
+            }
+        }
+        volunteerEventNode = volunteerEventNode.next;
+    }
+
+    // Check if there are any associated events
+    if (assignedEvents.isEmpty()) {
+        System.out.println(ANSI_YELLOW + "No events associated with this volunteer." + ANSI_RESET);
+        return;
+    }
+
+    System.out.println(ANSI_CYAN + "Volunteer: " + foundVolunteer.getName() + " (" + foundVolunteer.getVolunteerID() + ")" + ANSI_RESET);
+    System.out.println("Associated Events:");
+
+    // Display all events
+    assignedEvents.show(); // Assuming LinkedList has a show() method to display all events
 }
+
 
     
     
     
 
     private static void generateSummaryReports() {
+        
         
         
         
