@@ -24,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Calendar;
 
 
 
@@ -1235,14 +1236,76 @@ private static void removeEventFromAVolunteer() {
 }
 
 
-    
-    
-    
-
     private static void generateSummaryReports() {
-        
-        
-        
-        
+    LinkedList<Event> eventList = new LinkedList<>();
+    LinkedList<Volunteer> volunteerList = new LinkedList<>();
+    LinkedList<String> volunteerEventList = new LinkedList<>(); // Format: volunteerID,eventID
+
+    // Load data from files
+    eventList.loadFromFile("event.txt");
+    volunteerList.loadFromFile("volunteer.txt");
+    volunteerEventList.loadFromFile("volunteer_event.txt");
+
+    Scanner scanner = new Scanner(System.in);
+
+    System.out.println("- - - Report - - -");
+    System.out.println("1. Number of Events held in a Year");
+    System.out.println("2. Event with the Most Volunteers");
+    System.out.print("Enter your selection: ");
+    
+    String selectionStr = scanner.nextLine().trim();
+    int selection;
+
+    try {
+        selection = Integer.parseInt(selectionStr);
+    } catch (NumberFormatException e) {
+        System.out.println(ANSI_RED + "Invalid choice. Please enter a number." + ANSI_RESET);
+        return;
     }
+
+    switch (selection) {
+        case 1:
+            generateEventsInYearReport(eventList, scanner);
+            break;
+        case 2:
+            //generateEventWithMostVolunteersReport(eventList, volunteerEventList);
+            break;
+        default:
+            System.out.println(ANSI_RED + "Invalid selection. Please choose 1 or 2." + ANSI_RESET);
+    }
+}
+
+private static void generateEventsInYearReport(LinkedList<Event> eventList, Scanner scanner) {
+    System.out.print("Enter the year to generate the report for (e.g., 2024): ");
+    String yearStr = scanner.nextLine().trim();
+    int year;
+
+    try {
+        year = Integer.parseInt(yearStr);
+    } catch (NumberFormatException e) {
+        System.out.println(ANSI_RED + "Invalid year format. Please enter a valid year." + ANSI_RESET);
+        return;
+    }
+
+    int eventCount = 0;
+    Node<Event> currentNode = eventList.head;
+
+    while (currentNode != null) {
+        if (getYearFromDate(currentNode.data.getDate()) == year) {
+            eventCount++;
+        }
+        currentNode = currentNode.next;
+    }
+
+    System.out.println(ANSI_CYAN + "Number of Events held in " + year + ": " + eventCount + ANSI_RESET);
+}
+
+
+
+private static int getYearFromDate(Date date) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+    return calendar.get(Calendar.YEAR);
+}
+
 }
