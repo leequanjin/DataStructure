@@ -9,22 +9,12 @@ package DonationList;
  * @author Heng Pei Lin
  */
 public class PhysicalItem extends Item {
-    private int qty;
     private String note;
     
     public PhysicalItem(){}
     
-    public PhysicalItem(String id, String donorID, int qty, String note){
+    public PhysicalItem(String id, String donorID, String note){
         super(id, donorID);
-        this.qty = qty;
-    }
-    
-    public int getQty(){
-        return qty;
-    }
-    
-    public void setQty(int qty){
-        this.qty = qty;
     }
 
     public String getNote() {
@@ -42,8 +32,10 @@ public class PhysicalItem extends Item {
     
     @Override
     public String toString(){
+        if (note == null){
+            note = " ";
+        }
         return super.toString() + 
-                "\nQuantity: " + qty +
-                "\nRemarks: " + note;
+                String.format(" %-20s |", note);
     }
 }

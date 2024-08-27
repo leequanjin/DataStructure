@@ -15,8 +15,8 @@ public class CannedFood extends Food {
     public CannedFood(){
     }
     
-    public CannedFood(String id, String donorID, int qty, String note, Date expiryDate, int weight, String status, String detail){
-        super(id, donorID, qty, note, expiryDate, weight, status, detail);
+    public CannedFood(String id, String donorID, String note, Date expiryDate, int weight, String status, String detail){
+        super(id, donorID, note, expiryDate, weight, status, detail);
     }
     
     @Override

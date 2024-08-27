@@ -19,8 +19,8 @@ public class Food extends PhysicalItem {
     
     public Food(){}
     
-    public Food(String id, String donorID, int qty, String note, Date expiryDate, int weight, String status, String detail){
-        super(id, donorID, qty, note);
+    public Food(String id, String donorID, String note, Date expiryDate, int weight, String status, String detail){
+        super(id, donorID, note);
         this.expiryDate = expiryDate;
         this.weight = weight;
         this.status = status;
@@ -73,9 +73,6 @@ public class Food extends PhysicalItem {
         String dateString = formatter.format(expiryDate);
         
         return super.toString() + 
-                "\nExpiry date: " + dateString + 
-                "\nWeight: " + weight + " gram" + 
-                "\nStatus: " + status +
-                "\nDetail: " + detail;
+                String.format(" %-11s | %-8d | %-8s | %-15s |", dateString, weight, status, detail);
     }
 }

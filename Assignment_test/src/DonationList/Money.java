@@ -34,6 +34,6 @@ public class Money extends Item{
     @Override
     public String toString(){
         return super.toString() + 
-                "\nAmount: RM" + amount;
+                String.format(" %-3s %-10.2f |", "RM ", amount);
     } 
 }

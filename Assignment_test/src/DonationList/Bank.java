@@ -35,6 +35,6 @@ public class Bank extends Money {
     @Override
     public String toString(){
         return super.toString() + 
-                "\nBank Name: " + bankName;
+                String.format(" %-15s |", bankName);
     }
 }

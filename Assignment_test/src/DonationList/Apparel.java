@@ -17,8 +17,8 @@ public class Apparel extends PhysicalItem {
     public Apparel(){
     }
     
-    public Apparel(String id, String donorID, int qty, String note, String size, String color, String condition, String brand){
-        super(id, donorID, qty, note);
+    public Apparel(String id, String donorID, String note, String size, String color, String condition, String brand){
+        super(id, donorID, note);
         this.size = size;
         this.color = color;
         this.condition = condition;
@@ -64,10 +64,7 @@ public class Apparel extends PhysicalItem {
     
     @Override
     public String toString(){
-        return super.toString()
-                +"\nSize: " + size
-                +"\nColor: " + color
-                + "\nCondition: " + condition
-                + "\nBrand: " + brand;
+        return super.toString() +
+                String.format(" %-10s | %-10s | %-10s | %-10s |", size, color, condition, brand);
     }
 }

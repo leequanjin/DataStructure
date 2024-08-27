@@ -41,8 +41,6 @@ public abstract class Item implements Serializable {
     
     @Override
     public String toString() {
-        return  "Item ID: " + id +
-                "\nDonor ID: " + donorID + 
-                "\nType: " + getType();
+        return  String.format("| %-10s | %-10s | %-15s |", id, donorID, getType());
     }
 }

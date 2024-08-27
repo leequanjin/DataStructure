@@ -12,8 +12,8 @@ public class Socks extends Apparel{
 
     public Socks(){}
     
-    public Socks(String id, String donorID, int qty, String note, String size, String color, String condition, String brand){
-        super(id, donorID, qty, note, size, color, condition, brand);
+    public Socks(String id, String donorID, String note, String size, String color, String condition, String brand){
+        super(id, donorID, note, size, color, condition, brand);
     }
     
     @Override

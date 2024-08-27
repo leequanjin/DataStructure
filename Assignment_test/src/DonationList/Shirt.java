@@ -12,8 +12,8 @@ public class Shirt extends Apparel{
     
     public Shirt(){}
     
-    public Shirt(String id, String donorID, int qty, String note, String size, String color, String condition, String brand){
-        super(id, donorID, qty, note, size, color, condition, brand);
+    public Shirt(String id, String donorID, String note, String size, String color, String condition, String brand){
+        super(id, donorID, note, size, color, condition, brand);
     }
     
     @Override

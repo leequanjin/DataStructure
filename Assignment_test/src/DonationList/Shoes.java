@@ -13,8 +13,8 @@ public class Shoes extends Apparel{
     
     public Shoes(){}
     
-    public Shoes(String id, String donorID, int qty, String note, String size, String color, String condition, String brand, String detail){
-        super(id, donorID, qty, note, size, color, condition, brand);
+    public Shoes(String id, String donorID, String note, String size, String color, String condition, String brand, String detail){
+        super(id, donorID, note, size, color, condition, brand);
         this.detail = detail;
     }
 
@@ -34,6 +34,6 @@ public class Shoes extends Apparel{
     @Override
     public String toString(){
         return super.toString() +
-                "\nDetail: " + detail;
+                String.format(" %-15s |", detail);
     }
 }
