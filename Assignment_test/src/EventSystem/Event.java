@@ -75,5 +75,3 @@ public class Event implements Serializable {
     return "Event Name: " + eventName + '\n' + "Date: " + dateString + '\n' + "Time: " + time + '\n' + "Location: " + location + '\n' + "Type: " +getType();
     }
 }    
-
-
