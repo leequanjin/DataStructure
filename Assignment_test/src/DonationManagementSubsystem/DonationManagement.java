@@ -85,7 +85,7 @@ public class DonationManagement {
         
         while(contDM == true){
         
-            System.out.println(ANSI_BLUE + " - - - Donation Management - - - " + ANSI_RESET);
+            System.out.println(ANSI_BLUE + "\n - - - Donation Management - - - " + ANSI_RESET);
             String[] donationManagementMenu = {
                 "Add a new donation", 
                 "Remove a donation", 
@@ -133,9 +133,10 @@ public class DonationManagement {
                     System.exit(0); // later redirect to previous menu
                 default:
                     System.out.println("Invalid choice.");
+                    break;
             }
             
-            contDM = YN("Do you want to continue manage donation?");
+            contDM = YN("Do you want to continue manage donation? (Back to Donation Management main menu)");
             if (contDM == true){
                 System.out.println(); // further do if return true then need clear screen
             }
@@ -270,6 +271,92 @@ public class DonationManagement {
         return (ab + String.format("%05d", list.length() + 1));
     }
     
+    public static boolean searchingIdValidation(String inputID){
+        boolean validID = false;
+        
+        if (inputID.isEmpty()) {
+            System.out.println(ANSI_RED + "Cannot leave blank." + ANSI_RESET);
+            System.out.print("\nEnter again: ");
+        } else {
+            if (inputID.length() != 7) {
+                System.out.println(ANSI_RED + "Invalid length. The length should be 7 and format AA00000." + ANSI_RESET);
+                System.out.print("\nEnter again: ");
+            } else {
+                inputID = inputID.substring(0, 2).toUpperCase() + inputID.substring(2, 7);
+
+                String prefix = inputID.substring(0, 2);
+                Set<String> validPrefixes = new HashSet<>(
+                        Arrays.asList("MB", "MC", "FA", "FO", "FC", "FD", "FE", "AJ", "AP", "AI", "AO", "AS"));
+
+                if (!validPrefixes.contains(prefix)) {
+                    System.out.println(ANSI_RED + "Invalid format. The format should be AA00000." + ANSI_RESET);
+                    System.out.print("\nEnter again: ");
+                } else {
+                    String filePath = null;
+
+                    switch (prefix) {
+                        case "MB":
+                            filePath = BANK_PATH;
+                            break;
+                        case "MC":
+                            filePath = CASH_PATH;
+                            break;
+                        case "FA":
+                            filePath = BAKED_PATH;
+                            break;
+                        case "FO":
+                            filePath = BOXED_PATH;
+                            break;
+                        case "FC":
+                            filePath = CANNED_PATH;
+                            break;
+                        case "FD":
+                            filePath = DRY_PATH;
+                            break;
+                        case "FE":
+                            filePath = ESS_PATH; 
+                            break;
+                        case "AJ":
+                            filePath = JACKET_PATH;
+                            break;
+                        case "AP":
+                            filePath = PANT_PATH;
+                            break;
+                        case "AI":
+                            filePath = SHIRT_PATH;
+                            break;
+                        case "AO":
+                            filePath = SHOES_PATH;
+                            break;
+                        case "AS":
+                            filePath = SOCKS_PATH;
+                            break;
+                        default:
+                            System.out.println(ANSI_RED + "Invalid ID." + ANSI_RESET);
+                            break;
+                    }
+
+                    // valid format, check if this id exists, show it if yes
+                    if (filePath != null) {
+                        ManageItem<Item> list = new ManageItem<>();
+                        list.loadFromFile(filePath);
+                        Item item = searchByID(list, inputID);
+                        if (item != null) {
+                            // show that particular item
+                            System.out.println("\nItem Details: ");
+                            printSpecificItem(item);
+                            validID = true; 
+                        } else {
+                            System.out.println(ANSI_RED + "Item does not exist or had been deleted." + ANSI_RESET);
+                            System.out.print("\nEnter again: ");
+                        }
+                    }
+                }
+            }
+        }
+        return validID;
+    }
+    
     public static ManageItem<Item> loadAllItemIntoList(){
         ManageItem<Item> list = new ManageItem<>();
         String[] appendList = {BANK_PATH, CASH_PATH, JACKET_PATH, PANT_PATH, SHIRT_PATH, SHOES_PATH, SOCKS_PATH, BAKED_PATH, BOXED_PATH, CANNED_PATH, DRY_PATH, ESS_PATH};
@@ -295,6 +382,136 @@ public class DonationManagement {
         return foodList;
     }
     
+    public static void printEachTable(ManageItem<Item> list){
+        list.removeEmptyData();
+        Node<Item> currentNode = list.head;
+        
+        if(list.isEmpty()){
+            System.out.println(ANSI_RED + "\nEmpty list. No such item in stock." + ANSI_RESET);
+            return;
+        }
+        
+        int count = 1;
+        while(currentNode != null){
+            System.out.println("\n- Item " + count + " -");
+            System.out.printf("| %-10s | %-10s | %-15s |", "Item ID", "Donor ID", "Item Category");
+            if(currentNode.data instanceof Money){
+                System.out.printf(" %-14s |", "Amount Donated");
+                if (currentNode.data instanceof Bank){
+                    System.out.printf(" %-15s |", "Bank Name");
+                }
+            }else {
+
+                System.out.printf(" %-20s |", "Remarks");
+                if (currentNode.data instanceof Food){
+                    System.out.printf(" %-10s | %-8s | %-8s | %-15s |", "Expiry Date", "Weight", "Status", "Food Type");
+                }else{ // Apparel
+                    System.out.printf(" %-10s | %-10s | %-10s | %-10s |", "Size", "Color", "Condition", "Brand");
+                    if (currentNode.data instanceof Shoes){
+                        System.out.printf(" %-15s |", "Shoes Type");
+                    }
+                }
+            }
+            
+            System.out.println("\n" + currentNode.data.toString());
+            
+            count++;
+            currentNode = currentNode.next;
+            System.out.println();
+        }
+    }    
+    
+    public static void printSameTable(String filePath){
+        ManageItem<Item> list = new ManageItem<>();
+        list.loadFromFile(filePath);
+    
+        list.removeEmptyData();
+        
+        if(list.isEmpty()){
+            System.out.println(ANSI_RED + "\nEmpty list. No such item in stock." + ANSI_RESET);
+            return;
+        }
+        
+        printListToTable(list);
+    }
+    
+    public static void printListToTable(ManageItem<Item> list){
+        Node<Item> currentNode = list.head;
+        
+        headerIdentifier(currentNode);
+        
+        System.out.println();
+        int stop = 0;
+        int pageNum = 1;
+        while(currentNode != null){
+            System.out.println(currentNode.data.toString());
+            stop++;
+            
+            if(stop == 50){
+                System.out.println(ANSI_BLUE +"- END OF PAGE " + pageNum + " -" + ANSI_RESET);
+                boolean cont = YN("50 records of current table had been shown. Do you want to continue shown more?");
+                if (cont){
+                    pageNum++;
+                    System.out.println(ANSI_BLUE +"\n- PAGE " + pageNum + " -" + ANSI_RESET);
+                    headerIdentifier(currentNode);
+                    stop = 0;
+                }else{
+                    return;
+                }
+            }
+            currentNode = currentNode.next;
+        }
+    }
+    
+    public static void headerIdentifier(Node<Item> currentNode){
+        System.out.printf("\n| %-10s | %-10s | %-15s |", "Item ID", "Donor ID", "Item Category");
+        if(currentNode.data instanceof Money){
+            System.out.printf(" %-14s |", "Amount Donated");
+            if (currentNode.data instanceof Bank){
+                System.out.printf(" %-15s |", "Bank Name");
+            }
+        }else {
+        
+            System.out.printf(" %-20s |", "Remarks");
+            if (currentNode.data instanceof Food){
+                System.out.printf(" %-10s | %-8s | %-8s | %-15s |", "Expiry Date", "Weight", "Status", "Food Type");
+            }else{ // Apparel
+                System.out.printf(" %-10s | %-10s | %-10s | %-10s |", "Size", "Color", "Condition", "Brand");
+                if (currentNode.data instanceof Shoes){
+                    System.out.printf(" %-15s |", "Shoes Type");
+                }
+            }
+        }
+    }
+    
+    public static void printSpecificItem(Item item){
+        
+        if (item == null){
+            System.out.println(ANSI_RED + "Item does not exist." + ANSI_RESET);
+        }
+        
+        System.out.printf("| %-10s | %-10s | %-15s |", "Item ID", "Donor ID", "Item Category");
+        if(item instanceof Money){
+            System.out.printf(" %-14s |", "Amount Donated");
+            if (item instanceof Bank){
+                System.out.printf(" %-15s |", "Bank Name");
+            }
+        }else {
+
+            System.out.printf(" %-20s |", "Remarks");
+            if (item instanceof Food){
+                System.out.printf(" %-10s | %-8s | %-8s | %-15s |", "Expiry Date", "Weight", "Status", "Food Type");
+            }else{ // Apparel
+                System.out.printf(" %-10s | %-10s | %-10s | %-10s |", "Size", "Color", "Condition", "Brand");
+                if (item instanceof Shoes){
+                    System.out.printf(" %-15s |", "Shoes Type");
+                }
+            }
+        }
+
+        System.out.println("\n" + item.toString());
+    }
+    
     // -------------------------
     // Part 1: Add new donation
     // -------------------------
@@ -304,8 +521,9 @@ public class DonationManagement {
         boolean contAddDonation = true;
         while(contAddDonation){
             
-            System.out.println(ANSI_BLUE + " - - - Add Donation - - - " + ANSI_RESET);
+            System.out.println(ANSI_BLUE + "\n - - - Add Donation - - - " + ANSI_RESET);
 
+            System.out.println("***Enter \"NONE\" if is anonymous donor. ");
             System.out.print("Enter donor's id: ");
             String dID = null;
             boolean validID = false;
@@ -317,6 +535,9 @@ public class DonationManagement {
                     System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
                     System.out.print("Enter again: ");
                     
+                } else if(dID.toUpperCase().equals("NONE")){
+                    dID = dID.toUpperCase();
+                    validID = true;
                 } else if(dID.trim().length() != 8){
                     
                     System.out.println(ANSI_RED + "Invalid length. Format of ID should be DNR00000.\n" + ANSI_RESET);
@@ -333,7 +554,9 @@ public class DonationManagement {
                         // if exist, show current data 
                         if(validDonor == true){
                             System.out.println("\n - - - Current Donor - - -");
-                            donorList.show();
+                            System.out.printf("%-10s %-2s %-50s\n", "ID", ":", donorList.head.data.getId());
+                            System.out.printf("%-10s %-2s %-50s\n", "Name", ":", donorList.head.data.getName());
+                            System.out.printf("%-10s %-2s %-50s\n", "Category", ":", donorList.head.data.getType());
                             validID = true;
                         }else{ // if does not exist, enter other
                             System.out.println(ANSI_RED + "\nDonor does not exist." + ANSI_RESET);
@@ -377,7 +600,6 @@ public class DonationManagement {
         LinkedList<Donor> tempDonorList = new LinkedList<>();
         
         tempDonorList.loadFromFile(DONOR_PATH);
-        tempDonorList.show();
         
         if (!tempDonorList.isEmpty()){
             
@@ -404,21 +626,21 @@ public class DonationManagement {
     public static void addItem(String dID){
         Scanner scan = new Scanner(System.in);
         
-        System.out.print("Number of item wish to add: ");
+        System.out.print("\nNumber of item wish to add: ");
         int numItem = 0;
         boolean validNumItem = false;
         while(validNumItem == false){
             String numSItem = scan.nextLine();
             if(numSItem .isEmpty()){
 
-                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+                System.out.println(ANSI_RED + "\nCannot leave blank." + ANSI_RESET);
                 System.out.print("Enter again: ");
             }else{
                 try {
                     numItem = Integer.parseInt(numSItem );
 
                     if (numItem < 1) {
-                        System.out.println(ANSI_RED + "The number cannot be 0 or negative.\n" + ANSI_RESET);
+                        System.out.println(ANSI_RED + "\nThe number cannot be 0 or negative." + ANSI_RESET);
 
                         scan.nextLine();
                         System.out.print("Enter again: ");
@@ -428,14 +650,14 @@ public class DonationManagement {
 
                 } catch (NumberFormatException e) {
 
-                    System.out.println(ANSI_RED + "Invalid input. Please enter an integer number.\n" + ANSI_RESET);
+                    System.out.println(ANSI_RED + "\nInvalid input. Please enter an integer number." + ANSI_RESET);
                     System.out.print("Enter again: ");
 
                 }
             }
         }
         
-        LinkedList<Item> newItemList = new LinkedList();
+        ManageItem<Item> newItemList = new ManageItem();
         
         for (int i = 0; i< numItem; i++){
             
@@ -459,15 +681,18 @@ public class DonationManagement {
                     break;
                 default:
                     System.out.println(ANSI_RED + "Invalid choice." + ANSI_RESET);
+                    break;
             }
         }
-            
+        
+        System.out.println(ANSI_GREEN + "\nItems added successfully" + ANSI_RESET);
+        
         //show all item to be added
-        System.out.println("Item to be add:");
-        newItemList.show();
+        System.out.print("\n - - - New Item Added - - - ");
+        printEachTable(newItemList);
     }
     
-    public static void inputMoney(LinkedList<Item> newItemList, int itemCat, String dID){
+    public static void inputMoney(ManageItem<Item> newItemList, int itemCat, String dID){
         
         // amount
         double amt = amountValidation();
@@ -583,12 +808,13 @@ public class DonationManagement {
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
+                break;
         }
         
         return bankName;
     }
     
-    public static void inputFood(LinkedList<Item> newItemList, String dID){
+    public static void inputFood(ManageItem<Item> newItemList, String dID){
         
         // food category
         int foodCat = foodCatValidation();
@@ -629,7 +855,7 @@ public class DonationManagement {
         return menuIntReturn(foodCatMenu);
     }
     
-    public static void inputApparel(LinkedList<Item> newItemList, String dID){
+    public static void inputApparel(ManageItem<Item> newItemList, String dID){
         
         // apparel category
         int appCat = appCatValidation();
@@ -670,7 +896,7 @@ public class DonationManagement {
         return menuIntReturn(appCatMenu);
     }
     
-    public static void commonItemInput(LinkedList<Item> newItemList, int detailCat, int itemCat, String dID){
+    public static void commonItemInput(ManageItem<Item> newItemList, int detailCat, int itemCat, String dID){
         
         Scanner scan = new Scanner(System.in);
         
@@ -682,6 +908,9 @@ public class DonationManagement {
         //note
         System.out.print("\nRemarks: ");
         String note = scan.nextLine();
+        if (note.trim().isEmpty()){
+            note = "None";
+        }
         
         switch(itemCat){
             case 1:
@@ -699,7 +928,7 @@ public class DonationManagement {
     public static int qtyValidation(){
         Scanner scan = new Scanner(System.in);
         
-        System.out.print("Quantity*: ");
+        System.out.print("Quantity of same item*: ");
         int qty = 0;
         boolean validQty = false;
         while(validQty == false){
@@ -737,7 +966,7 @@ public class DonationManagement {
         return qty;
     }
     
-    public static void commonFoodInput(LinkedList<Item> newItemList, int foodCat, int qty, String note, String dID){
+    public static void commonFoodInput(ManageItem<Item> newItemList, int foodCat, int qty, String note, String dID){
         
         //expiryDate
         Date expiryDate = expiryDateValidation(newItemList, dID);
@@ -755,74 +984,98 @@ public class DonationManagement {
                 
                 list.loadFromFile(BAKED_PATH);
                 
-                id = idGenerator("FA", list);
                 String bakedName = inputBaked();
-                BakedGoods baG = new BakedGoods(id, dID, qty, note, expiryDate, w, foodStaName, bakedName);
                 
-                list.insert(baG);
-                list.saveToFile(BAKED_PATH);
+                for (int i = 0; i < qty; i++){
+                    id = idGenerator("FA", list);
+                    BakedGoods baG = new BakedGoods(id, dID, note, expiryDate, w, foodStaName, bakedName);
+                    
+                    list.insert(baG);
             
-                newItemList.insert(baG);
+                    newItemList.insert(baG);
+                }
+                
+                list.saveToFile(BAKED_PATH);
                 break;
             case 2:
                 
                 list.loadFromFile(BOXED_PATH);
                 
-                id = idGenerator("FO", list);
                 String boxedName = inputBoxed();
-                BoxedGoods boG = new BoxedGoods(id, dID, qty, note, expiryDate, w, foodStaName, boxedName);
                 
-                list.insert(boG);
-                list.saveToFile(BOXED_PATH);
+                for (int i = 0; i < qty; i++){
+                    id = idGenerator("FO", list);
+                    BoxedGoods boG = new BoxedGoods(id, dID, note, expiryDate, w, foodStaName, boxedName);
+
+                    list.insert(boG);
             
-                newItemList.insert(boG);
+                    newItemList.insert(boG);
+                }
+                
+                list.saveToFile(BOXED_PATH);
                 break;
             case 3:
                 
                 list.loadFromFile(CANNED_PATH);
                 
-                id = idGenerator("FC", list);
                 String cannedName = inputCanned();
-                CannedFood cF = new CannedFood(id, dID, qty, note, expiryDate, w, foodStaName, cannedName);
                 
-                list.insert(cF);
+                for(int i = 0; i < qty; i++){
+                    id = idGenerator("FC", list);
+                    CannedFood cF = new CannedFood(id, dID, note, expiryDate, w, foodStaName, cannedName);
+
+                    list.insert(cF);
+
+                    newItemList.insert(cF);
+                
+                }
+                
                 list.saveToFile(CANNED_PATH);
-            
-                newItemList.insert(cF);
                 break;
             case 4:
                 
                 list.loadFromFile(DRY_PATH);
                 
-                id = idGenerator("FD", list);
                 String dryName = inputDry();
-                DryGoods dG = new DryGoods(id, dID, qty, note, expiryDate, w, foodStaName, dryName);
                 
-                list.insert(dG);
+                for(int i = 0; i < qty; i++){
+                    id = idGenerator("FD", list);
+                    DryGoods dG = new DryGoods(id, dID, note, expiryDate, w, foodStaName, dryName);
+
+                    list.insert(dG);
+
+                    newItemList.insert(dG);
+                    
+                }
+                
                 list.saveToFile(DRY_PATH);
-            
-                newItemList.insert(dG);
                 break;
             case 5:
                 
                 list.loadFromFile(ESS_PATH);
                 
-                id = idGenerator("FE", list);
                 String essName = inputEss();
-                Essentials eG = new Essentials(id, dID, qty, note, expiryDate, w, foodStaName, essName);
+                
+                for(int i = 0;i < qty; i++){
+                    id = idGenerator("FE", list);
+                    Essentials eG = new Essentials(id, dID, note, expiryDate, w, foodStaName, essName);
 
-                list.insert(eG);
+                    list.insert(eG);
+
+                    newItemList.insert(eG);
+                    
+                }
+                
                 list.saveToFile(ESS_PATH);
-            
-                newItemList.insert(eG);
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid food category.\n" + ANSI_RESET);
+                break;
         }
         
     }
     
-    public static Date expiryDateValidation(LinkedList<Item> newItemList, String dID){
+    public static Date expiryDateValidation(ManageItem<Item> newItemList, String dID){
         Scanner scan = new Scanner(System.in);
         
         System.out.print("\nExpiry Date (dd/mm/yyyy)*: ");
@@ -934,6 +1187,7 @@ public class DonationManagement {
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid food status.\n" + ANSI_RESET);
+                break;
         }
         
         return foodStaName;
@@ -956,6 +1210,7 @@ public class DonationManagement {
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
+                break;
         }
         
         return name;
@@ -978,6 +1233,7 @@ public class DonationManagement {
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
+                break;
         }
         
         return name;
@@ -1031,6 +1287,7 @@ public class DonationManagement {
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
+                break;
         }
         
         return name;
@@ -1059,6 +1316,7 @@ public class DonationManagement {
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
+                break;
         }
         
         return name;
@@ -1088,12 +1346,13 @@ public class DonationManagement {
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid bank name.\n" + ANSI_RESET);
+                break;
         }
         
         return name;
     }
     
-    public static void commonApparelInput(LinkedList<Item> newItemList, int appCat, int qty, String note, String dID){
+    public static void commonApparelInput(ManageItem<Item> newItemList, int appCat, int qty, String note, String dID){
         //size
         String size;
         if(appCat == 4){
@@ -1118,65 +1377,82 @@ public class DonationManagement {
                 
                 list.loadFromFile(JACKET_PATH);
                 
-                id = idGenerator("AJ", list);
-                Jacket j = new Jacket(id, dID, qty, note, size, color, condition, brand);
-                
-                list.insert(j);
+                for(int i = 0; i < qty; i++){
+                    id = idGenerator("AJ", list);
+                    Jacket j = new Jacket(id, dID, note, size, color, condition, brand);
+
+                    list.insert(j);
+
+                    newItemList.insert(j);
+                }
+                    
                 list.saveToFile(JACKET_PATH);
-            
-                newItemList.insert(j);
                 break;
             case 2: 
                 
                 list.loadFromFile(PANT_PATH);
                 
-                id = idGenerator("AP", list);
-                Pant p = new Pant(id, dID, qty, note, size, color, condition, brand);
-                
-                list.insert(p);
+                for(int i = 0; i < qty; i ++){
+                    id = idGenerator("AP", list);
+                    Pant p = new Pant(id, dID,  note, size, color, condition, brand);
+
+                    list.insert(p);
+
+                    newItemList.insert(p);
+                }
+                    
                 list.saveToFile(PANT_PATH);
-            
-                newItemList.insert(p);
                 break;
             case 3: 
                 
                 list.loadFromFile(SHIRT_PATH);
                 
-                id = idGenerator("AI", list);
-                Shirt shirt = new Shirt(id, dID, qty, note, size, color, condition, brand);
+                for (int i = 0; i < qty; i ++){
+                    id = idGenerator("AI", list);
+                    Shirt shirt = new Shirt(id, dID, note, size, color, condition, brand);
+
+                    list.insert(shirt);
+
+                    newItemList.insert(shirt);
+                }
                 
-                list.insert(shirt);
                 list.saveToFile(SHIRT_PATH);
-            
-                newItemList.insert(shirt);
                 break;
             case 4: 
                 
                 list.loadFromFile(SHOES_PATH);
                 
-                id = idGenerator("AO", list);
                 String detailType = inputShoes();
-                Shoes shoes = new Shoes(id, dID, qty, note, size, color, condition, brand, detailType);
                 
-                list.insert(shoes);
+                for (int i = 0 ; i < qty ; i++){
+                    id = idGenerator("AO", list);
+                    Shoes shoes = new Shoes(id, dID, note, size, color, condition, brand, detailType);
+
+                    list.insert(shoes);
+
+                    newItemList.insert(shoes);
+                }
+                
                 list.saveToFile(SHOES_PATH);
-            
-                newItemList.insert(shoes);
                 break;
             case 5: 
                 
                 list.loadFromFile(SOCKS_PATH);
                 
-                id = idGenerator("AS", list);
-                Socks socks = new Socks(id, dID, qty, note, size, color, condition, brand);
+                for(int i = 0 ; i < qty ; i++){
+                    id = idGenerator("AS", list);
+                    Socks socks = new Socks(id, dID, note, size, color, condition, brand);
+
+                    list.insert(socks);
+
+                    newItemList.insert(socks);
+                }
                 
-                list.insert(socks);
                 list.saveToFile(SOCKS_PATH);
-            
-                newItemList.insert(socks);
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid apparel category.\n" + ANSI_RESET);
+                break;
         }
     }
     
@@ -1207,6 +1483,7 @@ public class DonationManagement {
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid apparel size.\n" + ANSI_RESET);
+                break;
         }
         
         return size;
@@ -1288,6 +1565,7 @@ public class DonationManagement {
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid apparel color.\n" + ANSI_RESET);
+                break;
         }
         
         return color;
@@ -1315,6 +1593,7 @@ public class DonationManagement {
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid apparel condition.\n" + ANSI_RESET);
+                break;
         }
         
         return condition;
@@ -1347,6 +1626,7 @@ public class DonationManagement {
                 break;
             default:
                 System.out.println(ANSI_RED + "Invalid apparel brand.\n" + ANSI_RESET);
+                break;
         }
         
         return brand;
@@ -1372,7 +1652,7 @@ public class DonationManagement {
     // Part 2: Remove a donation
     // -------------------------
     public static void remDonation(){
-        System.out.println("\nItem to remove:");
+        System.out.println(ANSI_BLUE + "\nItem to remove:" + ANSI_RESET);
         String[] itemRemoveMenu = {"Bank", "Cash", "Food", "Apparel"};
         int itemRem = menuIntReturn(itemRemoveMenu);
         
@@ -1444,6 +1724,11 @@ public class DonationManagement {
                         System.out.println(ANSI_RED + "Invalid food category.\n" + ANSI_RESET);
                         break;
                 }
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid item to remove.\n" + ANSI_RESET);
+                break;
+                
         }
     }
     
@@ -1463,7 +1748,7 @@ public class DonationManagement {
         }else{
             sList.removeIf(item -> item.toString().trim().isEmpty()); // remove empty or space
             
-            sList.show();
+            printSameTable(filePath);
             System.out.print("\nWhich item do you wish to remove?\n"
                     + "Enter ID: ");
             boolean validID = false;
@@ -1513,6 +1798,8 @@ public class DonationManagement {
             list.deleteById(id);
 
             list.saveToFile(filePath);
+            System.out.println(ANSI_GREEN + "Item remove successfully." + ANSI_RESET);
+            printSameTable(filePath);
             return true;
         }else{
             System.out.println(ANSI_RED + "Item does not exist." + ANSI_RESET);
@@ -1526,100 +1813,24 @@ public class DonationManagement {
     // -------------------------------
     public static void searchDonation() {
         Scanner scan = new Scanner(System.in);
-        System.out.print("\nWhich item do you wish to search?\n" + "Enter ID: ");
-        boolean validID = false;
-
-        while (!validID) {
-            String inputID = scan.nextLine();
-
-            validID = searchingIdValidation(inputID);
-        }
-    }
-    
-    public static boolean searchingIdValidation(String inputID){
-        boolean validID = false;
+        System.out.println(ANSI_BLUE + "\n - - - Search Donation Item by Item ID - - -" + ANSI_RESET);
         
-        if (inputID.isEmpty()) {
-            System.out.println(ANSI_RED + "Cannot leave blank." + ANSI_RESET);
-            System.out.print("\nEnter again: ");
-        } else {
-            if (inputID.length() != 7) {
-                System.out.println(ANSI_RED + "Invalid length. The length should be 7 and format AA00000." + ANSI_RESET);
-                System.out.print("\nEnter again: ");
-            } else {
-                inputID = inputID.substring(0, 2).toUpperCase() + inputID.substring(2, 7);
+        boolean contSearch = true;
+        while(contSearch){
+            System.out.print("Enter ID: ");
+            boolean validID = false;
 
-                String prefix = inputID.substring(0, 2);
-                Set<String> validPrefixes = new HashSet<>(
-                        Arrays.asList("MB", "MC", "FA", "FO", "FC", "FD", "FE", "AJ", "AP", "AI", "AO", "AS"));
+            while (!validID) {
+                String inputID = scan.nextLine();
 
-                if (!validPrefixes.contains(prefix)) {
-                    System.out.println(ANSI_RED + "Invalid format. The format should be AA00000." + ANSI_RESET);
-                    System.out.print("\nEnter again: ");
-                } else {
-                    String filePath = null;
-
-                    switch (prefix) {
-                        case "MB":
-                            filePath = BANK_PATH;
-                            break;
-                        case "MC":
-                            filePath = CASH_PATH;
-                            break;
-                        case "FA":
-                            filePath = BAKED_PATH;
-                            break;
-                        case "FO":
-                            filePath = BOXED_PATH;
-                            break;
-                        case "FC":
-                            filePath = CANNED_PATH;
-                            break;
-                        case "FD":
-                            filePath = DRY_PATH;
-                            break;
-                        case "FE":
-                            filePath = ESS_PATH; 
-                            break;
-                        case "AJ":
-                            filePath = JACKET_PATH;
-                            break;
-                        case "AP":
-                            filePath = PANT_PATH;
-                            break;
-                        case "AI":
-                            filePath = SHIRT_PATH;
-                            break;
-                        case "AO":
-                            filePath = SHOES_PATH;
-                            break;
-                        case "AS":
-                            filePath = SOCKS_PATH;
-                            break;
-                        default:
-                            System.out.println(ANSI_RED + "Invalid ID." + ANSI_RESET);
-                    }
-
-                    // valid format, check if this id exists, show it if yes
-                    if (filePath != null) {
-                        ManageItem<Item> list = new ManageItem<>();
-                        list.loadFromFile(filePath);
-                        Item item = searchByID(list, inputID);
-                        //Item item = list.findById(inputID);
-                        if (item != null) {
-                            // show that particular item
-                            System.out.println("\nItem Details: ");
-                            System.out.println(item.toString());
-                            validID = true; 
-                        } else {
-                            System.out.println(ANSI_RED + "Item does not exist or had been deleted." + ANSI_RESET);
-                            System.out.print("\nEnter again: ");
-                        }
-                    }
-                }
+                validID = searchingIdValidation(inputID);
+            }
+            
+            contSearch = YN("Do you want to search for another item ID?");
+            if (contSearch){
+                System.out.println();
             }
         }
-        return validID;
     }
     
     // Binary search
@@ -1670,96 +1881,112 @@ public class DonationManagement {
     public static void amendDonation(){
         Scanner scan = new Scanner(System.in);
         
-        System.out.println("What kind of item you would like to amend?");
-        System.out.print("Enter item ID: ");
-        boolean validID = false;
+        boolean contAmend = true;
+        while(contAmend == true){
+            System.out.println(ANSI_BLUE + "\n - - - Amend Donation Item - - - " + ANSI_RESET);
+            System.out.print("Enter item ID: ");
+            boolean validID = false;
 
-        String id = null;
-        while (!validID) {
-            id = scan.nextLine();
+            String id = null;
+            while (!validID) {
+                id = scan.nextLine();
 
-            validID = searchingIdValidation(id);
-        }
-        
-        id = id.substring(0, 2).toUpperCase() + id.substring(2, 7);
-        String prefix = id.substring(0, 2);
-        String filePath = null;
-        String[] amendList = null;
-        String[] cloth = new String[]{"Quantity", "Remarks", "Size", "Color", "Condition", "Brand"};
-        String[] food = new String[]{"Quantity", "Remarks", "Expiry date", "Weight", "Status", "Food Details"};
-        switch (prefix) {
-            case "MB":
-                filePath = BANK_PATH;
-                amendList = new String[]{"Amount", "Bank Type"};
-                break;
-            case "MC":
-                filePath = CASH_PATH;
-                amendList = new String[]{"Amount"};
-                break;
-            case "FA":
-                filePath = BAKED_PATH;
-                amendList = food;
-                break;
-            case "FO":
-                filePath = BOXED_PATH;
-                amendList = food;
-                break;
-            case "FC":
-                filePath = CANNED_PATH;
-                amendList = food;
-                break;
-            case "FD":
-                filePath = DRY_PATH;
-                amendList = food;
-                break;
-            case "FE":
-                filePath = ESS_PATH;
-                amendList = food;
-                break;
-            case "AJ":
-                filePath = JACKET_PATH;
-                amendList = cloth;
-                break;
-            case "AP":
-                filePath = PANT_PATH;
-                amendList = cloth;
-                break;
-            case "AI":
-                filePath = SHIRT_PATH;
-                amendList = cloth;
-                break;
-            case "AO":
-                filePath = SHOES_PATH;
-                amendList = new String[]{"Quantity", "Remarks", "Color", "Condition", "Brand", "Shoes Details"};
-                break;
-            case "AS":
-                filePath = SOCKS_PATH;
-                amendList = cloth;
-                break;
-            default:
-                System.out.println(ANSI_RED + "Invalid ID." + ANSI_RESET);
-        }
-        ManageItem<Item> list = new ManageItem<>();
-        list.loadFromFile(filePath);
-        Item item = list.findById(id);
-        if (item != null) {
-        
-            System.out.println("\nOption available");
-            int amendOption = menuIntReturn(amendList);
-            
-            if (item instanceof Money){
-                
-                moneyAmend(amendOption, item);
-                
-            }else if(item instanceof PhysicalItem){
-                
-                physicalItemAmend(amendOption, item, filePath);
-                
+                validID = searchingIdValidation(id);
             }
+
+            id = id.substring(0, 2).toUpperCase() + id.substring(2, 7);
+            String prefix = id.substring(0, 2);
+            String filePath = null;
+            String[] amendList = null;
+            String[] cloth = new String[]{"Remarks", "Size", "Color", "Condition", "Brand"};
+            String[] food = new String[]{"Remarks", "Expiry date", "Weight", "Status", "Food Details"};
+            switch (prefix) {
+                case "MB":
+                    filePath = BANK_PATH;
+                    amendList = new String[]{"Amount", "Bank Type"};
+                    break;
+                case "MC":
+                    filePath = CASH_PATH;
+                    amendList = new String[]{"Amount"};
+                    break;
+                case "FA":
+                    filePath = BAKED_PATH;
+                    amendList = food;
+                    break;
+                case "FO":
+                    filePath = BOXED_PATH;
+                    amendList = food;
+                    break;
+                case "FC":
+                    filePath = CANNED_PATH;
+                    amendList = food;
+                    break;
+                case "FD":
+                    filePath = DRY_PATH;
+                    amendList = food;
+                    break;
+                case "FE":
+                    filePath = ESS_PATH;
+                    amendList = food;
+                    break;
+                case "AJ":
+                    filePath = JACKET_PATH;
+                    amendList = cloth;
+                    break;
+                case "AP":
+                    filePath = PANT_PATH;
+                    amendList = cloth;
+                    break;
+                case "AI":
+                    filePath = SHIRT_PATH;
+                    amendList = cloth;
+                    break;
+                case "AO":
+                    filePath = SHOES_PATH;
+                    amendList = new String[]{"Remarks", "Size", "Color", "Condition", "Brand", "Shoes Details"};
+                    break;
+                case "AS":
+                    filePath = SOCKS_PATH;
+                    amendList = cloth;
+                    break;
+                default:
+                    System.out.println(ANSI_RED + "Invalid ID." + ANSI_RESET);
+                    break;
+            }
+            ManageItem<Item> list = new ManageItem<>();
+            list.loadFromFile(filePath);
+            Item item = list.findById(id);
+            if (item != null) {
+
+                boolean contItem = true;
+                do{
+                    System.out.println("\nOption available");
+                    int amendOption = menuIntReturn(amendList);
+
+                    if (item instanceof Money){
+
+                        moneyAmend(amendOption, item);
+
+                    }else if(item instanceof PhysicalItem){
+
+                        physicalItemAmend(amendOption, item, filePath);
+
+                    }
+
+                    System.out.println(ANSI_GREEN + "\nItem updated Successfully.\n" + ANSI_RESET);
+                    printSpecificItem(item);
+                    
+                    contItem = YN("Do you want to continue amend this item?");
+                    
+                }while(contItem == true);
+
+            }
+
+            list.saveToFile(filePath);
+            
+            contAmend = YN("Do you want to amend another item?");
             
         }
-        
-        list.saveToFile(filePath);
         
     }
     
@@ -1780,10 +2007,7 @@ public class DonationManagement {
     public static void physicalItemAmend(int amendOption, Item item, String filePath){
         Scanner scan = new Scanner(System.in);
         
-        if (amendOption == 1){
-            int qty = qtyValidation();
-            ((PhysicalItem) item).setQty(qty);
-        }else if(amendOption == 2){
+        if(amendOption == 1){
             System.out.print("Remarks: ");
             String note = scan.nextLine();
             ((PhysicalItem) item).setNote(note);
@@ -1801,7 +2025,7 @@ public class DonationManagement {
     public static void foodAmend(int amendOption, Item item, String filePath){
         Scanner scan = new Scanner(System.in);
         
-        if (amendOption == 3){
+        if (amendOption == 2){
             
             // expiry date
             System.out.print("Expiry Date (dd/mm/yyyy)*: ");
@@ -1857,7 +2081,7 @@ public class DonationManagement {
                                 }else{
                                     boolean delSuccessfully = removeByID(list, item.getId(), filePath);
                                     if(delSuccessfully == true){
-                                        System.out.println("Item had been deleted successfully!");
+                                        System.out.println(ANSI_GREEN + "Item had been deleted successfully!" + ANSI_RESET);
                                     } else{
                                         System.out.println("Item deleted unsuccessfully.");
                                     }
@@ -1877,19 +2101,19 @@ public class DonationManagement {
                 }
             }
             
-        } else if(amendOption == 4){
+        } else if(amendOption == 3){
             
             //weight
             int w = weightValidation();
             ((Food) item).setWeight(w);
         
-        } else if(amendOption == 5){
+        } else if(amendOption == 4){
             
             //status
             String status = foodStaValidation();
             ((Food) item).setStatus(status);
         
-        }else if(amendOption == 6){
+        }else if(amendOption == 5){
             //Food Details
             String detail = null;
             if (item instanceof BakedGoods){
@@ -1910,14 +2134,12 @@ public class DonationManagement {
                 ((Food) item).setDetail(detail);
             }
             
-        }else{
-            System.out.println(ANSI_RED + "Invalid amend option." + ANSI_RESET);
         }
     }
     
     public static void apparelAmend(int amendOption, Item item){
         
-        if(amendOption == 3){
+        if(amendOption == 2){
             //size
             String size;
             if(item instanceof Shoes){
@@ -1929,20 +2151,25 @@ public class DonationManagement {
             ((Apparel) item).setSize(size);
         }
         
-        if (amendOption == 4){
+        if (amendOption == 3){
             //color
             String color = colorValidation();
             ((Apparel) item).setColor(color);
-        } else if (amendOption == 5){
+            
+        } else if (amendOption == 4){
             //condition
             String condition = conditionValidation();
             ((Apparel) item).setCondition(condition);
             
-        } else if (amendOption == 6 && item instanceof Shoes){
+        } else if(amendOption == 5){
+            //brand
+            String brand = brandValidation();
+            ((Apparel) item).setBrand(brand);
+            
+        }else if (amendOption == 6 && item instanceof Shoes){
             String detail = inputShoes();
             ((Shoes) item).setDetail(detail);
-        } else{
-            System.out.println(ANSI_RED + "Invalid amend option." + ANSI_RESET);
+            
         }
     }
     
@@ -1951,55 +2178,45 @@ public class DonationManagement {
     // -----------------------------------------
     public static void trackItemByCategory(){
         
-        System.out.println("--- MONEY ---");
-        System.out.println("Bank");
-        printTable(BANK_PATH);
+        System.out.println(ANSI_BLUE + "\n--- MONEY ---" + ANSI_RESET);
+        System.out.print("Bank");
+        printSameTable(BANK_PATH);
         
-        System.out.println("Cash");
-        printTable(CASH_PATH);
+        System.out.print("\nCash");
+        printSameTable(CASH_PATH);
         
-        System.out.println("--- FOOD ---");
-        System.out.println("Boxed Goods");
-        printTable(BOXED_PATH);
+        System.out.println(ANSI_BLUE + "\n--- FOOD ---" + ANSI_RESET);
+        System.out.print("Boxed Goods");
+        printSameTable(BOXED_PATH);
         
-        System.out.println("Baked Goods");
-        printTable(BAKED_PATH);
+        System.out.print("\nBaked Goods");
+        printSameTable(BAKED_PATH);
         
-        System.out.println("Canned Foods");
-        printTable(CANNED_PATH);
+        System.out.print("\nCanned Foods");
+        printSameTable(CANNED_PATH);
         
-        System.out.println("Dry Goods");
-        printTable(DRY_PATH);
+        System.out.print("\nDry Goods");
+        printSameTable(DRY_PATH);
         
-        System.out.println("Essentials");
-        printTable(ESS_PATH);
+        System.out.print("\nEssentials");
+        printSameTable(ESS_PATH);
         
-        System.out.println("--- APPAREL ---");
-        System.out.println("Jackets");
-        printTable(JACKET_PATH);
+        System.out.println(ANSI_BLUE + "\n--- APPAREL ---" + ANSI_RESET);
+        System.out.print("Jackets");
+        printSameTable(JACKET_PATH);
         
-        System.out.println("PANT");
-        printTable(PANT_PATH);
+        System.out.print("\nPant");
+        printSameTable(PANT_PATH);
         
-        System.out.println("Shirt");
-        printTable(SHIRT_PATH);
+        System.out.print("\nShirt");
+        printSameTable(SHIRT_PATH);
         
-        System.out.println("Shoes");
-        printTable(SHOES_PATH);
+        System.out.print("\nShoes");
+        printSameTable(SHOES_PATH);
         
-        System.out.println("Socks");
-        printTable(SOCKS_PATH);
+        System.out.print("\nSocks");
+        printSameTable(SOCKS_PATH);
         
-    }
-    
-    public static void printTable(String filePath){
-        ManageItem<Item> list = new ManageItem<>();
-        list.loadFromFile(filePath);
-        if(list.isEmpty()){
-            System.out.println("No item available.\n");
-        }else{
-            System.out.println(list.toString());
-        }
     }
     
     // ----------------------------------------
@@ -2018,35 +2235,62 @@ public class DonationManagement {
         individualList.removeEmptyData();
         organizationList.removeEmptyData();
 
-        System.out.println("--- INDIVIDUAL ---");
+        System.out.print(ANSI_BLUE + "--- INDIVIDUAL ---" + ANSI_RESET);
         filterByDonor(itemList, individualList);
 
-        System.out.println("--- ORGANIZATION ---");
+        System.out.print(ANSI_BLUE + "--- ORGANIZATION ---" + ANSI_RESET);
         filterByDonor(itemList, organizationList);
     }
     
     public static void filterByDonor(ManageItem<Item> itemList, LinkedList<Donor> donorList){
         itemList.removeEmptyData();
         donorList.removeEmptyData();
-        
+
+        if (donorList.head == null || itemList.head == null) {
+            System.out.println("No donors or items to process.");
+            return;
+        }
+
         Node<Donor> currentDonor = donorList.head;
         String donorID;
-        
+        int stop = 0;
+        int pageNum = 1;
+
+        System.out.printf("\n| %-10s | %-10s | %-15s |\n", "Donor ID", "Item ID", "Item Category");
         while (currentDonor != null) {
-            System.out.println(currentDonor.data.getId());
+            int print = 0;
             donorID = currentDonor.data.getId();
-            
+
             Node<Item> currentItem = itemList.head;
-            while (currentItem != null){
-                if( donorID.equals( currentItem.data.getDonorID() ) ){
-                    System.out.println(currentItem.data.toString() + "\n");
+            while (currentItem != null) {
+                if (donorID.equals(currentItem.data.getDonorID())) {
+                    stop++;
+                    if (print == 0) {
+                        System.out.printf("| %-10s | %-10s | %-15s |\n", donorID, currentItem.data.getId(), currentItem.data.getType());
+                        print++;
+                    } else {
+                        System.out.printf("| %-10s | %-10s | %-15s |\n", "", currentItem.data.getId(), currentItem.data.getType());
+                    }
                 }
+
+                if(stop == 50){
+                    System.out.println(ANSI_BLUE +"- END OF PAGE " + pageNum + " -" + ANSI_RESET);
+                    boolean cont = YN("50 records of current table had been shown. Do you want to continue shown more?");
+                    if (cont){
+                        pageNum++;
+                        System.out.println(ANSI_BLUE +"\n- PAGE " + pageNum + " -" + ANSI_RESET);
+                        System.out.printf("\n| %-10s | %-10s | %-15s |\n", "Donor ID", "Item ID", "Item Category");
+                        stop = 0;
+                    }else{
+                        return;
+                    }
+                }
+                
                 currentItem = currentItem.next;
             }
-            
-            currentDonor = currentDonor.next; 
+            currentDonor = currentDonor.next;
         }
-            
+
         System.out.println();
     }
     
@@ -2054,79 +2298,88 @@ public class DonationManagement {
     // Part 7: List all donations
     // --------------------------
     public static void listAll(){
-        ManageItem<Item> list = loadAllItemIntoList();
         
-        System.out.println("--- Item List ---");
-        String[] filterMenu = {
-            "Sort and List All Money in Ascending", 
-            "Sort and List All Money in Descending", 
-            "Sort and List All Bank in Ascending",
-            "Sort and List All Bank in Descending",
-            "Sort and List All Cash in Ascending", 
-            "Sort and List All Cash in Descending",
-            "Sort and List All Food according Expiry Date",
-            "Display All"
-        };
-        int sortSelection = menuIntReturn(filterMenu);
-        
-        ManageItem<Money> bankList = new ManageItem<>(BANK_PATH);
-        ManageItem<Money> cashList = new ManageItem<>(CASH_PATH);
-        ManageItem<Money> moneyList;
-        moneyList = bankList;
-        moneyList.appendList(cashList);
-        bankList = new ManageItem<>(BANK_PATH);
-        
-        ManageItem<Food> foodList = loadAllFoodToList();
-        
-        switch(sortSelection){
-            case 1: 
-                System.out.println("\nMoney List (Ascending Order)");
-                sortMoney(moneyList, 1);
-                break;
-            case 2: 
-                System.out.println("\nMoney List (Descending Order)");
-                sortMoney(moneyList, 0);
-                break;
-            case 3:
-                System.out.println("\nBank List (Ascending Order)");
-                sortMoney(bankList, 1);
-                break;
-            case 4:
-                System.out.println("\nBank List (Descending Order)");
-                sortMoney(bankList, 0);
-                break;
-            case 5:
-                System.out.println("\nCash List (Ascending Order)");
-                sortMoney(cashList, 1);
-                break;
-            case 6:
-                System.out.println("\nCash List (Descending Order)");
-                sortMoney(cashList, 0);
-                break;
-            case 7:
-                System.out.println("\nFood List (According Expiry Date)");
-                sortFoodExp(foodList);
-                break;
-            case 8:
-                System.out.println("\nDonation Item List");
-                if (list.isEmpty()){
-                    System.out.println(ANSI_RED + "No item in the stock." + ANSI_RESET);
-                }else{
-                    System.out.println(list.toString());
-                }
-                break;
-            default:
-                System.out.println(ANSI_RED + "Invalid sort selection." + ANSI_RESET);
-        }
+        boolean cont = true;
+        do{
+            System.out.println(ANSI_BLUE + "\n - - - Item List - - -" + ANSI_RESET);
+            String[] sortMenu = {
+                "Sort and List All Money in Ascending", 
+                "Sort and List All Money in Descending", 
+                "Sort and List All Bank in Ascending",
+                "Sort and List All Bank in Descending",
+                "Sort and List All Cash in Ascending", 
+                "Sort and List All Cash in Descending",
+                "Sort and List All Food according Expiry Date",
+                "Display All"
+            };
+            int sortSelection = menuIntReturn(sortMenu);
+
+            ManageItem<Money> bankList = new ManageItem<>(BANK_PATH);
+            ManageItem<Money> cashList = new ManageItem<>(CASH_PATH);
+            ManageItem<Money> moneyList;
+            moneyList = bankList;
+            moneyList.appendList(cashList);
+            bankList = new ManageItem<>(BANK_PATH);
+
+            ManageItem<Food> foodList = loadAllFoodToList();
+
+            switch(sortSelection){
+                case 1: 
+                    System.out.println("\n --- Money List --- (Ascending Order)");
+                    sortMoney(moneyList, 1, 1);
+                    break;
+                case 2: 
+                    System.out.println("\n --- Money List --- (Descending Order)");
+                    sortMoney(moneyList, 0, 1);
+                    break;
+                case 3:
+                    System.out.println("\n --- Bank List --- (Ascending Order)");
+                    sortMoney(bankList, 1, 1);
+                    break;
+                case 4:
+                    System.out.println("\n --- Bank List --- (Descending Order)");
+                    sortMoney(bankList, 0, 1);
+                    break;
+                case 5:
+                    System.out.println("\n --- Cash List --- (Ascending Order)");
+                    sortMoney(cashList, 1, 2);
+                    break;
+                case 6:
+                    System.out.println("\n --- Cash List --- (Descending Order)");
+                    sortMoney(cashList, 0, 2);
+                    break;
+                case 7:
+                    System.out.println("\n --- Food List --- (According Expiry Date)");
+                    sortFoodExp(foodList);
+                    break;
+                case 8:
+                    System.out.println("\n --- Donation Item List --- ");
+                    printAllIntoTable();
+                    break;
+                default:
+                    System.out.println(ANSI_RED + "Invalid sort selection." + ANSI_RESET);
+                    break;
+            }
+            
+            cont = YN("Do you want to continue sort or view other items?");
+            
+        } while(cont == true);
 
     }
     
-    public static void sortMoney(ManageItem<Money> moneyList, int asc) {
+    public static void sortMoney(ManageItem<Money> moneyList, int asc, int header) {
         moneyList.removeEmptyData();
 
         if (moneyList.head == null) {
             System.out.println(ANSI_RED + "No such donated item." + ANSI_RESET);
             return;
+        }
+        
+
+        if (header == 1){
+            System.out.printf("| %-10s | %-10s | %-15s | %-14s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Amount Donated", "Bank Name");
+        }else{
+            System.out.printf("| %-10s | %-10s | %-15s | %-14s |\n", "Item ID", "Donor ID", "Item Category", "Amount Donated");
         }
         
         if (moneyList.head.next == null){
@@ -2180,10 +2433,26 @@ public class DonationManagement {
 
             currentMoney = currentMoney.next;
         }
-
+        
         Node<Money> node = moneyList.head;
+        int stop = 0;
+        int pageNum = 1;
         while (node != null) {
-            System.out.println(node.data.toString() + "\n");
+            System.out.println(node.data.toString());
+            stop++;
+            
+            if(stop == 50){
+                System.out.println(ANSI_BLUE +"- END OF PAGE " + pageNum + " -" + ANSI_RESET);
+                boolean cont = YN("50 records had shown. Do you want to continue shown more?");
+                if (cont){
+                    pageNum++;
+                    System.out.println(ANSI_BLUE +"\n- PAGE " + pageNum + " -" + ANSI_RESET);
+                    System.out.printf("| %-10s | %-10s | %-15s | %-20s | %-10s | %-8s | %-8s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Remarks", "Expiry Date", "Weight", "Status", "Food Type");
+                    stop = 0;
+                }else{
+                    return;
+                }
+            }
             node = node.next;
         }
     }
@@ -2197,6 +2466,8 @@ public class DonationManagement {
             System.out.println(ANSI_RED + "No such donated item." + ANSI_RESET);
             return;
         }
+        
+        System.out.printf("| %-10s | %-10s | %-15s | %-20s | %-10s | %-8s | %-8s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Remarks", "Expiry Date", "Weight", "Status", "Food Type");
         
         if (foodList.head.next == null){
             System.out.println(foodList.head.data.toString());
@@ -2245,9 +2516,41 @@ public class DonationManagement {
         }
 
         Node<Food> node = foodList.head;
+        int stop = 0;
+        int pageNum = 1;
         while (node != null) {
-            System.out.println(node.data.toString() + "\n");
+            System.out.println(node.data.toString());
+            stop++;
+            
+            if(stop == 50){
+                System.out.println(ANSI_BLUE +"- END OF PAGE " + pageNum + " -" + ANSI_RESET);
+                boolean cont = YN("50 records had shown. Do you want to continue shown more?");
+                if (cont){
+                    pageNum++;
+                    System.out.println(ANSI_BLUE +"\n- PAGE " + pageNum + " -" + ANSI_RESET);
+                    System.out.printf("| %-10s | %-10s | %-15s | %-20s | %-10s | %-8s | %-8s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Remarks", "Expiry Date", "Weight", "Status", "Food Type");
+                    stop = 0;
+                }else{
+                    return;
+                }
+            }
             node = node.next;
+        }
+    }
+    
+    public static void printAllIntoTable() {
+        String[] fileList = {BANK_PATH, CASH_PATH, JACKET_PATH, PANT_PATH, SHIRT_PATH, SHOES_PATH, SOCKS_PATH, BAKED_PATH, BOXED_PATH, CANNED_PATH, DRY_PATH, ESS_PATH};
+
+        for (int i = 0; i < fileList.length; i++) {
+            ManageItem<Item> list = new ManageItem<>();
+            list.loadFromFile(fileList[i]);
+            list.removeEmptyData();
+
+            if (list.isEmpty()) {
+                continue;
+            } else {
+                printListToTable(list);
+            }
         }
     }
     
@@ -2255,21 +2558,29 @@ public class DonationManagement {
     // Part 8: Filter donation based on criteria
     // -----------------------------------------
     public static void filterDonation(){
-        System.out.println("--- Filter Selection ---");
-        String[] filterMenu = {"Filter by Item Type (e.g. Sport Shoes)", "Filter Food by Expiry's Year (e.g. 2026)"};
-        int filterSelection = menuIntReturn(filterMenu);
         
-        switch(filterSelection){
-            case 1:
-                filterByItem();
-                break;
-            case 2:
-                filterByYear();
-                
-                break;
-            default:
-                System.out.println(ANSI_RED + "Invalid filter selection." + ANSI_RESET);
-        }
+        boolean cont = true;
+        do{
+            System.out.println(ANSI_BLUE + "\n- - - Filter Selection - - -" + ANSI_RESET);
+            String[] filterMenu = {"Filter by Item Type (e.g. Sport Shoes)", "Filter Food before and within Expiry's Year (e.g. 2025)"};
+            int filterSelection = menuIntReturn(filterMenu);
+
+            switch(filterSelection){
+                case 1:
+                    filterByItem();
+                    break;
+                case 2:
+                    filterByYear();
+
+                    break;
+                default:
+                    System.out.println(ANSI_RED + "Invalid filter selection." + ANSI_RESET);
+                    break;
+            }
+            
+            cont = YN("Do you want to continue filtering other items?");
+            
+        }while(cont == true);
     }
     
     public static void filterByItem(){
@@ -2324,11 +2635,11 @@ public class DonationManagement {
             }else{ // SOCKS
                 list = list.filterByCategory(Socks.class);
             }
-        
+            
             if (list.isEmpty()){
                 System.out.println(ANSI_RED + "No such item." + ANSI_RESET);
             }else{
-                System.out.println(list.toString());
+                printListToTable(list);
             }
             
         }else{
@@ -2500,11 +2811,19 @@ public class DonationManagement {
 
             currentFood = currentFood.next;
         }
+        
+        ManageItem<Item> itemList = new ManageItem<>();
+        Node<Food> currentNode = list.head;
+        while(currentNode != null){
+            Item item = currentNode.data;
+            itemList.insert(item);
+            currentNode = currentNode.next;
+        }
 
         if (list.head == null) {
             System.out.println(ANSI_RED + "No such item." + ANSI_RESET);
         } else {
-            System.out.println(list.toString());
+            printListToTable(itemList);
         }
     }
     
@@ -2536,11 +2855,19 @@ public class DonationManagement {
 
             currentShoes = currentShoes.next;
         }
-
+        
+        ManageItem<Item> itemList = new ManageItem<>();
+        Node<Shoes> currentNode = list.head;
+        while(currentNode != null){
+            Item item = currentNode.data;
+            itemList.insert(item);
+            currentNode = currentNode.next;
+        }
+        
         if (list.head == null) {
             System.out.println(ANSI_RED + "No such item." + ANSI_RESET);
         } else {
-            System.out.println(list.toString());
+            printListToTable(itemList);
         }
     }
     
@@ -2559,7 +2886,7 @@ public class DonationManagement {
             Date dataDate = currentNode.data.getExpiryDate();
             int dataYear = dataDate.getYear() + 1900; // 124 + 1900 = 2024
 
-            if (dataYear != year) {
+            if (dataYear > year) {
                 
                 if (currentNode.previous != null) {
                     currentNode.previous.next = currentNode.next;
@@ -2579,10 +2906,18 @@ public class DonationManagement {
             currentNode = currentNode.next;
         }
         
+        ManageItem<Item> itemList = new ManageItem<>();
+        currentNode = foodList.head;
+        while(currentNode != null){
+            Item item = currentNode.data;
+            itemList.insert(item);
+            currentNode = currentNode.next;
+        }
+
         if (foodList.head == null) {
             System.out.println(ANSI_RED + "No such item." + ANSI_RESET);
         } else {
-            System.out.println(foodList.toString());
+            printListToTable(itemList);
         }
     }
     
@@ -2624,27 +2959,35 @@ public class DonationManagement {
     // Part 9: Generate summary reports 
     // --------------------------------
     public static void report(){
-        System.out.println("--- Report ---");
-        String[] reportMenu = {
-            "Donor with the Highest Contribution", 
-            "Analysis of Food Items with Future Expiry Year",
-            "Most Frequently Donated Item Category (Money, Food, Apparel)"
-        };
-        int reportSelection = menuIntReturn(reportMenu);
         
-        switch(reportSelection){
-            case 1:
-                donorContributionReport();
-                break;
-            case 2:
-                foodExpiryReport();
-                break;
-            case 3:
-                mostFrequentItem();
-                break;
-            default:
-                System.out.println(ANSI_RED + "Invalid report selection." + ANSI_RESET);
-        }
+        boolean cont = true;
+        do{
+            System.out.println(ANSI_BLUE + "\n- - - Report - - -" + ANSI_RESET);
+            String[] reportMenu = {
+                "Donor with the Highest Contribution", 
+                "Analysis of Food Items with Future Expiry Year",
+                "Most Frequently Donated Item Category (Money, Food, Apparel)"
+            };
+            int reportSelection = menuIntReturn(reportMenu);
+
+            switch(reportSelection){
+                case 1:
+                    donorContributionReport();
+                    break;
+                case 2:
+                    foodExpiryReport();
+                    break;
+                case 3:
+                    mostFrequentItem();
+                    break;
+                default:
+                    System.out.println(ANSI_RED + "Invalid report selection." + ANSI_RESET);
+                    break;
+            }
+            
+            cont = YN("Do you want to view another report?");
+            
+        }while(cont == true);
     }
     
     public static void donorContributionReport(){
@@ -2674,22 +3017,26 @@ public class DonationManagement {
             int sum = 0;
             while (currentItem != null){
                 if (currentDonor.data.getId().equals(currentItem.data.getDonorID())){
-                    System.out.print(" * ");
                     sum ++;
                 }
                 currentItem = currentItem.next;
             }
-            System.out.print("(" + sum + ")\n");
+            
+            System.out.print(" (" + sum + ") ");
+            
+            printStar(sum);
             
             if (max < sum){
                 max = sum;
                 donor = currentDonor.data;
             }
             
+            System.out.println();
             currentDonor = currentDonor.next;
         }
         
-        System.out.println("\nThe donor with highest contribution is " + donor.getName() + " with the total of " + max + " donated items.");
+        System.out.println("\nRemarks: Symbol * will be display if item's total exceed 50 and each * represent 50 items");
+        System.out.println("Conclusion: The donor with highest contribution is " + donor.getName() + " with the total of " + max + " donated items.");
     }
     
     public static void foodExpiryReport(){
@@ -2705,7 +3052,7 @@ public class DonationManagement {
         LocalDate currentDate = LocalDate.now();
         int currentYear = currentDate.getYear();
         
-         int largestYear = currentYear;
+        int largestYear = currentYear;
         Node<Food> tempNode = itemList.head;
         while (tempNode != null) {
             int dataYear = tempNode.data.getExpiryDate().getYear() + 1900;
@@ -2715,9 +3062,9 @@ public class DonationManagement {
             tempNode = tempNode.next;
         }
         
+        System.out.printf("| %-21s | %-10s | %-10s | %-10s | %-10s | %-10s |\n", "Year\\Food Category", "Baked", "Boxed", "Canned", "Dry", "Essential");
         while(currentYear <= largestYear){
-            int sum = 0;
-            System.out.print(currentYear + " ");
+            int sum = 0, fa = 0, fo = 0, fc = 0, fd = 0, fe = 0;
             
             Node<Food> currentNode = itemList.head;
             while(currentNode != null){
@@ -2725,13 +3072,26 @@ public class DonationManagement {
                 int dataYear = currentNode.data.getExpiryDate().getYear() + 1900;
                 
                 if (dataYear == currentYear){
-                    System.out.print(" * ");
                     sum ++;
+                    if (currentNode.data instanceof BakedGoods){
+                        fa++;
+                    }else if(currentNode.data instanceof BoxedGoods){
+                        fo++;
+                    }else if(currentNode.data instanceof CannedFood){
+                        fc++;
+                    }else if(currentNode.data instanceof DryGoods){
+                        fd++;
+                    }else{
+                        fe++;
+                    }
                 }
                 
                 currentNode = currentNode.next;
             }
-            System.out.print("(" + sum + ")\n");
+            
+            System.out.printf("| %-4s %-4s %-4d %-6s | %-10d | %-10d | %-10d | %-10d | %-10d |\n", 
+                    currentYear, " -> ", sum , " items", fa, fo, fc, fd, fe);
+            
             currentYear ++;
         }
     }
@@ -2754,26 +3114,26 @@ public class DonationManagement {
         int sumM = 0;
         System.out.printf("%-10s", "Money");
         for(int i = 0; i < moneyList.length(); i++){
-            System.out.print(" * ");
             sumM ++;
         }
-        System.out.print("(" + sumM + ")\n");
+        System.out.print("(" + sumM + ")");
+        printStar(sumM);
         
         int sumF = 0;
-        System.out.printf("%-10s", "Food");
+        System.out.printf("\n%-10s", "Food");
         for(int i = 0; i < foodList.length(); i++){
-            System.out.print(" * ");
             sumF ++;
         }
-        System.out.print("(" + sumF + ")\n");
+        System.out.print("(" + sumF + ")");
+        printStar(sumF);
         
         int sumA = 0;
-        System.out.printf("%-10s", "Apparel");
+        System.out.printf("\n%-10s", "Apparel");
         for(int i = 0; i < appList.length(); i++){
-            System.out.print(" * ");
             sumA ++;
         }
-        System.out.print("(" + sumA + ")\n");
+        System.out.print("(" + sumA + ")");
+        printStar(sumA);
         
         String category;
         int max = 0;
@@ -2788,6 +3148,16 @@ public class DonationManagement {
             max = sumA;
         }
         
-        System.out.println("\nThe most frequent donated item category is " + category + ", with total amount of " + max );
+        System.out.println("\nRemarks: Symbol * will be display if item's total exceed 50 and each * represent 50 items");
+        System.out.println("The most frequent donated item category is " + category + ", with total amount of " + max );
+    }
+    
+    public static void printStar(int count){
+        if (count > 50){
+            int left = count % 50;
+            for (int i = 0; i < left; i ++){
+                System.out.print(ANSI_BLUE + " *" + ANSI_RESET);
+            }
+        }
     }
 }
