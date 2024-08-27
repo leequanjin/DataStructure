@@ -1,26 +1,22 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package VolunteerSubsystem;
-
-/**
- *
- * @author Clarist Liew
- */
 public class Volunteer {
     
     private String volunteerID;
     private String name;
+    private String gender;
     private int age;
     private String contactNo;
+    //private LinkedList<Event> assignedEvents; 
+    
 
-    // Constructor
-    public Volunteer(String volunteerID, String name, int age, String contactNo) {
+    
+    public Volunteer(String volunteerID, String name, String gender, int age, String contactNo) {
         this.volunteerID = volunteerID;
         this.name = name;
-        this.age = age;  
+        this.gender = gender;
+        this.age = age; 
         this.contactNo = contactNo;
+        //this.assignedEvents = new LinkedList<>();
     }
 
     
@@ -40,6 +36,14 @@ public class Volunteer {
         this.name = name;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     public int getAge() {
         return age;
     }
@@ -55,13 +59,22 @@ public class Volunteer {
     public void setContactNo(String contactNo) {
         this.contactNo = contactNo;
     }
+    
+//    public LinkedList<Event> getAssignedEvents() {
+//        return assignedEvents;
+//    }
+//
+//    public void assignEvent(Event event) {
+//        this.assignedEvents.insert(event);
+//    }
 
+    
     @Override
     public String toString() {
         return "Volunteer ID: " + volunteerID +
                "\nName: " + name +
+               "\nGender: " + gender +
                "\nAge: " + age +
                "\nContact No: " + contactNo;
     }
 }
-
