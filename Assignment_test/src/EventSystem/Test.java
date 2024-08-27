@@ -167,11 +167,12 @@ private static void addEvent() {
             System.out.println(ANSI_RED + "Invalid choice. Returning to main menu." + ANSI_RESET);
     }
 
-    // Save all data to files after processing
-    saveData(eventList, ticketList, sponsorshipList);
+    
 }
 
 private static void addEventDetails(Scanner scanner, LinkedList<Event> eventList) {
+    
+    eventList.loadFromFile(EVENT_FILE);
 
     String eventID = generateEventID(eventList);
 
@@ -187,11 +188,16 @@ private static void addEventDetails(Scanner scanner, LinkedList<Event> eventList
     Event event = new Event(eventID, eventName, date, time, location);
 
     eventList.insert(event);
+    eventList.saveToFile(EVENT_FILE);
     System.out.println(ANSI_GREEN + "Event added successfully!" + ANSI_RESET);
+    
     
 }
 
 private static void addTicket(Scanner scanner, LinkedList<Event> eventList, LinkedList<Ticket> ticketList) {
+    
+    eventList.loadFromFile(EVENT_FILE);
+    ticketList.loadFromFile(TICKET_FILE);
     String ID;
     Event event;
 
@@ -217,10 +223,13 @@ private static void addTicket(Scanner scanner, LinkedList<Event> eventList, Link
 
     Ticket ticket = new Ticket(ID, event.getEventName(), event.getDate(), event.getTime(), event.getLocation(), ticketID, ticketType, ticketPrice);
     ticketList.insert(ticket);
+    ticketList.saveToFile(TICKET_FILE);
     System.out.println(ANSI_GREEN + "Ticket added successfully!" + ANSI_RESET);
 }
 
 private static void addSponsorship(Scanner scanner, LinkedList<Event> eventList, LinkedList<Sponsorship> sponsorshipList) {
+    eventList.loadFromFile(EVENT_FILE);
+    sponsorshipList.loadFromFile(SPONSORSHIP_FILE);
     String ID;
     Event event;
 
@@ -246,6 +255,7 @@ private static void addSponsorship(Scanner scanner, LinkedList<Event> eventList,
 
     Sponsorship sponsorship = new Sponsorship(ID, event.getEventName(), event.getDate(), event.getTime(), event.getLocation(), sponsorID, sponsorName, sponsorAmount);
     sponsorshipList.insert(sponsorship);
+    sponsorshipList.saveToFile(SPONSORSHIP_FILE);
     System.out.println(ANSI_GREEN + "Sponsorship added successfully!" + ANSI_RESET);
 }
 
@@ -415,7 +425,7 @@ private static double getValidDouble(Scanner scanner) {
     }
 }
 
-// Save to file
+// Save to file method
 private static void saveData(LinkedList<Event> eventList, LinkedList<Ticket> ticketList, LinkedList<Sponsorship> sponsorshipList) {
     eventList.saveToFile(EVENT_FILE);
     ticketList.saveToFile(TICKET_FILE);
@@ -464,16 +474,18 @@ public static void removeEvent() {
     
     private static void searchEvent() {
         
-    }
+    
+}
+
 
 
     public static void updateEvent() {
-        // Declare and initialize the LinkedLists within the method
+        
         LinkedList<Event> eventList = new LinkedList<>();
         LinkedList<Ticket> ticketList = new LinkedList<>();
         LinkedList<Sponsorship> sponsorshipList = new LinkedList<>();
         
-        // Load the existing events, tickets, and sponsorships from their respective files
+        
         eventList.loadFromFile("event.txt");
         ticketList.loadFromFile("ticket.txt");
         sponsorshipList.loadFromFile("sponsorship.txt");
@@ -505,7 +517,7 @@ public static void removeEvent() {
                     System.out.println("4. Location");
                     System.out.println("5. Tickets");
                     System.out.println("6. Sponsorships");
-                    System.out.println("7. Finish updating");
+                    System.out.println("7. Save Changes");
                     System.out.print("Enter your choice: ");
                     
                     String choice = scanner.nextLine().trim();
@@ -762,10 +774,67 @@ public static void removeEvent() {
         }
     }
 
-    private static void listAllEvents() {
-        
-        
+private static void listAllEvents() {
+    LinkedList<Event> eventList = new LinkedList<>();
+    LinkedList<Ticket> ticketList = new LinkedList<>();
+    LinkedList<Sponsorship> sponsorshipList = new LinkedList<>();
+
+    // Load the events, tickets, and sponsorships from their respective files
+    eventList.loadFromFile(EVENT_FILE);
+    ticketList.loadFromFile(TICKET_FILE);
+    sponsorshipList.loadFromFile(SPONSORSHIP_FILE);
+
+    // Check if there are any events
+    if (eventList.isEmpty()) {
+        System.out.println(ANSI_YELLOW + "No events found." + ANSI_RESET);
+        return;
     }
+
+    // Iterate through all events
+    Node<Event> eventNode = eventList.head;
+    while (eventNode != null) {
+        Event event = eventNode.data;
+        System.out.println(ANSI_CYAN + "Event ID: " + event.getEventID() + ANSI_RESET);
+        System.out.println(event);
+
+        // Filter and list tickets associated with the current event
+        Node<Ticket> ticketNode = ticketList.head;
+        System.out.println(ANSI_BLUE + "\nTickets for Event ID " + event.getEventID() + ":" + ANSI_RESET);
+        boolean ticketsFound = false;
+        while (ticketNode != null) {
+            Ticket ticket = ticketNode.data;
+            if (ticket.getEventID().equals(event.getEventID())) {
+                System.out.println(ticket);
+                ticketsFound = true;
+            }
+            ticketNode = ticketNode.next;
+        }
+        if (!ticketsFound) {
+            System.out.println(ANSI_YELLOW + "No tickets found for this event." + ANSI_RESET);
+        }
+
+        // Filter and list sponsorships associated with the current event
+        Node<Sponsorship> sponsorshipNode = sponsorshipList.head;
+        System.out.println(ANSI_PURPLE + "\nSponsorships for Event ID " + event.getEventID() + ":" + ANSI_RESET);
+        boolean sponsorshipsFound = false;
+        while (sponsorshipNode != null) {
+            Sponsorship sponsorship = sponsorshipNode.data;
+            if (sponsorship.getEventID().equals(event.getEventID())) {
+                System.out.println(sponsorship);
+                sponsorshipsFound = true;
+            }
+            sponsorshipNode = sponsorshipNode.next;
+        }
+        if (!sponsorshipsFound) {
+            System.out.println(ANSI_YELLOW + "No sponsorships found for this event." + ANSI_RESET);
+        }
+
+        // Move to the next event in the list
+        eventNode = eventNode.next;
+        System.out.println("\n--------------------------------------------------\n");
+    }
+}
+
 
     private static void filterEvents() {
         System.out.println("Hello");
@@ -776,7 +845,3 @@ public static void removeEvent() {
         
     }
 }
-    
-
-
-
