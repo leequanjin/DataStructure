@@ -1,14 +1,18 @@
 package VolunteerSubsystem;
-public class Volunteer {
+
+import java.io.Serializable;
+
+// @author Clarist, Heng Pei Lin
+
+public class Volunteer implements Serializable {
     
     private String volunteerID;
     private String name;
     private String gender;
     private int age;
     private String contactNo;
-    //private LinkedList<Event> assignedEvents; 
     
-
+    public Volunteer(){}
     
     public Volunteer(String volunteerID, String name, String gender, int age, String contactNo) {
         this.volunteerID = volunteerID;
@@ -61,10 +65,12 @@ public class Volunteer {
     
     @Override
     public String toString() {
-        return "Volunteer ID: " + volunteerID +
-               "\nName: " + name +
-               "\nGender: " + gender +
-               "\nAge: " + age +
-               "\nContact No: " + contactNo;
+        return "Volunteer {" +
+                "Id : '" + volunteerID + '\'' +
+                ", Name : '" + name + '\'' +
+                ", Gender : '" + gender + '\'' +
+                ", Age : '" + age + '\'' +
+                ", Contact : '" + contactNo + '\'' +
+                '}';
     }
 }
