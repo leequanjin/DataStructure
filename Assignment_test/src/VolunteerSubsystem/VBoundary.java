@@ -5,6 +5,11 @@
 package VolunteerSubsystem;
 
 import CommonResources.LinkedList;
+import CommonResources.Node;
+import EventSystem.Event;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import java.util.Scanner;
 
@@ -12,12 +17,12 @@ import java.util.Scanner;
  *
  * @author Heng Pei Lin
  */
-
-
 public class VBoundary {
-    
+
     private static final String VOLUNTEER_PATH = "volunteers.txt";
-    
+    private static final String EVENT_PATH = "event.txt";
+    private static final String EV_PATH = "volunteer_event.txt";
+
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
     public static final String ANSI_YELLOW = "\u001B[33m";
@@ -25,30 +30,34 @@ public class VBoundary {
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_RESET = "\u001B[0m";
-    
-    public static void main(String[] args){
-        boolean fileExist = VDAO.chkFileExist(VOLUNTEER_PATH);
-        if (! fileExist){
-            boolean createFile = VDAO.createFile(VOLUNTEER_PATH);
-            if(createFile){
-                System.out.println(ANSI_GREEN + "File creted successfully." + ANSI_RESET);
-            }else{
-                System.out.println(ANSI_RED + "Error creating file." + ANSI_RESET);
+
+    public static void main(String[] args) {
+
+        String[] fileList = {VOLUNTEER_PATH, EVENT_PATH, EV_PATH};
+        for (int i = 0; i < fileList.length; i++) {
+            boolean fileExist = VDAO.chkFileExist(fileList[i]);
+            if (!fileExist) {
+                boolean createFile = VDAO.createFile(fileList[i]);
+                if (createFile) {
+                    System.out.println(ANSI_GREEN + fileList[i] + " created successfully." + ANSI_RESET);
+                } else {
+                    System.out.println(ANSI_RED + "Error creating file." + ANSI_RESET);
+                }
             }
         }
-        
+
         volunteerMainMenu();
     }
-    
-    public static void volunteerMainMenu(){
+
+    public static void volunteerMainMenu() {
         boolean cont = true;
-        do{
+        do {
             LinkedList list = new LinkedList();
             list.loadFromFile(VOLUNTEER_PATH);
 
             System.out.println(" - - - Volunteer - - -");
             String[] volMenu = {
-                "Add New Volunteer", 
+                "Add New Volunteer",
                 "Remove Volunteer",
                 "Search Volunteer",
                 "Assign Volunteer to Event",
@@ -56,7 +65,7 @@ public class VBoundary {
                 "List All"
             };
             int selection = menuIntReturn(volMenu);
-            switch(selection){
+            switch (selection) {
                 case 1:
                     addVolunteer(list);
                     break;
@@ -81,43 +90,43 @@ public class VBoundary {
             }
 
             cont = YN("Do you want to continue manage volunteer?");
-            if(cont){
+            if (cont) {
                 System.out.println();
             }
-        }while(cont);
-        
+        } while (cont);
+
     }
-    
+
     // Add new Volunteer
-    public static void addVolunteer(LinkedList list){
-        
+    public static void addVolunteer(LinkedList list) {
+
         Scanner scan = new Scanner(System.in);
-        
+
         System.out.println(ANSI_BLUE + "\n- - - Add Volunteer - - - " + ANSI_RESET);
         // ID
         String id = VControl.idGenerator("VL", list);
-        
+
         // Name
         System.out.print("Enter name: ");
         boolean validName = false;
         String name = null;
-        while(!validName){
+        while (!validName) {
             name = scan.nextLine();
-            
+
             validName = VControl.chkEmptyInput(name);
-            if(!validName){
+            if (!validName) {
                 System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
                 System.out.print("Enter again: ");
             }
         }
-        
+
         // Gender
         System.out.println("\nGender");
         String[] genderMenu = {"Male", "Female"};
         int gSelection = menuIntReturn(genderMenu);
-        
+
         String gender = null;
-        switch(gSelection){
+        switch (gSelection) {
             case 1:
                 gender = "Male";
                 break;
@@ -128,260 +137,425 @@ public class VBoundary {
                 System.out.println(ANSI_RED + "Invalid gender.\n" + ANSI_RESET);
                 break;
         }
-        
+
         // Age
         System.out.println("\nRemarks: Only people within the age 18 to 60 years old can registered.");
         System.out.print("Enter age: ");
         boolean validAge = false;
         int age = 0;
-        while(validAge == false){
+        while (validAge == false) {
             String inputAge = scan.nextLine();
-            
+
             validAge = chkIntInputInRange(inputAge, 18, 60);
-            if(validAge){
+            if (validAge) {
                 age = Integer.parseInt(inputAge);
             }
         }
-        
+
         // Contact Num
         System.out.print("\nEnter phone number (e.g. 011 2345 6789): ");
         boolean validPhone = false;
         String phone = null;
-        while(!validPhone){
+        while (!validPhone) {
             phone = scan.nextLine();
-            
+
             validPhone = VControl.chkEmptyInput(phone);
-            if(validPhone){
-            
+            if (validPhone) {
+
                 // check is it all integer
                 phone = phone.trim();
                 validPhone = VControl.chkInt(phone);
-                if(validPhone){
-                    
+                if (validPhone) {
+
                     //  check correct phone format
-                    
                     validPhone = VControl.chkPhoneValidation(phone);
-                    if(!validPhone){
+                    if (!validPhone) {
                         System.out.println(ANSI_RED + "Invalid phone format.\n" + ANSI_RESET);
                     }
-                }else{
+                } else {
                     System.out.println(ANSI_RED + "Please enter number only.\n" + ANSI_RESET);
                 }
-                
-            }else{
+
+            } else {
                 System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
             }
-            
-            if(!validPhone){
+
+            if (!validPhone) {
                 System.out.print("Enter again: ");
             }
-            
+
         }
-        
+
         Volunteer newVol = new Volunteer(id, name, gender, age, phone);
         list.insert(newVol);
-        
+
         System.out.println(ANSI_GREEN + "\nVolunteer added successfully." + ANSI_RESET);
         list.show();
         list.saveToFile(VOLUNTEER_PATH);
     }
-    
+
     // Remove Volunteer
-    public static void remVolunteer(LinkedList list){
-        
+    public static void remVolunteer(LinkedList list) {
+        Scanner scan = new Scanner(System.in);
+
         System.out.println(ANSI_BLUE + "\n- - - Remove Volunteer - - - " + ANSI_RESET);
-        if(list.isEmpty()){
+        if (list.isEmpty()) {
             System.out.println(ANSI_RED + "No volunteer yet.\n" + ANSI_RESET);
             return;
-        }else{
+        } else {
             list.show();
         }
 
-        String id = idValidation();
-        
+        System.out.print("Enter volunteer id: ");
+
+        boolean validID = false;
+        String id = null;
+        while (!validID) {
+            id = scan.nextLine().trim();
+
+            validID = idValidation(id, "VL");
+        }
+
+        id = id.substring(0, 2).toUpperCase() + id.substring(2, 7);
+
         Volunteer foundVolunteer = VControl.findById(list, id);
-        if(foundVolunteer == null){
+        if (foundVolunteer == null) {
             System.out.println(ANSI_RED + "\nVolunteer does not exist." + ANSI_RESET);
-        }else{
+        } else {
             boolean remove = VControl.deleteById(list, id);
-            if (remove == false){
+            if (remove == false) {
                 System.out.println(ANSI_RED + "\nRemove unsuccessfully." + ANSI_RESET);
-            }else{
+            } else {
                 System.out.println(ANSI_GREEN + "\nRemove successfully." + ANSI_RESET);
                 list.show();
                 list.saveToFile(VOLUNTEER_PATH);
             }
         }
     }
-    
+
     // Search Volunteer
-    public static void searchVolunteer(LinkedList list){
+    public static void searchVolunteer(LinkedList list) {
+        Scanner scan = new Scanner(System.in);
+
         System.out.println(ANSI_BLUE + "\n- - - Remove Volunteer - - - " + ANSI_RESET);
-        if(list.isEmpty()){
+        if (list.isEmpty()) {
             System.out.println(ANSI_RED + "No volunteer yet.\n" + ANSI_RESET);
             return;
         }
-        String id = idValidation();
-        
+
+        System.out.print("Enter volunteer id: ");
+
+        boolean validID = false;
+        String id = null;
+        while (!validID) {
+            id = scan.nextLine().trim();
+
+            validID = idValidation(id, "VL");
+        }
+
+        id = id.substring(0, 2).toUpperCase() + id.substring(2, 7);
+
         Volunteer foundVolunteer = VControl.findById(list, id);
-        if(foundVolunteer == null){
+        if (foundVolunteer == null) {
             System.out.println(ANSI_RED + "\nVolunteer does not exist." + ANSI_RESET);
-        }else{
+        } else {
             System.out.println(foundVolunteer.toString());
         }
     }
-    
+
     // Assign volunteers to events
-    public static void assignEvent(LinkedList list){
+    public static void assignEvent(LinkedList volList) {
+        Scanner scan = new Scanner(System.in);
+
+        System.out.println(ANSI_BLUE + "\n- - - Assign Volunteer to Event - - - " + ANSI_RESET);
+
+        LinkedList<Event> eventList = new LinkedList();
+        eventList.loadFromFile(EVENT_PATH);
+        if (eventList.isEmpty()) {
+            System.out.println(ANSI_RED + "No event yet." + ANSI_RESET);
+            return;
+        }
+
+        displayEventTable(eventList);
+
+        System.out.print("\nEnter event id: ");
+
+        boolean validID = false;
+        String eventID = null;
+        while (!validID) {
+            eventID = scan.nextLine().trim();
+
+            validID = idValidation(eventID, "EV");
+        }
+
+        eventID = eventID.substring(0, 2).toUpperCase() + eventID.substring(2, 7);
+
+        if (volList.isEmpty()) {
+            System.out.println(ANSI_RED + "No volunteer yet." + ANSI_RESET);
+            return;
+        }
         
+        LinkedList<EventVolunteer> combineList = new LinkedList<>();
+        combineList.loadFromFile(EV_PATH);
+        if(combineList.isEmpty()){
+            System.out.println("GAY");
+        }
+
+        combineList.show();
+        boolean contAddVol = volHavenAttendEvent(volList, combineList, eventID);
+        if(!contAddVol){
+            return;
+        }
+        
+        System.out.print("\nEnter volunteer id: ");
+
+        validID = false;
+        String volID = null;
+        while (!validID) {
+            volID = scan.nextLine().trim();
+
+            validID = idValidation(volID, "VL");
+        }
+
+        volID = volID.substring(0, 2).toUpperCase() + volID.substring(2, 7);
+
+        EventVolunteer ev = new EventVolunteer(eventID, volID);
+        combineList.insert(ev);
+        combineList.saveToFile(EV_PATH);
+        combineList.loadFromFile(EV_PATH);
+        System.out.println("AGAIN");
+        combineList.show();
+        
+        System.out.println(ANSI_GREEN + "\nVolunteer assign to event successfully.\n" + ANSI_RESET);
+        
+        displayComTable(combineList);
+    }
+
+    public static void displayEventTable(LinkedList<Event> eventList) {
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        System.out.printf("| %-10s | %-50s | %-10s | %-5s | %-30s |\n", "Event ID", "Event Name", "Date", "Time", "Location");
+
+        eventList.removeEmptyData();
+        Node<Event> currentNode = eventList.head;
+        while (currentNode != null) {
+
+            Date date = currentNode.data.getDate();
+            String strDate = dateFormat.format(date);
+            System.out.printf("| %-10s | %-50s | %-10s | %-5s | %-30s |\n",
+                    currentNode.data.getEventID(), currentNode.data.getEventName(), strDate, currentNode.data.getTime(), currentNode.data.getLocation());
+
+            currentNode = currentNode.next;
+        }
+    }
+
+    public static boolean volHavenAttendEvent(LinkedList<Volunteer> volList, LinkedList<EventVolunteer> combineList, String eventID) {
+
+        boolean contAdd = true;
+        System.out.printf("| %-12s | %-30s | %-10s | %-5s | %-15s |\n", "Volunteer ID", "Name", "Gender", "Age", "Contect No.");
+
+        volList.removeEmptyData();
+        // if combine list empty
+        if (combineList.isEmpty()) {
+
+            Node<Volunteer> currentNode = volList.head;
+            while (currentNode != null) {
+
+                System.out.printf("| %-12s | %-30s | %-10s | %-5s | %-15s |\n",
+                        currentNode.data.getVolunteerID(), currentNode.data.getName(), currentNode.data.getGender(), currentNode.data.getAge(), currentNode.data.getContactNo());
+
+                currentNode = currentNode.next;
+            }
+        } else {
+            Node<Volunteer> volCurrentNode = volList.head;
+            int sum = 0;
+            while (volCurrentNode != null) {
+                Volunteer volunteer = volCurrentNode.data;
+                boolean isInvolved = false;
+
+                // Check if the volunteer is involved in the event
+                Node<EventVolunteer> combineCurrentNode = combineList.head;
+                while (combineCurrentNode != null) {
+                    EventVolunteer eventVolunteer = combineCurrentNode.data;
+                    if (eventVolunteer.getEventID().equals(eventID) && eventVolunteer.getVolunteerID().equals(volunteer.getVolunteerID())) {
+                        isInvolved = true;
+                        sum++;
+                        break;
+                    }
+                    combineCurrentNode = combineCurrentNode.next;
+                }
+
+                // If the volunteer is not involved in the event, print their details
+                if (!isInvolved) {
+                    System.out.printf("| %-12s | %-30s | %-10s | %-5s | %-15s |\n",
+                            volunteer.getVolunteerID(), volunteer.getName(), volunteer.getGender(), volunteer.getAge(), volunteer.getContactNo());
+                }
+
+                volCurrentNode = volCurrentNode.next;
+            }
+            
+            // all volunteer had been assign
+            if(sum == volList.length()){
+                System.out.println(ANSI_RED + "\nAll volunteer had participate in the event.\n" + ANSI_RESET);
+                contAdd = false;
+            }
+        }
+        return contAdd;
+    }
+
+    public static void displayComTable(LinkedList<EventVolunteer> combineList){
+        if(combineList.isEmpty()){
+            System.out.println(ANSI_RED + "No volunteer assign to event yet." + ANSI_RESET);
+        }
+        
+        System.out.printf("| %-12s | %-12s |\n", "Event ID", "Volunteer ID");
+        combineList.removeEmptyData();
+        Node<EventVolunteer> currentNode = combineList.head;
+        while (currentNode != null) {
+            System.out.println(currentNode.data.toString());
+
+            currentNode = currentNode.next;
+        }
     }
     
     // Search events under a volunteer
-    public static void searchVolunteerEvent(LinkedList list){
-        
+    public static void searchVolunteerEvent(LinkedList list) {
+
     }
-    
+
     // List all volunteers
-    public static void listVolunteer(LinkedList list){
+    public static void listVolunteer(LinkedList list) {
         System.out.println(ANSI_BLUE + "\n- - - Remove Volunteer - - - " + ANSI_RESET);
         list.show();
     }
-    
+
     //------------
     // Common Use
     //------------
     public static boolean YN(String sentence) {
         Scanner scan = new Scanner(System.in);
-        
+
         boolean validInput = false;
         String input = null;
-        
+
         System.out.print("\n" + sentence + "\nPlease enter Y / N: ");
 
         while (!validInput) {
 
             input = (scan.nextLine()).toUpperCase().trim();
-            
+
             validInput = VControl.chkEmptyInput(input);
-            
-            if(validInput){
+
+            if (validInput) {
                 String[] inputList = {"Y", "N"};
                 validInput = VControl.chkSpecificWord(inputList, input);
-                if(!validInput){
-                    System.out.println(ANSI_RED + "Please enter Y or N only.\n"+ ANSI_RESET);
+                if (!validInput) {
+                    System.out.println(ANSI_RED + "Please enter Y or N only.\n" + ANSI_RESET);
                 }
-            }else{
-                System.out.println(ANSI_RED + "Cannot beave blank.\n"+ ANSI_RESET);
+            } else {
+                System.out.println(ANSI_RED + "Cannot beave blank.\n" + ANSI_RESET);
             }
-            
-            if(!validInput){
+
+            if (!validInput) {
                 System.out.print("Enter again: ");
             }
-            
+
         }
-        
+
         boolean cont = VControl.chkYN(input.toUpperCase().trim());
-        if(cont){
+        if (cont) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-    
-    public static int menuIntReturn(String[] selectionList){
-        
+
+    public static int menuIntReturn(String[] selectionList) {
+
         Scanner scan = new Scanner(System.in);
-        
+
         int intInput = 0;
         boolean validInput = false;
-        
-        for(int i = 0; i < selectionList.length; i++){
-            System.out.println( ( i + 1 ) + ". " + selectionList[i]);
+
+        for (int i = 0; i < selectionList.length; i++) {
+            System.out.println((i + 1) + ". " + selectionList[i]);
         }
         System.out.print("Enter your selection: ");
-        
-        while(validInput == false){
+
+        while (validInput == false) {
             String stringInput = scan.nextLine();
-            
+
             validInput = chkIntInputInRange(stringInput, 1, selectionList.length);
-        
-            if(validInput){
+
+            if (validInput) {
                 intInput = Integer.parseInt(stringInput);
             }
-            
+
         }
-        
+
         return intInput;
     }
-    
-    public static boolean chkIntInputInRange(String input,int initial,int end){
+
+    public static boolean chkIntInputInRange(String input, int initial, int end) {
         boolean validInput;
-        
+
         // check is empty
         validInput = VControl.chkEmptyInput(input);
-        if(validInput){
+        if (validInput) {
 
             // chk is it an integer
             validInput = VControl.chkInt(input);
-            if(validInput){
-                
+            if (validInput) {
+
                 // chk is within the integer range
                 int intInput = Integer.parseInt(input);
                 validInput = VControl.intSelectionValidation(intInput, initial, end);
-                if(!validInput){
+                if (!validInput) {
                     System.out.println(ANSI_RED + "Invalid integer. Please enter between " + initial + " to " + end + ".\n" + ANSI_RESET);
                 }
-                
-            }else{
+
+            } else {
                 System.out.println(ANSI_RED + "Invalid integer. Please enter a valid integer.\n" + ANSI_RESET);
             }
 
-        }else{
+        } else {
             System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
         }
 
-        if(!validInput){
+        if (!validInput) {
             System.out.print("Enter again: ");
         }
-        
+
         return validInput;
     }
-    
-    public static String idValidation(){
-        Scanner scan = new Scanner(System.in);
-        
-        System.out.print("Enter volunteer id: ");
-        
-        boolean validID = false;
-        String id = null;
-        while(!validID){
-            id = scan.nextLine();
-            id = id.trim();
-            // chk is it empty
-            validID = VControl.chkEmptyInput(id);
-            if(validID){
-                // chk correct length
-                validID = VControl.chkLength(7, id);
-                if(validID){
-                    
-                    // chk if correct format
-                    validID = VControl.volunteerIdValidation(id);
-                    if(!validID){
-                        System.out.println(ANSI_RED + "Invalid format. Volunteer Id format should be VL00000.\n" + ANSI_RESET);
-                    }
-                }else{
-                    System.out.println(ANSI_RED + "Invalid length.\n" + ANSI_RESET);
+
+    public static boolean idValidation(String id, String constrant) {
+        boolean validID;
+
+        // chk is it empty
+        validID = VControl.chkEmptyInput(id);
+        if (validID) {
+            // chk correct length
+            validID = VControl.chkLength(7, id);
+            if (validID) {
+
+                // chk if correct format
+                validID = VControl.idValidation(id, constrant);
+                if (!validID) {
+                    System.out.println(ANSI_RED + "Invalid format. Volunteer Id format should be VL00000.\n" + ANSI_RESET);
                 }
-            }else{
-                System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
+            } else {
+                System.out.println(ANSI_RED + "Invalid length.\n" + ANSI_RESET);
             }
-            
-            if(!validID){
-                System.out.print("Enter again: ");
-            }
-            
+        } else {
+            System.out.println(ANSI_RED + "Cannot leave blank.\n" + ANSI_RESET);
         }
-        
-        return id.substring(0, 2).toUpperCase() + id.substring(2, 7);
+
+        if (!validID) {
+            System.out.print("Enter again: ");
+        }
+
+        return validID;
     }
+
 }
