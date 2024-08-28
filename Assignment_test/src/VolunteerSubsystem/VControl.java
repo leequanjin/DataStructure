@@ -111,8 +111,8 @@ public class VControl {
             return null;
     }
     
-    public static boolean volunteerIdValidation(String id){
-        if ( (id.substring(0, 2).toUpperCase().equalsIgnoreCase("VL")) && (id.length() == 7) ){
+    public static boolean idValidation(String id, String constrant){
+        if ( (id.substring(0, 2).toUpperCase().equalsIgnoreCase(constrant)) && (id.length() == 7) ){
             return true;
         }else{
             return false;
