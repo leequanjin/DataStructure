@@ -4,24 +4,35 @@
  */
 package EventSystem;
 
+import java.io.Serializable;
 
-import java.util.Date;
+
+
 /**
  *
  * @author Clarist Liew
  */
-public class Sponsorship extends Event {
-    
+public class Sponsorship implements Serializable {
+    private String eventID;
     private String sponsorID;
     private String sponsorName;
     private double sponsorAmount;
 
-    public Sponsorship (String eventID, String eventName, Date date, String time,  String location, String sponsorID, String sponsorName, double sponsorAmount ) {
-        super(eventID,eventName,date,time,location);
+    public Sponsorship (String eventID,  String sponsorID, String sponsorName, double sponsorAmount ) {
+        this.eventID = eventID;
         this.sponsorID = sponsorID;
         this.sponsorName =sponsorName;
         this.sponsorAmount = sponsorAmount;
     }
+
+    public String getEventID() {
+        return eventID;
+    }
+
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
+    }
+    
 
     public String getSponsorID() {
         return sponsorID;
@@ -48,13 +59,10 @@ public class Sponsorship extends Event {
         this.sponsorAmount = sponsorAmount;
     }
     
-    @Override
-    public String getType() {
-        return "Sponsorship";
-    }
+    
    @Override
     public String toString(){
-        return super.toString() + "\n" + "Sponsor ID: " +sponsorID + "\n" + "Sponsor Name: " +sponsorName + "\n" +"Sponsor Amount: RM" +sponsorAmount;
+        return "Sponsor ID: " +sponsorID + "\n" + "Sponsor Name: " +sponsorName + "\n" +"Sponsor Amount: RM" +sponsorAmount;
     } 
     
     

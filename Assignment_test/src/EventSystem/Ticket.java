@@ -4,24 +4,38 @@
  */
 package EventSystem;
 
-import java.util.Date;
+import java.io.Serializable;
+
+
 
 /**
  *
  * @author Clarist Liew
  */
-public class Ticket extends Event {
+public class Ticket implements Serializable {
     
+    private String eventID;
     private String ticketID;
     private String ticketType;
     private double ticketPrice;
+    private String ticketStatus;
 
-    public Ticket(String eventID, String eventName, Date date, String time,  String location,String ticketID, String ticketType, double ticketPrice) {
-        super(eventID,eventName,date,time,location);
+    public Ticket(String eventID,String ticketID, String ticketType, double ticketPrice , String ticketStatus) {
+        this.eventID = eventID;
         this.ticketID = ticketID;
         this.ticketType = ticketType;
         this.ticketPrice = ticketPrice;
+        this.ticketStatus = ticketStatus;
     }
+
+    public String getEventID() {
+        return eventID;
+    }
+
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
+    }
+    
 
     public String getTicketID() {
         return ticketID;
@@ -46,15 +60,20 @@ public class Ticket extends Event {
     public void setTicketPrice(double ticketPrice) {
         this.ticketPrice = ticketPrice;
     }
-    
-    @Override
-    public String getType() {
-        return "Ticket";
+
+    public String getTicketStatus() {
+        return ticketStatus;
     }
+
+    public void setTicketStatus(String ticketStatus) {
+        this.ticketStatus = ticketStatus;
+    }
+    
+    
     
     @Override
     public String toString(){
-        return super.toString() + "\n" + "Ticket ID: " +ticketID + "\n" + "Ticket Type: " +ticketType + "\n" +"Ticket Amount: RM" +ticketPrice;
+        return " Ticket ID: " +ticketID + "\n" + "Ticket Type: " +ticketType + "\n" +"Ticket Amount: RM" +ticketPrice + "\n" +"Ticket Status: RM" +ticketStatus;
     } 
     
     

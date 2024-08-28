@@ -63,15 +63,13 @@ public class Event implements Serializable {
         this.location = location;
     }
     
-    public String getType(){
-        return "General Event";
-    };
+    
 
 
     @Override
     public String toString() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String dateString = formatter.format(date);
-    return "Event Name: " + eventName + '\n' + "Date: " + dateString + '\n' + "Time: " + time + '\n' + "Location: " + location + '\n' + "Type: " +getType();
+    return "Event Name: " + eventName + '\n' + "Date: " + dateString + '\n' + "Time: " + time + '\n' + "Location: " + location ;
     }
 }    
