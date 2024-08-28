@@ -267,7 +267,20 @@ public class DonationManagement {
     
     public static String idGenerator(String ab, LinkedList<Item> list){
         
-        return (ab + String.format("%05d", list.length() + 1));
+        int maxId = 0;
+
+        Node<Item> current = list.head; 
+
+        while (current != null) {
+            String currentId = current.data.getId().substring(2,7);
+            int idNumber = Integer.parseInt(currentId);
+            if (idNumber > maxId) {
+                maxId = idNumber;
+            }
+            current = current.next;
+        }
+        
+        return (ab + String.format("%05d", maxId + 1));
     }
         
     public static void deleteById(LinkedList<Item> list, String id) {
