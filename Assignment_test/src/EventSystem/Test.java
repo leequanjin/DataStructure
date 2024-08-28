@@ -507,7 +507,6 @@ public static void removeEvent() {
     }
     
     private static void searchEvent() { 
-    // Load data from files
     LinkedList<Event> eventList = new LinkedList<>();
     LinkedList<Ticket> ticketList = new LinkedList<>();
     LinkedList<Sponsorship> sponsorshipList = new LinkedList<>();
@@ -518,14 +517,13 @@ public static void removeEvent() {
     
     Scanner scanner = new Scanner(System.in);
 
-    // Check if there are any events
     if (eventList.isEmpty()) {
         System.out.println(ANSI_YELLOW + "No events found." + ANSI_RESET);
         return;
     }
 
     int searchChoice = 0;
-     while (searchChoice != 1 && searchChoice != 2) {
+    while (searchChoice != 1 && searchChoice != 2) {
         System.out.println("Search Event by:");
         System.out.println("1. Event ID");
         System.out.println("2. Event Name");
@@ -533,7 +531,6 @@ public static void removeEvent() {
         
         String searchChoiceStr = scanner.nextLine().trim();
 
-        
         if (searchChoiceStr.isEmpty()) {
             System.out.println(ANSI_RED + "Input cannot be empty. Please enter a number." + ANSI_RESET);
             continue;
@@ -552,33 +549,42 @@ public static void removeEvent() {
     System.out.print("Enter your search query: ");
     String searchQuery = scanner.nextLine().trim();
 
-
     Event foundEvent = null;
 
-        switch (searchChoice) {
-            case 1:
-                foundEvent = searchEventByID(eventList, searchQuery);
-                break;
-            case 2:
-                foundEvent = searchEventByName(eventList, searchQuery);
-                break;
-            default:
-                System.out.println(ANSI_RED + "Invalid choice. Please select either 1 or 2." + ANSI_RESET);
-                return;
-        }
+    switch (searchChoice) {
+        case 1:
+            foundEvent = searchEventByID(eventList, searchQuery);
+            break;
+        case 2:
+            foundEvent = searchEventByName(eventList, searchQuery);
+            break;
+        default:
+            System.out.println(ANSI_RED + "Invalid choice. Please select either 1 or 2." + ANSI_RESET);
+            return;
+    }
 
     if (foundEvent != null) {
         System.out.println(ANSI_CYAN + "Event Found: " + ANSI_RESET);
-        System.out.println(foundEvent);
+        System.out.println("Event ID: " + foundEvent.getEventID());
+        System.out.println("Event Name: " + foundEvent.getEventName());
+        System.out.println("Date: " + dateFormat.format(foundEvent.getDate()));
+        System.out.println("Time: " + foundEvent.getTime());
+        System.out.println("Location: " + foundEvent.getLocation());
+        System.out.println("Type: " + foundEvent.getType());
 
         // List associated tickets
         System.out.println(ANSI_BLUE + "\nTickets for Event ID " + foundEvent.getEventID() + ":" + ANSI_RESET);
         Node<Ticket> ticketNode = ticketList.head;
         boolean ticketsFound = false;
+        int ticketCount = 1;
         while (ticketNode != null) {
             if (ticketNode.data.getEventID().equals(foundEvent.getEventID())) {
-                System.out.println(ticketNode.data);
+                System.out.println(ticketCount + ".");
+                System.out.println("Ticket ID: " + ticketNode.data.getTicketID());
+                System.out.println("Ticket Type: " + ticketNode.data.getTicketType());
+                System.out.println("Ticket Amount: RM" + ticketNode.data.getTicketPrice());
                 ticketsFound = true;
+                ticketCount++;
             }
             ticketNode = ticketNode.next;
         }
@@ -590,10 +596,15 @@ public static void removeEvent() {
         System.out.println(ANSI_PURPLE + "\nSponsorships for Event ID " + foundEvent.getEventID() + ":" + ANSI_RESET);
         Node<Sponsorship> sponsorshipNode = sponsorshipList.head;
         boolean sponsorshipsFound = false;
+        int sponsorshipCount = 1;
         while (sponsorshipNode != null) {
             if (sponsorshipNode.data.getEventID().equals(foundEvent.getEventID())) {
-                System.out.println(sponsorshipNode.data);
+                System.out.println(sponsorshipCount + ".");
+                System.out.println("Sponsor ID: " + sponsorshipNode.data.getSponsorID());
+                System.out.println("Sponsor Name: " + sponsorshipNode.data.getSponsorName());
+                System.out.println("Sponsor Amount: RM" + sponsorshipNode.data.getSponsorAmount());
                 sponsorshipsFound = true;
+                sponsorshipCount++;
             }
             sponsorshipNode = sponsorshipNode.next;
         }
@@ -604,6 +615,7 @@ public static void removeEvent() {
         System.out.println(ANSI_RED + "No event found matching the search criteria." + ANSI_RESET);
     }
 }
+
 
 private static Event searchEventByID(LinkedList<Event> eventList, String eventID) {
     Node<Event> currentNode = eventList.head;
@@ -737,30 +749,15 @@ private static Event searchEventByName(LinkedList<Event> eventList, String event
                             System.out.println(ANSI_GREEN + "Event Name updated successfully!" + ANSI_RESET);
                             break;
                         case "2":
-                            System.out.print("Enter new Date (dd/MM/yyyy): ");
-                            String newDateStr = scanner.nextLine().trim();
-                            Date newDate = null;
-                            while (newDate == null) {
-                                try {
-                                    newDate = dateFormat.parse(newDateStr);
-                                } catch (ParseException e) {
-                                    System.out.println(ANSI_RED + "Invalid date format. Please use dd/MM/yyyy." + ANSI_RESET);
-                                    newDateStr = scanner.nextLine().trim();
-                                }
-                            }
+                            Date newDate = getValidDate(scanner);  
                             event.setDate(newDate);
                             System.out.println(ANSI_GREEN + "Date updated successfully!" + ANSI_RESET);
                             break;
                         case "3":
-                            System.out.print("Enter new Time (HH:mm): ");
-                            String newTime = scanner.nextLine().trim();
-                            while (newTime.isEmpty()) {
-                                System.out.println(ANSI_RED + "Time cannot be empty. Please enter a valid time." + ANSI_RESET);
-                                newTime = scanner.nextLine().trim();
-                            }
+                            String newTime = getValidTime(scanner);  
                             event.setTime(newTime);
                             System.out.println(ANSI_GREEN + "Time updated successfully!" + ANSI_RESET);
-                            break;
+                        break;
                         case "4":
                             System.out.print("Enter new Location: ");
                             String newLocation = scanner.nextLine().trim();
@@ -998,17 +995,26 @@ private static void listAllEvents() {
     while (eventNode != null) {
         Event event = eventNode.data;
         System.out.println(ANSI_CYAN + "Event ID: " + event.getEventID() + ANSI_RESET);
-        System.out.println(event);
+        System.out.println("Event Name: " + event.getEventName());
+        System.out.println("Date: " + dateFormat.format(event.getDate()));
+        System.out.println("Time: " + event.getTime());
+        System.out.println("Location: " + event.getLocation());
+        
 
         // Filter and list tickets associated with the current event
         Node<Ticket> ticketNode = ticketList.head;
         System.out.println(ANSI_BLUE + "\nTickets for Event ID " + event.getEventID() + ":" + ANSI_RESET);
         boolean ticketsFound = false;
+        int ticketCount = 1;
         while (ticketNode != null) {
             Ticket ticket = ticketNode.data;
             if (ticket.getEventID().equals(event.getEventID())) {
-                System.out.println(ticket);
+                System.out.println(ticketCount + ".");
+                System.out.println("Ticket ID: " + ticket.getTicketID());
+                System.out.println("Ticket Type: " + ticket.getTicketType());
+                System.out.println("Ticket Amount: RM" + ticket.getTicketPrice());
                 ticketsFound = true;
+                ticketCount++;
             }
             ticketNode = ticketNode.next;
         }
@@ -1020,11 +1026,16 @@ private static void listAllEvents() {
         Node<Sponsorship> sponsorshipNode = sponsorshipList.head;
         System.out.println(ANSI_PURPLE + "\nSponsorships for Event ID " + event.getEventID() + ":" + ANSI_RESET);
         boolean sponsorshipsFound = false;
+        int sponsorshipCount = 1;
         while (sponsorshipNode != null) {
             Sponsorship sponsorship = sponsorshipNode.data;
             if (sponsorship.getEventID().equals(event.getEventID())) {
-                System.out.println(sponsorship);
+                System.out.println(sponsorshipCount + ".");
+                System.out.println("Sponsor ID: " + sponsorship.getSponsorID());
+                System.out.println("Sponsor Name: " + sponsorship.getSponsorName());
+                System.out.println("Sponsor Amount: RM" + sponsorship.getSponsorAmount());
                 sponsorshipsFound = true;
+                sponsorshipCount++;
             }
             sponsorshipNode = sponsorshipNode.next;
         }
@@ -1037,6 +1048,7 @@ private static void listAllEvents() {
         System.out.println("\n--------------------------------------------------\n");
     }
 }
+
 
 
 private static void removeEventFromAVolunteer() {
