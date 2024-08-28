@@ -67,13 +67,13 @@ public class VBoundary {
                     searchVolunteer(list);
                     break;
                 case 4:
-                    assignEvent();
+                    assignEvent(list);
                     break;
                 case 5:
-                    searchVolunteerEvent();
+                    searchVolunteerEvent(list);
                     break;
                 case 6:
-                    listVolunteer();
+                    listVolunteer(list);
                     break;
                 default:
                     System.out.println(ANSI_RED + "Invalid menu selection." + ANSI_RESET);
@@ -232,13 +232,20 @@ public class VBoundary {
     }
     
     // Assign volunteers to events
-    public static void assignEvent(){}
+    public static void assignEvent(LinkedList list){
+        
+    }
     
     // Search events under a volunteer
-    public static void searchVolunteerEvent(){}
+    public static void searchVolunteerEvent(LinkedList list){
+        
+    }
     
     // List all volunteers
-    public static void listVolunteer(){}
+    public static void listVolunteer(LinkedList list){
+        System.out.println(ANSI_BLUE + "\n- - - Remove Volunteer - - - " + ANSI_RESET);
+        list.show();
+    }
     
     //------------
     // Common Use

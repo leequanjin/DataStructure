@@ -15,7 +15,20 @@ public class VControl {
     
     public static String idGenerator(String ab, LinkedList<Volunteer> list){
         
-        return (ab + String.format("%05d", list.length() + 1));
+        int maxId = 0;
+
+        Node<Volunteer> current = list.head; 
+
+        while (current != null) {
+            String currentId = current.data.getVolunteerID().substring(2,7);
+            int idNumber = Integer.parseInt(currentId);
+            if (idNumber > maxId) {
+                maxId = idNumber;
+            }
+            current = current.next;
+        }
+        
+        return (ab + String.format("%05d", maxId + 1));
     }
     
     // Validation
