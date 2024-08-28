@@ -29,7 +29,6 @@ import DonationList.Pant;
 import DonationList.Shirt;
 import DonationList.Shoes;
 import DonationList.Socks;
-import DonationList.ManageItem;
 
 import java.io.File;
 import java.io.IOException;
@@ -270,6 +269,44 @@ public class DonationManagement {
         
         return (ab + String.format("%05d", list.length() + 1));
     }
+        
+    public static void deleteById(LinkedList<Item> list, String id) {
+        if (list.head == null) {
+            System.out.println(ANSI_RED + "\nEmpty list. No such item in stock." + ANSI_RESET);
+        } else if (list.head.data.getId().equals(id)) {
+            // First id match
+            list.head = list.head.next;
+
+            System.out.println(ANSI_GREEN + "Item remove successfully." + ANSI_RESET);
+            return;
+        } else {
+            Node<Item> currentNode = list.head;
+
+            while (currentNode != null) {
+
+                if (currentNode.next.data.getId().equals(id)) {
+                    currentNode.next = currentNode.next.next;
+                    System.out.println(ANSI_GREEN + "Item remove successfully." + ANSI_RESET);
+                    return;
+                } 
+                currentNode = currentNode.next;
+            }
+             
+            System.out.println(ANSI_RED + "\nItem ID does not exist." + ANSI_RESET);
+        }
+    }
+    
+    public static Item findById(LinkedList<Item> list, String id) {
+        Node<Item> current = list.head;
+
+        while (current != null) {
+            if (current.data.getId().equals(id)) {
+                return current.data;
+            }
+            current = current.next;
+        }
+            return null;
+    }
     
     public static boolean searchingIdValidation(String inputID){
         boolean validID = false;
@@ -338,7 +375,7 @@ public class DonationManagement {
 
                     // valid format, check if this id exists, show it if yes
                     if (filePath != null) {
-                        ManageItem<Item> list = new ManageItem<>();
+                        LinkedList<Item> list = new LinkedList<>();
                         list.loadFromFile(filePath);
                         Item item = searchByID(list, inputID);
                         if (item != null) {
@@ -357,8 +394,8 @@ public class DonationManagement {
         return validID;
     }
     
-    public static ManageItem<Item> loadAllItemIntoList(){
-        ManageItem<Item> list = new ManageItem<>();
+    public static LinkedList<Item> loadAllItemIntoList(){
+        LinkedList<Item> list = new LinkedList<>();
         String[] appendList = {BANK_PATH, CASH_PATH, JACKET_PATH, PANT_PATH, SHIRT_PATH, SHOES_PATH, SOCKS_PATH, BAKED_PATH, BOXED_PATH, CANNED_PATH, DRY_PATH, ESS_PATH};
 
         list.loadFromFile(appendList[0]);
@@ -371,18 +408,20 @@ public class DonationManagement {
         return list;
     }
     
-    public static ManageItem<Food> loadAllFoodToList(){
+    public static LinkedList<Food> loadAllFoodToList(){
         String[] foodFile = {BAKED_PATH, BOXED_PATH, CANNED_PATH, DRY_PATH, ESS_PATH}; 
-        ManageItem<Food> foodList = new ManageItem<>(foodFile[0]);
+        LinkedList<Food> foodList = new LinkedList<>();
+        foodList.loadFromFile(foodFile[0]);
         for(int i = 1; i < foodFile.length; i++){
-            ManageItem<Food> tempFoodList = new ManageItem<>(foodFile[i]);
+            LinkedList tempFoodList = new LinkedList<>();
+            tempFoodList.loadFromFile(foodFile[i]);
             foodList.appendList(tempFoodList);
         }
         
         return foodList;
     }
     
-    public static void printEachTable(ManageItem<Item> list){
+    public static void printEachTable(LinkedList<Item> list){
         list.removeEmptyData();
         Node<Item> currentNode = list.head;
         
@@ -422,7 +461,7 @@ public class DonationManagement {
     }    
     
     public static void printSameTable(String filePath){
-        ManageItem<Item> list = new ManageItem<>();
+        LinkedList<Item> list = new LinkedList<>();
         list.loadFromFile(filePath);
     
         list.removeEmptyData();
@@ -435,7 +474,7 @@ public class DonationManagement {
         printListToTable(list);
     }
     
-    public static void printListToTable(ManageItem<Item> list){
+    public static void printListToTable(LinkedList<Item> list){
         Node<Item> currentNode = list.head;
         
         headerIdentifier(currentNode);
@@ -657,7 +696,7 @@ public class DonationManagement {
             }
         }
         
-        ManageItem<Item> newItemList = new ManageItem();
+        LinkedList<Item> newItemList = new LinkedList();
         
         for (int i = 0; i< numItem; i++){
             
@@ -692,7 +731,7 @@ public class DonationManagement {
         printEachTable(newItemList);
     }
     
-    public static void inputMoney(ManageItem<Item> newItemList, int itemCat, String dID){
+    public static void inputMoney(LinkedList<Item> newItemList, int itemCat, String dID){
         
         // amount
         double amt = amountValidation();
@@ -814,7 +853,7 @@ public class DonationManagement {
         return bankName;
     }
     
-    public static void inputFood(ManageItem<Item> newItemList, String dID){
+    public static void inputFood(LinkedList<Item> newItemList, String dID){
         
         // food category
         int foodCat = foodCatValidation();
@@ -855,7 +894,7 @@ public class DonationManagement {
         return menuIntReturn(foodCatMenu);
     }
     
-    public static void inputApparel(ManageItem<Item> newItemList, String dID){
+    public static void inputApparel(LinkedList<Item> newItemList, String dID){
         
         // apparel category
         int appCat = appCatValidation();
@@ -896,7 +935,7 @@ public class DonationManagement {
         return menuIntReturn(appCatMenu);
     }
     
-    public static void commonItemInput(ManageItem<Item> newItemList, int detailCat, int itemCat, String dID){
+    public static void commonItemInput(LinkedList<Item> newItemList, int detailCat, int itemCat, String dID){
         
         Scanner scan = new Scanner(System.in);
         
@@ -966,7 +1005,7 @@ public class DonationManagement {
         return qty;
     }
     
-    public static void commonFoodInput(ManageItem<Item> newItemList, int foodCat, int qty, String note, String dID){
+    public static void commonFoodInput(LinkedList<Item> newItemList, int foodCat, int qty, String note, String dID){
         
         //expiryDate
         Date expiryDate = expiryDateValidation(newItemList, dID);
@@ -1075,7 +1114,7 @@ public class DonationManagement {
         
     }
     
-    public static Date expiryDateValidation(ManageItem<Item> newItemList, String dID){
+    public static Date expiryDateValidation(LinkedList<Item> newItemList, String dID){
         Scanner scan = new Scanner(System.in);
         
         System.out.print("\nExpiry Date (dd/mm/yyyy)*: ");
@@ -1352,7 +1391,7 @@ public class DonationManagement {
         return name;
     }
     
-    public static void commonApparelInput(ManageItem<Item> newItemList, int appCat, int qty, String note, String dID){
+    public static void commonApparelInput(LinkedList<Item> newItemList, int appCat, int qty, String note, String dID){
         //size
         String size;
         if(appCat == 4){
@@ -1773,7 +1812,7 @@ public class DonationManagement {
                             System.out.print("\nEnter again: ");
                         }else{
                             // valid format, check if this id exist, remove if yes
-                            ManageItem<Item> list = new ManageItem();
+                            LinkedList<Item> list = new LinkedList();
 
                             list.loadFromFile(filePath);
                             validID = removeByID(list, inputID, filePath);
@@ -1790,15 +1829,14 @@ public class DonationManagement {
     }
     
     // make sure list available before enter function
-    public static boolean removeByID(ManageItem<Item> list, String id, String filePath){
-        Item item = list.findById(id);
+    public static boolean removeByID(LinkedList<Item> list, String id, String filePath){
+        Item item = findById(list, id);
         if (item != null){
             // item found
             // delete from list
-            list.deleteById(id);
-
+            deleteById(list, id);
+            
             list.saveToFile(filePath);
-            System.out.println(ANSI_GREEN + "Item remove successfully." + ANSI_RESET);
             printSameTable(filePath);
             return true;
         }else{
@@ -1834,7 +1872,7 @@ public class DonationManagement {
     }
     
     // Binary search
-    public static Item searchByID(ManageItem<Item> list, String id) {
+    public static Item searchByID(LinkedList<Item> list, String id) {
         // Run data in linked list into array
         Node<Item> currentNode = list.head;
         Item[] itemArray = new Item[list.length()];
@@ -1953,9 +1991,10 @@ public class DonationManagement {
                     System.out.println(ANSI_RED + "Invalid ID." + ANSI_RESET);
                     break;
             }
-            ManageItem<Item> list = new ManageItem<>();
+            
+            LinkedList<Item> list = new LinkedList<>();
             list.loadFromFile(filePath);
-            Item item = list.findById(id);
+            Item item = findById(list, id);
             if (item != null) {
 
                 boolean contItem = true;
@@ -2072,7 +2111,7 @@ public class DonationManagement {
                                 
                             }else{
                                 
-                                ManageItem<Item> list = new ManageItem<>();
+                                LinkedList<Item> list = new LinkedList<>();
                                 list.loadFromFile(filePath);
                                 if (list.isEmpty()){
                                     
@@ -2223,7 +2262,7 @@ public class DonationManagement {
     // Part 6: List donation by different donor
     // ----------------------------------------
     public static void listByDiffDonor(){
-        ManageItem<Item> itemList = loadAllItemIntoList();
+        LinkedList<Item> itemList = loadAllItemIntoList();
         ManageDonors<Donor> donorList = new ManageDonors<>();
         donorList.loadFromFile("donors.txt");
 
@@ -2242,7 +2281,7 @@ public class DonationManagement {
         filterByDonor(itemList, organizationList);
     }
     
-    public static void filterByDonor(ManageItem<Item> itemList, LinkedList<Donor> donorList){
+    public static void filterByDonor(LinkedList<Item> itemList, LinkedList<Donor> donorList){
         itemList.removeEmptyData();
         donorList.removeEmptyData();
 
@@ -2314,14 +2353,15 @@ public class DonationManagement {
             };
             int sortSelection = menuIntReturn(sortMenu);
 
-            ManageItem<Money> bankList = new ManageItem<>(BANK_PATH);
-            ManageItem<Money> cashList = new ManageItem<>(CASH_PATH);
-            ManageItem<Money> moneyList;
-            moneyList = bankList;
+            LinkedList<Money> bankList = new LinkedList<>();
+            bankList.loadFromFile(BANK_PATH);
+            LinkedList<Money> cashList = new LinkedList<>();
+            cashList.loadFromFile(CASH_PATH);
+            LinkedList<Money> moneyList = new LinkedList<>();
+            moneyList.loadFromFile(BANK_PATH);
             moneyList.appendList(cashList);
-            bankList = new ManageItem<>(BANK_PATH);
 
-            ManageItem<Food> foodList = loadAllFoodToList();
+            LinkedList<Food> foodList = loadAllFoodToList();
 
             switch(sortSelection){
                 case 1: 
@@ -2367,7 +2407,7 @@ public class DonationManagement {
 
     }
     
-    public static void sortMoney(ManageItem<Money> moneyList, int asc, int header) {
+    public static void sortMoney(LinkedList<Money> moneyList, int asc, int header) {
         moneyList.removeEmptyData();
 
         if (moneyList.head == null) {
@@ -2457,7 +2497,7 @@ public class DonationManagement {
         }
     }
 
-    public static void sortFoodExp(ManageItem<Food> foodList){
+    public static void sortFoodExp(LinkedList<Food> foodList){
         
         foodList.removeEmptyData();
         
@@ -2542,7 +2582,7 @@ public class DonationManagement {
         String[] fileList = {BANK_PATH, CASH_PATH, JACKET_PATH, PANT_PATH, SHIRT_PATH, SHOES_PATH, SOCKS_PATH, BAKED_PATH, BOXED_PATH, CANNED_PATH, DRY_PATH, ESS_PATH};
 
         for (int i = 0; i < fileList.length; i++) {
-            ManageItem<Item> list = new ManageItem<>();
+            LinkedList<Item> list = new LinkedList<>();
             list.loadFromFile(fileList[i]);
             list.removeEmptyData();
 
@@ -2603,7 +2643,7 @@ public class DonationManagement {
                 type.equals("SOCKS") 
                 ){
 
-            ManageItem<Item> list;
+            LinkedList<Item> list;
             list = loadAllItemIntoList();
             
             if (type.equals("MONEY")){
@@ -2644,9 +2684,10 @@ public class DonationManagement {
             
         }else{
             
-            ManageItem<Food> foodList = loadAllFoodToList();
+            LinkedList<Food> foodList = loadAllFoodToList();
             
-            ManageItem<Shoes> shoeList = new ManageItem<>(SHOES_PATH);
+            LinkedList<Shoes> shoeList = new LinkedList<>();
+            shoeList.loadFromFile(SHOES_PATH);
             
             if (type.equals("COOKIES")){
                 filterFoodCategory(foodList, "Cookies");
@@ -2783,7 +2824,7 @@ public class DonationManagement {
         return type;
     }
     
-    public static void filterFoodCategory(ManageItem<Food> list, String type) {
+    public static void filterFoodCategory(LinkedList<Food> list, String type) {
         if (list.head == null) {
             System.out.println(ANSI_RED + "No items to filter." + ANSI_RESET);
             return;
@@ -2812,7 +2853,7 @@ public class DonationManagement {
             currentFood = currentFood.next;
         }
         
-        ManageItem<Item> itemList = new ManageItem<>();
+        LinkedList<Item> itemList = new LinkedList<>();
         Node<Food> currentNode = list.head;
         while(currentNode != null){
             Item item = currentNode.data;
@@ -2827,7 +2868,7 @@ public class DonationManagement {
         }
     }
     
-    public static void filterShoesCategory(ManageItem<Shoes> list, String type) {
+    public static void filterShoesCategory(LinkedList<Shoes> list, String type) {
         if (list.head == null) {
             System.out.println(ANSI_RED + "No items to filter." + ANSI_RESET);
             return;
@@ -2856,7 +2897,7 @@ public class DonationManagement {
             currentShoes = currentShoes.next;
         }
         
-        ManageItem<Item> itemList = new ManageItem<>();
+        LinkedList<Item> itemList = new LinkedList<>();
         Node<Shoes> currentNode = list.head;
         while(currentNode != null){
             Item item = currentNode.data;
@@ -2872,7 +2913,7 @@ public class DonationManagement {
     }
     
     public static void filterByYear(){
-        ManageItem<Food> foodList = loadAllFoodToList();
+        LinkedList<Food> foodList = loadAllFoodToList();
         int year = validYear();
 
         if (foodList.head == null) {
@@ -2906,7 +2947,7 @@ public class DonationManagement {
             currentNode = currentNode.next;
         }
         
-        ManageItem<Item> itemList = new ManageItem<>();
+        LinkedList<Item> itemList = new LinkedList<>();
         currentNode = foodList.head;
         while(currentNode != null){
             Item item = currentNode.data;
@@ -2991,7 +3032,7 @@ public class DonationManagement {
     }
     
     public static void donorContributionReport(){
-        ManageItem<Item> itemList = loadAllItemIntoList();
+        LinkedList<Item> itemList = loadAllItemIntoList();
         ManageDonors<Donor> donorList = new ManageDonors<>();
         donorList.loadFromFile("donors.txt");
         
@@ -3040,7 +3081,7 @@ public class DonationManagement {
     }
     
     public static void foodExpiryReport(){
-        ManageItem<Food> itemList = loadAllFoodToList();
+        LinkedList<Food> itemList = loadAllFoodToList();
         itemList.removeEmptyData();
         
         if (itemList.isEmpty()){
@@ -3097,7 +3138,7 @@ public class DonationManagement {
     }
     
     public static void mostFrequentItem(){
-        ManageItem<Item> list = loadAllItemIntoList();
+        LinkedList<Item> list = loadAllItemIntoList();
         
         list.removeEmptyData();
         
@@ -3107,9 +3148,9 @@ public class DonationManagement {
         }
         
         System.out.println("\nMost Frequent Donation Item Category");
-        ManageItem<Money> moneyList = list.filterByCategory(Money.class);
-        ManageItem<Food> foodList = list.filterByCategory(Food.class);
-        ManageItem<Apparel> appList = list.filterByCategory(Apparel.class);
+        LinkedList<Money> moneyList = list.filterByCategory(Money.class);
+        LinkedList<Food> foodList = list.filterByCategory(Food.class);
+        LinkedList<Apparel> appList = list.filterByCategory(Apparel.class);
         
         int sumM = 0;
         System.out.printf("%-10s", "Money");
