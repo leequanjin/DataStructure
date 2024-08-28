@@ -68,13 +68,15 @@ public class Ticket implements Serializable {
     public void setTicketStatus(String ticketStatus) {
         this.ticketStatus = ticketStatus;
     }
-    
-    
-    
+
     @Override
     public String toString(){
-        return " Ticket ID: " +ticketID + "\n" + "Ticket Type: " +ticketType + "\n" +"Ticket Amount: RM" +ticketPrice + "\n" +"Ticket Status: RM" +ticketStatus;
-    } 
+        return "Ticket ID: " + ticketID + "\n" + 
+               "Ticket Type: " + ticketType + "\n" + 
+               "Ticket Amount: RM" + String.format("%.2f", ticketPrice) + "\n" + 
+               "Ticket Status: " + ticketStatus;
+    }
+
     
     
     
