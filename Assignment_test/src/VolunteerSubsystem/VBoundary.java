@@ -297,11 +297,7 @@ public class VBoundary {
         
         LinkedList<EventVolunteer> combineList = new LinkedList<>();
         combineList.loadFromFile(EV_PATH);
-        if(combineList.isEmpty()){
-            System.out.println("GAY");
-        }
-
-        combineList.show();
+        
         boolean contAddVol = volHavenAttendEvent(volList, combineList, eventID);
         if(!contAddVol){
             return;
@@ -322,11 +318,8 @@ public class VBoundary {
         EventVolunteer ev = new EventVolunteer(eventID, volID);
         combineList.insert(ev);
         combineList.saveToFile(EV_PATH);
-        combineList.loadFromFile(EV_PATH);
-        System.out.println("AGAIN");
-        combineList.show();
         
-        System.out.println(ANSI_GREEN + "\nVolunteer assign to event successfully.\n" + ANSI_RESET);
+        System.out.println("\n" + ANSI_GREEN + "Volunteer assign to event successfully.\n" + ANSI_RESET);
         
         displayComTable(combineList);
     }
@@ -352,7 +345,6 @@ public class VBoundary {
     public static boolean volHavenAttendEvent(LinkedList<Volunteer> volList, LinkedList<EventVolunteer> combineList, String eventID) {
 
         boolean contAdd = true;
-        System.out.printf("| %-12s | %-30s | %-10s | %-5s | %-15s |\n", "Volunteer ID", "Name", "Gender", "Age", "Contect No.");
 
         volList.removeEmptyData();
         // if combine list empty
@@ -361,6 +353,7 @@ public class VBoundary {
             Node<Volunteer> currentNode = volList.head;
             while (currentNode != null) {
 
+                System.out.printf("| %-12s | %-30s | %-10s | %-5s | %-15s |\n", "Volunteer ID", "Name", "Gender", "Age", "Contect No.");
                 System.out.printf("| %-12s | %-30s | %-10s | %-5s | %-15s |\n",
                         currentNode.data.getVolunteerID(), currentNode.data.getName(), currentNode.data.getGender(), currentNode.data.getAge(), currentNode.data.getContactNo());
 
@@ -385,8 +378,13 @@ public class VBoundary {
                     combineCurrentNode = combineCurrentNode.next;
                 }
 
+                int show = 0;
                 // If the volunteer is not involved in the event, print their details
                 if (!isInvolved) {
+                    if(show == 0){
+                        System.out.printf("\n| %-12s | %-30s | %-10s | %-5s | %-15s |\n", "Volunteer ID", "Name", "Gender", "Age", "Contect No.");
+                        show++;
+                    }
                     System.out.printf("| %-12s | %-30s | %-10s | %-5s | %-15s |\n",
                             volunteer.getVolunteerID(), volunteer.getName(), volunteer.getGender(), volunteer.getAge(), volunteer.getContactNo());
                 }
@@ -396,7 +394,7 @@ public class VBoundary {
             
             // all volunteer had been assign
             if(sum == volList.length()){
-                System.out.println(ANSI_RED + "\nAll volunteer had participate in the event.\n" + ANSI_RESET);
+                System.out.println("\n" + ANSI_RED + "All volunteer had participate in the event.\n" + ANSI_RESET);
                 contAdd = false;
             }
         }
@@ -420,7 +418,38 @@ public class VBoundary {
     
     // Search events under a volunteer
     public static void searchVolunteerEvent(LinkedList list) {
+        Scanner scan = new Scanner(System.in);
+        
+        LinkedList<EventVolunteer> combineList = new LinkedList<>();
+        combineList.loadFromFile(EV_PATH);
+        
+        // search volunteer
+        // check if any event under it
+        System.out.println(ANSI_BLUE + "\n- - - Search Event under Volunteer - - - " + ANSI_RESET);
+        System.out.print("Enter volunteer ID: ");
+        
+        String volID = null;
+        boolean validVol = false;
+        while(!validVol){
+            volID = scan.nextLine();
+            validVol = idValidation(volID, "VL");
+        }
+        
+        volID = volID.substring(0, 2).toUpperCase() + volID.substring(2, 7);
 
+        System.out.println("\nCurrent Volunteer: " + volID);
+        Node<EventVolunteer> evNode = combineList.head;
+        int show = 1;
+        while(evNode != null){
+            if (evNode.data.getVolunteerID().equals(volID)){
+                System.out.println("Event " + show + ": " + evNode.data.getEventID());
+                show++;
+            }
+            evNode = evNode.next;
+        }
+        if(show == 1){
+            System.out.println(ANSI_RED + "No event attended." + ANSI_RESET);
+        }
     }
 
     // List all volunteers

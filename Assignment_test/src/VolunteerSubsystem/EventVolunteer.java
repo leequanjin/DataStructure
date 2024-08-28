@@ -4,11 +4,13 @@
  */
 package VolunteerSubsystem;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Heng Pei Lin
  */
-public class EventVolunteer {
+public class EventVolunteer implements Serializable{
     private String eventID;
     private String volunteerID;
     
