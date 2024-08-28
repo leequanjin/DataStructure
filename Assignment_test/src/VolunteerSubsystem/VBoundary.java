@@ -55,14 +55,17 @@ public class VBoundary {
             LinkedList list = new LinkedList();
             list.loadFromFile(VOLUNTEER_PATH);
 
-            System.out.println(" - - - Volunteer - - -");
+            System.out.println(ANSI_BLUE + " - - - Volunteer - - -" + ANSI_RESET);
             String[] volMenu = {
                 "Add New Volunteer",
                 "Remove Volunteer",
                 "Search Volunteer",
                 "Assign Volunteer to Event",
                 "Search Event Under a Volunteer",
-                "List All"
+                "List All",
+                "Filter Volunteer base on Criteria",
+                "Generate Summary Report",
+                "Exit"
             };
             int selection = menuIntReturn(volMenu);
             switch (selection) {
@@ -84,6 +87,14 @@ public class VBoundary {
                 case 6:
                     listVolunteer(list);
                     break;
+                case 7:
+                    filterVolunteer(list);
+                    break;
+                case 8:
+                    report(list);
+                    break;
+                case 9:
+                    return;
                 default:
                     System.out.println(ANSI_RED + "Invalid menu selection." + ANSI_RESET);
                     break;
@@ -227,6 +238,7 @@ public class VBoundary {
                 System.out.println(ANSI_RED + "\nRemove unsuccessfully." + ANSI_RESET);
             } else {
                 System.out.println(ANSI_GREEN + "\nRemove successfully." + ANSI_RESET);
+                System.out.printf("\n| %-12s | %-30s | %-10s | %-5s | %-15s |\n", "Volunteer ID", "Name", "Gender", "Age", "Contect No.");
                 list.show();
                 list.saveToFile(VOLUNTEER_PATH);
             }
@@ -454,8 +466,237 @@ public class VBoundary {
 
     // List all volunteers
     public static void listVolunteer(LinkedList list) {
-        System.out.println(ANSI_BLUE + "\n- - - Remove Volunteer - - - " + ANSI_RESET);
+        System.out.println(ANSI_BLUE + "\n- - - List Volunteer - - - " + ANSI_RESET);
+        System.out.printf("| %-12s | %-30s | %-10s | %-5s | %-15s |\n", "Volunteer ID", "Name", "Gender", "Age", "Contect No.");
         list.show();
+    }
+    
+    // Filter volunteer base on criteria
+    public static void filterVolunteer(LinkedList list){
+        System.out.println(ANSI_BLUE + "\n- - - Filter Volunteer - - - " + ANSI_RESET);
+        if(list.isEmpty()){
+            System.out.println(ANSI_RED + "No volunteer yet. Nothing to filter. Exiting." + ANSI_RESET);
+            return;
+        }
+        
+        String[] filterMenu = {"Gender", "Before Age (e.g. 20)"};
+        int filterSelection = menuIntReturn(filterMenu);
+        
+        switch(filterSelection){
+            case 1:
+                filterGenderSelection(list);
+                break;
+            case 2:
+                filterAge(list);
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid filter selection." + ANSI_RESET);
+                break;
+        }
+    }
+    
+    public static void filterGenderSelection(LinkedList list){
+        System.out.println("\nFilter by:");
+        String[] filterMenu = {"Male", "Female"};
+        int filterSelection = menuIntReturn(filterMenu);
+        
+        switch(filterSelection){
+            case 1:
+                filterGender(list, true);
+                break;
+            case 2:
+                filterGender(list, false);
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid filter selection." + ANSI_RESET);
+                break;
+        }
+    }
+    
+    public static void filterGender(LinkedList list, boolean isMale){
+        Node<Volunteer> currentNode = list.head;
+        int show = 1;
+        String gender = null;
+        while(currentNode != null){
+            if(isMale == true){
+                gender = "male";
+                if(currentNode.data.getGender().toUpperCase().equalsIgnoreCase("MALE")){
+                    if(show == 1){
+                        System.out.println("\n --- Male Volunteer ---");
+                        System.out.printf("| %-12s | %-30s | %-10s | %-5s | %-15s |\n", "Volunteer ID", "Name", "Gender", "Age", "Contect No.");
+                    }
+                    System.out.println(currentNode.data.toString());
+                    show++;
+                }
+            }else{
+                gender = "female";
+                if(currentNode.data.getGender().toUpperCase().equalsIgnoreCase("FEMALE")){
+                    if(show == 1){
+                        System.out.println("\n --- Female Volunteer ---");
+                        System.out.printf("| %-12s | %-30s | %-10s | %-5s | %-15s |\n", "Volunteer ID", "Name", "Gender", "Age", "Contect No.");
+                    }
+                    System.out.println(currentNode.data.toString());
+                    show++;
+                }
+            }
+            currentNode = currentNode.next;
+        }
+        if(show == 1){
+            System.out.println("\n" + ANSI_RED + "There are no " + gender + " volunteer." + ANSI_RESET);
+        }
+    }
+    
+    public static void filterAge(LinkedList list){
+        Scanner scan = new Scanner(System.in);
+        System.out.println("\nRemarks: (1)Volunteer before within the age will be shown. "
+                         + "\n         (2)Only volunteer betwwen the age 18 to 60 can participant as a volunteer.");
+        System.out.print("Enter age: ");
+        
+        int age = 0;
+        boolean validAge = false;
+        while(!validAge){
+            String inputA = scan.nextLine();
+            
+            validAge = chkIntInputInRange(inputA, 18, 60);
+            
+            if(validAge){
+                age = Integer.parseInt(inputA);
+            }
+        }
+        
+        Node<Volunteer> currentNode = list.head;
+        int show = 1;
+        while(currentNode != null){
+            if(currentNode.data.getAge() <= age){
+                if(show == 1){
+                    System.out.println("\n --- Volunteer before Age " + age +" ---");
+                    System.out.printf("| %-12s | %-30s | %-10s | %-5s | %-15s |\n", "Volunteer ID", "Name", "Gender", "Age", "Contect No.");
+                }
+                System.out.println(currentNode.data.toString());
+                show++;
+            }
+            currentNode = currentNode.next;
+        }
+        
+        if(show == 1){
+            System.out.println("\n" + ANSI_RED + "No volunteer currently below or within this age." + ANSI_RESET);
+        }
+        
+    }
+    
+    // Generate report
+    public static void report(LinkedList list){
+        System.out.println(ANSI_BLUE + "\n- - - Report - - - " + ANSI_RESET);
+        
+        if(list.isEmpty()){
+            System.out.println(ANSI_RED + "No volunteer yet. No data to generate report." + ANSI_RESET);
+            return;
+        }
+        
+        String[] reportMenu = {"Gender Distribution in Volunteer Involvement", 
+            "Volunteer Participation Frequency by Age Group"};
+        int reportSelection = menuIntReturn(reportMenu);
+        
+        switch(reportSelection){
+            case 1:
+                genderDistribution(list);
+                break;
+            case 2:
+                volAgeGroup(list);
+                break;
+            default:
+                System.out.println(ANSI_RED + "Invalid filter selection." + ANSI_RESET);
+                break;
+        }
+    
+    }
+    
+    public static void genderDistribution(LinkedList list){
+        Node<Volunteer> currentNode = list.head;
+        
+        int sumM = 0;
+        int sumF = 0;
+        while(currentNode!=null){
+            
+            String gender = currentNode.data.getGender();
+            if(gender.toUpperCase().equals("MALE")){
+                sumM++;
+            }else{
+                sumF++;
+            }
+            
+            currentNode = currentNode.next;
+        }
+        
+        System.out.println("\n- Gender Distibution in Volunteer Involvement -");
+        
+        int sum = sumM + sumF;
+        double dM = sumM/sum;
+        double dF = sumF/sum;
+        
+        System.out.printf("%-8s %-3s %-5d %-1s %-2.2f %-2s", "Male", "->", sumM, "(", dM, "%)");
+        System.out.printf("\n%-8s %-3s %-5d %-1s %-2.2f %-2s", "Female", "->", sumF, "(", dF, "%)");
+        
+        System.out.print("\n\nConclusion: ");
+        if(sumM > sumF){
+            System.out.println("Male volunteer is more than female volunteer.");
+        }else{
+            System.out.println("Female volunteer is more than male volunteer.");
+        }
+    }
+    
+    public static void volAgeGroup(LinkedList list){
+        Node<Volunteer> currentNode = list.head;
+        
+        int sumY = 0; // 18 - 30
+        int sumM = 0; // 31 - 45
+        int sumO = 0; // 45 - 60
+        while(currentNode!=null){
+            
+            int age = currentNode.data.getAge();
+            if(age <= 30){
+                sumY++;
+            }else if (age <= 45){
+                sumM++;
+            }else{
+                sumO++;
+            }
+            
+            currentNode = currentNode.next;
+        }
+        
+        System.out.println("\n- Volunteer Participation Frequency by Age Group -");
+        System.out.printf("%-20s %-10s %-3s %-5d", "Young Adults", "(18 - 30)", "-> ", sumY);
+        printStar(sumY);
+        
+        System.out.printf("\n%-20s %-10s %-3s %-5d", "Midle-aged Adults", "(31 - 45)", "-> ", sumM);
+        printStar(sumM);
+        
+        System.out.printf("\n%-20s %-10s %-3s %-5d", "Old-aged Adults", "(46 - 60)", "-> ", sumO);
+        printStar(sumO);
+        
+        int max = sumY;
+        String group ="young adults";
+        if(max < sumM){
+            max = sumM;
+            group = "middle-aged adults";
+        }
+        if(max < sumY){
+            max = sumY;
+            group = "old-aged adults";
+        }
+        
+        System.out.println("\n\nRemarks: Symbol * will be display if item's total exceed 50 and each * represent 50 items");
+        System.out.println("The most frequent participant age group is " + group + ", with total amount of " + max );
+    }
+    
+    public static void printStar(int count){
+        if (count > 50){
+            int left = count % 50;
+            for (int i = 0; i < left; i ++){
+                System.out.print(ANSI_BLUE + " *" + ANSI_RESET);
+            }
+        }
     }
 
     //------------

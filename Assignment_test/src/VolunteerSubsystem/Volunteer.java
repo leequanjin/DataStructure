@@ -65,12 +65,6 @@ public class Volunteer implements Serializable {
     
     @Override
     public String toString() {
-        return "Volunteer {" +
-                "Id : '" + volunteerID + '\'' +
-                ", Name : '" + name + '\'' +
-                ", Gender : '" + gender + '\'' +
-                ", Age : '" + age + '\'' +
-                ", Contact : '" + contactNo + '\'' +
-                '}';
+        return String.format("| %-12s | %-30s | %-10s | %-5d | %-15s |", volunteerID, name, gender, age, contactNo);
     }
 }
