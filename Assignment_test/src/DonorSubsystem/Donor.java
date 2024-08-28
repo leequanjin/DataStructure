@@ -5,6 +5,7 @@
 package DonorSubsystem;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 /**
  *
@@ -15,11 +16,13 @@ public abstract class Donor implements Serializable {
     String id;
     String name;
     String category; // government, private, public
+    final private LocalDate registrationDate;
 
     public Donor(String id, String name, String category) {
         this.id = id;
         this.name = name;
         this.category = category;
+        this.registrationDate = LocalDate.now();
     }
 
     public String getId() {
@@ -45,6 +48,10 @@ public abstract class Donor implements Serializable {
     public void setCategory(String category) {
         this.category = category;
     }
+    
+    public LocalDate getRegistrationDate() {
+        return registrationDate;
+    }
 
     public abstract String getType(); // Individual or Organization 
 
@@ -54,6 +61,7 @@ public abstract class Donor implements Serializable {
                 "Id : '" + id + '\'' +
                 ", Name : '" + name.toUpperCase() + '\'' +
                 ", Category : '" + category.toUpperCase() + '\'' +
+                ", RegistrationDate : '" + registrationDate.toString() + '\'' +
                 '}';
     }
 }

@@ -6,6 +6,8 @@ package DonorSubsystem;
 
 import CommonResources.Node;
 import CommonResources.LinkedList;
+import DoneeSubsystem.DoneePeriodCount;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -36,6 +38,7 @@ public class ManageDonors<T extends Donor> extends LinkedList<T>{
         }
     }
 
+    // Method to find and return a donor by ID
     public Donor findById(String id) {
         Node<T> current = head; // Start from the head of the list
 
@@ -46,5 +49,37 @@ public class ManageDonors<T extends Donor> extends LinkedList<T>{
             current = current.next; // Move to the next node
         }
             return null; // Donor not found
+    }
+    public LinkedList<DonorPeriodCount> generateTotalDonorByYear() {
+        LinkedList<DonorPeriodCount> donorsEachYear = new LinkedList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy");
+        LinkedList<String> processedYears = new LinkedList<>();
+
+        Node<T> current = head;
+
+        while (current != null) {
+            String year = current.data.getRegistrationDate().format(formatter);
+
+            if (!processedYears.contains(year)) {
+                int individualCount = 0;
+                int organizationCount = 0;
+
+                while (current != null && year.equals(current.data.getRegistrationDate().format(formatter))) {
+                    String type = current.data.getType();
+                    switch (type) {
+                        case "Individual" ->
+                            individualCount++;
+                        default ->
+                            organizationCount++;
+                    }
+                    current = current.next;
+                }
+
+                processedYears.insert(year);
+                donorsEachYear.insert(new DonorPeriodCount(year, individualCount, organizationCount));
+            }
+        }
+
+        return donorsEachYear;
     }
 }
