@@ -10,8 +10,8 @@ package DoneeSubsystem;
  */
 public class Organization extends Donee {
 
-    public Organization(String id, String name) {
-        super(id, name);
+    public Organization(String id, String name, String location) {
+        super(id, name, location);
     }
 
     @Override

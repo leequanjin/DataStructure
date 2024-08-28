@@ -17,7 +17,6 @@ public class Test {
     //Colours
     static String Red = "\u001b[31m";
     static String Green = "\u001b[32;2m";
-    static String Yellow = "\u001b[33m";
     static String Reset = "\u001b[0m";
 
     public static void main(String[] args) {
@@ -36,7 +35,8 @@ public class Test {
                 System.out.println("5. List donees");
                 System.out.println("6. Filter donee based on category");
                 System.out.println("7. Save Changes");
-                System.out.println("8. Exit");
+                System.out.println("8. Generate Summary Report");
+                System.out.println("9. Exit");
                 System.out.print("\nEnter your choice: ");
 
                 String choice = scanner.nextLine();
@@ -56,23 +56,45 @@ public class Test {
                             switch (choice) {
                                 case "1" -> {
                                     String id = generateDoneeId(doneeList);
-                                    System.out.print("Enter name: ");
-                                    String name = scanner.nextLine();
-                                    doneeList.insert(new Individual(id, name));
+                                    String name = null;
+                                    while (isEmpty(name)) {
+                                        System.out.print("Enter name: ");
+                                        name = scanner.nextLine().trim();
+                                        if (isEmpty(name)) {
+                                            System.out.println(Red + "Name cannot be empty!" + Reset);
+                                        }
+                                    }
+                                    String state = selectState();
+
+                                    doneeList.insert(new Individual(id, name, state));
                                     System.out.println(Green + "Individual added with Donee ID: " + id + Reset);
                                 }
                                 case "2" -> {
                                     String id = generateDoneeId(doneeList);
-                                    System.out.print("Enter family name: ");
-                                    String orgName = scanner.nextLine();
-                                    doneeList.insert(new Family(id, orgName));
+                                    String name = null;
+                                    while (isEmpty(name)) {
+                                        System.out.print("Enter family name: ");
+                                        name = scanner.nextLine().trim();
+                                        if (isEmpty(name)) {
+                                            System.out.println(Red + "Name cannot be empty!" + Reset);
+                                        }
+                                    }
+                                    String state = selectState();
+                                    doneeList.insert(new Family(id, name, state));
                                     System.out.println(Green + "Family added with Donee ID: " + id + Reset);
                                 }
                                 case "3" -> {
                                     String id = generateDoneeId(doneeList);
-                                    System.out.print("Enter organization name: ");
-                                    String orgName = scanner.nextLine();
-                                    doneeList.insert(new Organization(id, orgName));
+                                    String name = null;
+                                    while (isEmpty(name)) {
+                                        System.out.print("Enter organization name: ");
+                                        name = scanner.nextLine().trim();
+                                        if (isEmpty(name)) {
+                                            System.out.println(Red + "Name cannot be empty!" + Reset);
+                                        }
+                                    }
+                                    String state = selectState();
+                                    doneeList.insert(new Organization(id, name, state));
                                     System.out.println(Green + "Organization added with Donee ID: " + id + Reset);
                                 }
                                 default -> {
@@ -99,10 +121,15 @@ public class Test {
                         String id = scanner.nextLine();
                         Donee doneeToUpdate = doneeList.findById(id);
                         if (doneeToUpdate != null) {
-                            System.out.println(Green + "\nFound donee: " + Reset + doneeToUpdate.toString() + "\n");
+                            System.out.println(Green + "\nFound donee: " + Reset);
+                            System.out.printf("%-15s |%-30s |%-15s |%-15s |%s\n", "ID", "Name", "Type", "Location", "Registration Date");
+                            String line = String.format("-").repeat(100);
+                            System.out.println(line);
+                            System.out.println(doneeToUpdate.toString() + "\n");
                             System.out.println("What would you like to update?");
                             System.out.println("1. Name");
-                            System.out.println("2. Category \n");
+                            System.out.println("2. Category");
+                            System.out.println("3. Location \n");
                             System.out.print("Enter your choice: ");
 
                             choice = scanner.nextLine();
@@ -113,9 +140,13 @@ public class Test {
                                     do {
                                         System.out.print("\nEnter new donee name: ");
                                         String newName = scanner.nextLine().trim();
-                                        doneeToUpdate.setName(newName);
-                                        System.out.println(Green + "Name updated to " + newName + " successfully." + Reset);
-                                        break;
+                                        if (!isEmpty(newName)) {
+                                            doneeToUpdate.setName(newName);
+                                            System.out.println(Green + "Name updated to " + newName + " successfully." + Reset);
+                                            break;
+                                        } else {
+                                            System.out.println(Red + "Name cannot be empty!" + Reset);
+                                        }
                                     } while (true);
                                 }
                                 case "2" -> {
@@ -148,6 +179,88 @@ public class Test {
                                         }
                                     } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
                                 }
+                                case "3" -> {
+                                    line = String.format("-").repeat(64);
+                                    System.out.println(line);
+                                    System.out.printf("|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n",
+                                            "1. Johor",
+                                            "2. Kedah",
+                                            "3. Kelantan",
+                                            "4. Melaka",
+                                            "5. Negeri Sembilan",
+                                            "6. Pahang",
+                                            "7. Penang",
+                                            "8. Perak",
+                                            "9. Perlis",
+                                            "10. Sabah",
+                                            "11. Sarawak",
+                                            "12. Selangor",
+                                            "13. Terengganu", "", "");
+                                    System.out.println(line);
+                                    String state = null;
+                                    do {
+                                        System.out.print("Select your State: ");
+                                        state = scanner.nextLine();
+                                        switch (state) {
+                                            case "1" -> {
+                                                state = "Johor";
+                                            }
+                                            case "2" -> {
+                                                state = "Kedah";
+                                            }
+                                            case "3" -> {
+                                                state = "Kelantan";
+                                            }
+                                            case "4" -> {
+                                                state = "Melaka";
+                                            }
+                                            case "5" -> {
+                                                state = "Negeri Sembilan";
+                                            }
+                                            case "6" -> {
+                                                state = "Pahang";
+                                            }
+                                            case "7" -> {
+                                                state = "Penang";
+                                            }
+                                            case "8" -> {
+                                                state = "Perak";
+                                            }
+                                            case "9" -> {
+                                                state = "Perlis";
+                                            }
+                                            case "10" -> {
+                                                state = "Sabah";
+                                            }
+                                            case "11" -> {
+                                                state = "Sarawak";
+                                            }
+                                            case "12" -> {
+                                                state = "Selangor";
+                                            }
+                                            case "13" -> {
+                                                state = "Terengganu";
+                                            }
+                                            default -> {
+                                                System.out.println(Red + "Invalid Input : Please only enter a value between 1-13 or the state name" + Reset);
+                                            }
+                                        }
+                                    } while (!"Johor".equals(state)
+                                            && !"Kedah".equals(state)
+                                            && !"Kelantan".equals(state)
+                                            && !"Melaka".equals(state)
+                                            && !"Negeri Sembilan".equals(state)
+                                            && !"Pahang".equals(state)
+                                            && !"Penang".equals(state)
+                                            && !"Perak".equals(state)
+                                            && !"Perlis".equals(state)
+                                            && !"Sabah".equals(state)
+                                            && !"Sarawak".equals(state)
+                                            && !"Selangor".equals(state)
+                                            && !"Terengganu".equals(state));
+                                    doneeToUpdate.setLocation(state);
+                                    System.out.println(Green + "State updated to " + state + " successfully." + Reset);
+                                }
                                 default ->
                                     System.out.println(Red + "Invalid option. No changes made." + Reset);
                             }
@@ -171,7 +284,11 @@ public class Test {
 
                                     Donee donee = doneeList.findById(id);
                                     if (donee != null) {
-                                        System.out.println(Green + "\nFound donee: " + Reset + donee.toString());
+                                        System.out.println(Green + "\nFound donee: " + Reset);
+                                        System.out.printf("%-15s |%-30s |%-15s |%-15s |%s\n", "ID", "Name", "Type", "Location", "Registration Date");
+                                        String line = String.format("-").repeat(100);
+                                        System.out.println(line);
+                                        System.out.println(donee.toString() + "\n");
                                     } else {
                                         System.out.println(Red + "\nNo donee found with ID: " + id + Reset);
                                     }
@@ -204,7 +321,10 @@ public class Test {
                     }
                     case "5" -> {
                         // List donees with all donations made
-                        System.out.print(Green + "List of all Donees: " + Reset);
+                        System.out.println(Green + "List of all Donees: " + Reset);
+                        System.out.printf("%-15s |%-30s |%-15s |%-15s |%s\n", "ID", "Name", "Type", "Location", "Registration Date");
+                        String line = String.format("-").repeat(100);
+                        System.out.println(line);
                         doneeList.show();
                     }
                     case "6" -> {
@@ -219,17 +339,26 @@ public class Test {
                             switch (choice) {
                                 case "1" -> {
                                     LinkedList<Individual> individualList = doneeList.filterByCategory(Individual.class);
-                                    System.out.print(Green + "\nList of all Individual Donees: " + Reset);
+                                    System.out.println(Green + "\nList of all Individual Donees: " + Reset);
+                                    System.out.printf("%-15s |%-30s |%-15s |%-15s |%s\n", "ID", "Name", "Type", "Location", "Registration Date");
+                                    String line = String.format("-").repeat(100);
+                                    System.out.println(line);
                                     individualList.show();
                                 }
                                 case "2" -> {
                                     LinkedList<Family> familyList = doneeList.filterByCategory(Family.class);
-                                    System.out.print(Green + "\nList of all Family Donees: " + Reset);
+                                    System.out.println(Green + "\nList of all Family Donees: " + Reset);
+                                    System.out.printf("%-15s |%-30s |%-15s |%-15s |%s\n", "ID", "Name", "Type", "Location", "Registration Date");
+                                    String line = String.format("-").repeat(100);
+                                    System.out.println(line);
                                     familyList.show();
                                 }
                                 case "3" -> {
                                     LinkedList<Organization> organizationList = doneeList.filterByCategory(Organization.class);
-                                    System.out.print(Green + "\nList of all Organization Donees: " + Reset);
+                                    System.out.println(Green + "\nList of all Organization Donees: " + Reset);
+                                    System.out.printf("%-15s |%-30s |%-15s |%-15s |%s\n", "ID", "Name", "Type", "Location", "Registration Date");
+                                    String line = String.format("-").repeat(100);
+                                    System.out.println(line);
                                     organizationList.show();
                                 }
                                 default -> {
@@ -239,11 +368,50 @@ public class Test {
                         } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
                     }
                     case "7" -> {
-                        // Exit the program
+                        // Save changes to the file
                         doneeList.saveToFile("donees.txt");
-                        System.out.println(Green + "Changes saved sucessfully..."+ Reset);
+                        System.out.println(Green + "Changes saved sucessfully..." + Reset);
                     }
                     case "8" -> {
+                        do {
+                            System.out.println("1. Number of new donees by year");
+                            System.out.println("2. Number of new donees by month");
+                            System.out.println("3. Number of donees by state \n");
+                            System.out.print("Enter your choice: ");
+                            choice = scanner.nextLine();
+
+                            switch (choice) {
+                                case "1" -> {
+                                    LinkedList doneeListByYear = doneeList.generateTotalDoneeByYear();
+                                    System.out.println(Green + "\nNumber of new donees by year report: " + Reset);
+                                    System.out.printf("%-15s |%-20s |%-20s |%s\n", "Year", "Individuals", "Families", "Organizations");
+                                    String line = String.format("-").repeat(74);
+                                    System.out.println(line);
+                                    doneeListByYear.show();
+                                }
+                                case "2" -> {
+                                    LinkedList doneeListByMonth = doneeList.generateTotalDoneeByMonth();
+                                    System.out.println(Green + "\nNumber of new donees by month report: " + Reset);
+                                    System.out.printf("%-15s |%-20s |%-20s |%s\n", "Year", "Individuals", "Families", "Organizations");
+                                    String line = String.format("-").repeat(74);
+                                    System.out.println(line);
+                                    doneeListByMonth.show();
+                                }
+                                case "3" -> {
+                                    DoneeStateCount doneeListByState = doneeList.generateTotalDoneeByState();
+                                    System.out.println(Green + "\nNumber of donees by state: " + Reset);
+                                    String line = String.format("-").repeat(25);
+                                    System.out.println(line);
+                                    System.out.println(doneeListByState.toString());
+                                }
+
+                                default -> {
+                                    System.out.println(Red + "Invalid category. Please only enter '1', '2' or '3'.\n" + Reset);
+                                }
+                            }
+                        } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
+                    }
+                    case "9" -> {
                         // Exit the program
                         running = false;
                         System.out.println(Green + "Exiting..." + Reset);
@@ -261,8 +429,7 @@ public class Test {
         String prefix = "DNE";
         int maxId = 0;
 
-        // Assuming ManageDonors extends LinkedList
-        Node<Donee> current = doneeList.head; // Access the head of the linked list
+        Node<Donee> current = doneeList.head;
 
         while (current != null) {
             String currentId = current.data.getId().substring(prefix.length());
@@ -274,5 +441,93 @@ public class Test {
         }
 
         return prefix + String.format("%05d", maxId + 1);
+    }
+
+    private static boolean isEmpty(String string) {
+        return string == null;
+    }
+
+    private static String selectState() {
+        Scanner scanner = new Scanner(System.in);
+        String line = String.format("-").repeat(64);
+        System.out.println(line);
+        System.out.printf("|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n",
+                "1. Johor",
+                "2. Kedah",
+                "3. Kelantan",
+                "4. Melaka",
+                "5. Negeri Sembilan",
+                "6. Pahang",
+                "7. Penang",
+                "8. Perak",
+                "9. Perlis",
+                "10. Sabah",
+                "11. Sarawak",
+                "12. Selangor",
+                "13. Terengganu", "", "");
+        System.out.println(line);
+        String state = null;
+        do {
+            System.out.print("Select your State: ");
+            state = scanner.nextLine();
+            switch (state) {
+                case "1" -> {
+                    state = "Johor";
+                }
+                case "2" -> {
+                    state = "Kedah";
+                }
+                case "3" -> {
+                    state = "Kelantan";
+                }
+                case "4" -> {
+                    state = "Melaka";
+                }
+                case "5" -> {
+                    state = "Negeri Sembilan";
+                }
+                case "6" -> {
+                    state = "Pahang";
+                }
+                case "7" -> {
+                    state = "Penang";
+                }
+                case "8" -> {
+                    state = "Perak";
+                }
+                case "9" -> {
+                    state = "Perlis";
+                }
+                case "10" -> {
+                    state = "Sabah";
+                }
+                case "11" -> {
+                    state = "Sarawak";
+                }
+                case "12" -> {
+                    state = "Selangor";
+                }
+                case "13" -> {
+                    state = "Terengganu";
+                }
+
+                default -> {
+                    System.out.println(Red + "Invalid Input : Please only enter a value between 1-13 or the state name" + Reset);
+                }
+            }
+        } while (!"Johor".equals(state)
+                && !"Kedah".equals(state)
+                && !"Kelantan".equals(state)
+                && !"Melaka".equals(state)
+                && !"Negeri Sembilan".equals(state)
+                && !"Pahang".equals(state)
+                && !"Penang".equals(state)
+                && !"Perak".equals(state)
+                && !"Perlis".equals(state)
+                && !"Sabah".equals(state)
+                && !"Sarawak".equals(state)
+                && !"Selangor".equals(state)
+                && !"Terengganu".equals(state));
+        return state;
     }
 }

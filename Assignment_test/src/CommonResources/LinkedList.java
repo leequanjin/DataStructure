@@ -311,4 +311,20 @@ public class LinkedList<T> implements LinkedListInterface<T> {
             }
         }
     }
+    
+    // Method to check if a entry is contained in a list
+    
+    public boolean contains(T element) {
+        Node<T> current = head;
+
+        while (current != null) {
+            if (current.data.equals(element)) { 
+                return true;
+            } else {
+                current = current.next;
+            }
+        }
+
+        return false; // Element not found
+    }
 }

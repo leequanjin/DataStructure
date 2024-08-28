@@ -5,6 +5,7 @@
 package DoneeSubsystem;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 /**
  *
@@ -12,12 +13,16 @@ import java.io.Serializable;
  */
 abstract class Donee implements Serializable {
 
-    String id;
-    String name;
+    private String id;
+    private String name;
+    private String location;
+    final private LocalDate registrationDate;
 
-    public Donee(String id, String name) {
+    public Donee(String id, String name, String location) {
         this.id = id;
         this.name = name;
+        this.location = location;
+        this.registrationDate = LocalDate.now();
     }
 
     public String getId() {
@@ -36,12 +41,29 @@ abstract class Donee implements Serializable {
         this.name = name;
     }
 
-    public abstract String getType(); // Individual or Organization
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public LocalDate getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public abstract String getType();
 
     @Override
     public String toString() {
-        return "\nID  : " + getId()
-                + "\nName: " + getName()
-                + "\nType: " + getType();
+        return String.format(
+                "%-15s |%-30s |%-15s |%-15s |%s",
+                id,
+                name,
+                getType(),
+                location,
+                registrationDate.toString()
+        );
     }
 }

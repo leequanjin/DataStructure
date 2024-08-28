@@ -11,8 +11,8 @@ package DoneeSubsystem;
 
 public class Family extends Donee {
     
-    public Family(String id, String name) {
-        super(id, name);
+    public Family(String id, String name, String location) {
+        super(id, name, location);
     }
 
     @Override
