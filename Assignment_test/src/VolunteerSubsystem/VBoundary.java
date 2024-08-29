@@ -5,6 +5,7 @@
 package VolunteerSubsystem;
 
 import CommonResources.LinkedList;
+import CommonResources.LinkedListInterface;
 import CommonResources.Node;
 import EventSystem.Event;
 import java.text.DateFormat;
@@ -22,6 +23,8 @@ public class VBoundary {
     private static final String VOLUNTEER_PATH = "volunteers.txt";
     private static final String EVENT_PATH = "event.txt";
     private static final String EV_PATH = "volunteer_event.txt";
+    
+    private LinkedListInterface<Volunteer> list = new LinkedList<>();
 
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
@@ -52,7 +55,7 @@ public class VBoundary {
     public static void volunteerMainMenu() {
         boolean cont = true;
         do {
-            LinkedList list = new LinkedList();
+            LinkedList<Volunteer> list = new LinkedList();
             list.loadFromFile(VOLUNTEER_PATH);
 
             System.out.println(ANSI_BLUE + " - - - Volunteer - - -" + ANSI_RESET);
@@ -109,7 +112,7 @@ public class VBoundary {
     }
 
     // Add new Volunteer
-    public static void addVolunteer(LinkedList list) {
+    public static void addVolunteer(LinkedList<Volunteer> list) {
 
         Scanner scan = new Scanner(System.in);
 
@@ -206,7 +209,7 @@ public class VBoundary {
     }
 
     // Remove Volunteer
-    public static void remVolunteer(LinkedList list) {
+    public static void remVolunteer(LinkedList<Volunteer> list) {
         Scanner scan = new Scanner(System.in);
 
         System.out.println(ANSI_BLUE + "\n- - - Remove Volunteer - - - " + ANSI_RESET);
@@ -249,7 +252,7 @@ public class VBoundary {
     public static void searchVolunteer(LinkedList list) {
         Scanner scan = new Scanner(System.in);
 
-        System.out.println(ANSI_BLUE + "\n- - - Remove Volunteer - - - " + ANSI_RESET);
+        System.out.println(ANSI_BLUE + "\n- - - Search Volunteer - - - " + ANSI_RESET);
         if (list.isEmpty()) {
             System.out.println(ANSI_RED + "No volunteer yet.\n" + ANSI_RESET);
             return;
