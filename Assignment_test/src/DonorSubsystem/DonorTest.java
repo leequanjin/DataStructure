@@ -82,7 +82,7 @@ public class DonorTest {
             
             try {
                 choice = Integer.parseInt(scanner.nextLine().trim());
-                if (choice < 1 || choice > 8) {
+                if (choice < 1 || choice > 9) {
                     System.out.println(RED + "Invalid choice. Please choose a number between 1 and 8.\n" + RESET);
                 }
             } catch (NumberFormatException e) {
