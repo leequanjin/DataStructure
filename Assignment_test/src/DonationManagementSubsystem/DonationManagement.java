@@ -447,7 +447,7 @@ public class DonationManagement {
         int count = 1;
         while(currentNode != null){
             System.out.println("\n- Item " + count + " -");
-            System.out.printf("| %-10s | %-10s | %-15s |", "Item ID", "Donor ID", "Item Category");
+            System.out.printf("| %-10s | %-10s | %-15s | %15s |", "Item ID", "Donor ID", "Item Category", "Availability");
             if(currentNode.data instanceof Money){
                 System.out.printf(" %-14s |", "Amount Donated");
                 if (currentNode.data instanceof Bank){
@@ -517,7 +517,7 @@ public class DonationManagement {
     }
     
     public static void headerIdentifier(Node<Item> currentNode){
-        System.out.printf("\n| %-10s | %-10s | %-15s |", "Item ID", "Donor ID", "Item Category");
+        System.out.printf("\n| %-10s | %-10s | %-15s | %-15s |", "Item ID", "Donor ID", "Item Category", "Availability");
         if(currentNode.data instanceof Money){
             System.out.printf(" %-14s |", "Amount Donated");
             if (currentNode.data instanceof Bank){
@@ -543,7 +543,7 @@ public class DonationManagement {
             System.out.println(ANSI_RED + "Item does not exist." + ANSI_RESET);
         }
         
-        System.out.printf("| %-10s | %-10s | %-15s |", "Item ID", "Donor ID", "Item Category");
+        System.out.printf("| %-10s | %-10s | %-15s | %-15s |", "Item ID", "Donor ID", "Item Category", "Availability");
         if(item instanceof Money){
             System.out.printf(" %-14s |", "Amount Donated");
             if (item instanceof Bank){
@@ -2431,9 +2431,9 @@ public class DonationManagement {
         
 
         if (header == 1){
-            System.out.printf("| %-10s | %-10s | %-15s | %-14s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Amount Donated", "Bank Name");
+            System.out.printf("| %-10s | %-10s | %-15s | %-15s | %-14s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Availability", "Amount Donated", "Bank Name");
         }else{
-            System.out.printf("| %-10s | %-10s | %-15s | %-14s |\n", "Item ID", "Donor ID", "Item Category", "Amount Donated");
+            System.out.printf("| %-10s | %-10s | %-15s | %-15s | %-14s |\n", "Item ID", "Donor ID", "Item Category", "Availability", "Amount Donated");
         }
         
         if (moneyList.head.next == null){
@@ -2501,7 +2501,7 @@ public class DonationManagement {
                 if (cont){
                     pageNum++;
                     System.out.println(ANSI_BLUE +"\n- PAGE " + pageNum + " -" + ANSI_RESET);
-                    System.out.printf("| %-10s | %-10s | %-15s | %-20s | %-10s | %-8s | %-8s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Remarks", "Expiry Date", "Weight", "Status", "Food Type");
+                    System.out.printf("| %-10s | %-10s | %-15s | %-15s | %-20s | %-10s | %-8s | %-8s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Availability", "Remarks", "Expiry Date", "Weight", "Status", "Food Type");
                     stop = 0;
                 }else{
                     return;
@@ -2521,7 +2521,7 @@ public class DonationManagement {
             return;
         }
         
-        System.out.printf("| %-10s | %-10s | %-15s | %-20s | %-10s | %-8s | %-8s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Remarks", "Expiry Date", "Weight", "Status", "Food Type");
+        System.out.printf("| %-10s | %-10s | %-15s | %-15s | %-20s | %-10s | %-8s | %-8s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Availability", "Remarks", "Expiry Date", "Weight", "Status", "Food Type");
         
         if (foodList.head.next == null){
             System.out.println(foodList.head.data.toString());
@@ -2582,7 +2582,7 @@ public class DonationManagement {
                 if (cont){
                     pageNum++;
                     System.out.println(ANSI_BLUE +"\n- PAGE " + pageNum + " -" + ANSI_RESET);
-                    System.out.printf("| %-10s | %-10s | %-15s | %-20s | %-10s | %-8s | %-8s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Remarks", "Expiry Date", "Weight", "Status", "Food Type");
+                    System.out.printf("| %-10s | %-10s | %-15s | %-15s | %-20s | %-10s | %-8s | %-8s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Availability", "Remarks", "Expiry Date", "Weight", "Status", "Food Type");
                     stop = 0;
                 }else{
                     return;
