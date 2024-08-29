@@ -66,7 +66,7 @@ public class DonorTest {
 
     private static int getValidMenuChoice(Scanner scanner) {
         int choice = -1;
-        while (choice < 1 || choice > 8) {
+        while (choice < 1 || choice > 9) {
             System.out.println(BLUE + "\n- - - Donor Menu - - -" + RESET);
             System.out.println("Choose an option:");
             System.out.println("1. Add a new donor");
@@ -83,7 +83,7 @@ public class DonorTest {
             try {
                 choice = Integer.parseInt(scanner.nextLine().trim());
                 if (choice < 1 || choice > 9) {
-                    System.out.println(RED + "Invalid choice. Please choose a number between 1 and 8.\n" + RESET);
+                    System.out.println(RED + "Invalid choice. Please choose a number between 1 and 9.\n" + RESET);
                 }
             } catch (NumberFormatException e) {
                 System.out.println(RED + "Invalid input. Please enter a valid number.\n" + RESET);
