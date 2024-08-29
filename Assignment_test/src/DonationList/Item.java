@@ -13,12 +13,14 @@ import java.io.Serializable;
 public abstract class Item implements Serializable {
     String id;
     String donorID;
+    String status;
     
     public Item(){}
     
     public Item(String id, String donorID){
         this.id = id;
         this.donorID = donorID;
+        status = "Available";
     }
 
     public String getId() {
@@ -41,6 +43,6 @@ public abstract class Item implements Serializable {
     
     @Override
     public String toString() {
-        return  String.format("| %-10s | %-10s | %-15s |", id, donorID, getType());
+        return  String.format("| %-10s | %-10s | %-15s | %-15s |", id, donorID, getType(), status);
     }
 }
