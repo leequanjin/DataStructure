@@ -37,10 +37,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 
 import java.util.Scanner;
-import java.util.Set;
 
 /**
  *
@@ -334,11 +332,16 @@ public class DonationManagement {
             } else {
                 inputID = inputID.substring(0, 2).toUpperCase() + inputID.substring(2, 7);
 
-                String prefix = inputID.substring(0, 2);
-                Set<String> validPrefixes = new HashSet<>(
-                        Arrays.asList("MB", "MC", "FA", "FO", "FC", "FD", "FE", "AJ", "AP", "AI", "AO", "AS"));
+                String prefix = inputID.substring(0, 2).toUpperCase();
+                boolean validPrefix = false;
+                if(prefix.equals("MB") || prefix.equals("MC") || prefix.equals("FA") ||
+                prefix.equals("FO") || prefix.equals("FC") || prefix.equals("FD") ||
+                prefix.equals("FE") || prefix.equals("AJ") || prefix.equals("AP") ||
+                prefix.equals("AI") || prefix.equals("AO") || prefix.equals("AS") ){
+                    validPrefix = true;
+                }
 
-                if (!validPrefixes.contains(prefix)) {
+                if (!validPrefix) {
                     System.out.println(ANSI_RED + "Invalid format. The format should be AA00000." + ANSI_RESET);
                     System.out.print("\nEnter again: ");
                 } else {
