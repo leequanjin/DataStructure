@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.function.Predicate;
 
 /**
@@ -20,7 +21,7 @@ import java.util.function.Predicate;
  * @author Lee Quan Jin
  * @param <T>
  */
-public class LinkedList<T> implements LinkedListInterface<T> {
+public class LinkedList<T> implements LinkedListInterface<T>, Serializable {
 
     public Node<T> head;
     public Node<T> tail;
@@ -144,6 +145,29 @@ public class LinkedList<T> implements LinkedListInterface<T> {
         }
     }
 
+    // Method to remove element based on entry
+    @Override
+    public void removeEntry(T item) {
+        if (head == null) {
+            // Empty list
+        } else if (head.data.equals(item)) {
+            head = head.next; // Remove the head
+        } else {
+            Node<T> current = head;
+
+            // Traverse the list to find the entry
+            while (current.next != null && !current.next.data.equals(item)) {
+                current = current.next;
+            }
+
+            if (current.next == null) {
+                // Entry not found
+            } else {
+                current.next = current.next.next; // Remove the node
+            }
+        }
+    }
+
     // Method to remove elements based on a condition
     // Time Complexity : O(n)
     @Override
@@ -169,26 +193,17 @@ public class LinkedList<T> implements LinkedListInterface<T> {
     // Method to print out all nodes in the list
     // Time Complexity : O(n)
     @Override
-    public String show() {
-        
-        String result = null;
-        
+    public void show() {
         Node current = head;
 
         if (head == null) {
             // List is empty
-            return null;
         } else {
             while (current != null) {
-                result += current.data.toString();
-                if(current.next != null){
-                    result += "\n";
-                }
+                System.out.print(current.data + "\n");
                 current = current.next;
             }
         }
-        
-        return result;
     }
 
     // Method to save the linked list to a file
@@ -270,10 +285,10 @@ public class LinkedList<T> implements LinkedListInterface<T> {
     public boolean isEmpty() {
         return head == null;
     }
-    
+
     // Method to append both linked list
     @Override
-    public void appendList(LinkedList anotherList){
+    public void appendList(LinkedList anotherList) {
         this.removeEmptyData();
         anotherList.removeEmptyData();
 
@@ -293,40 +308,40 @@ public class LinkedList<T> implements LinkedListInterface<T> {
             this.tail = anotherList.tail;
         }
     }
-    
+
     // Method to remove empty data in between list
-    public void removeEmptyData(){
-        if(!isEmpty()){
-            
+    public void removeEmptyData() {
+        if (!isEmpty()) {
+
             // check whether first node is empty, if empty, search for the first node that is not empty
-            while(head != null && head.data == null){
+            while (head != null && head.data == null) {
                 head = head.next;
             }
-            
-            if(head.data != null){
-                
+
+            if (head.data != null) {
+
                 Node<T> currentNode = head;
-                while(currentNode != tail){
-                    if(currentNode.next.data == null){
+                while (currentNode != tail) {
+                    if (currentNode.next.data == null) {
                         currentNode.next = currentNode.next.next;
                     }
-                        
+
                     currentNode = currentNode.next;
                 }
             }
-            
-            while(tail.data == null){
+
+            while (tail.data == null) {
                 tail = tail.previous;
             }
         }
     }
-    
+
     // Method to check if a entry is contained in a list
     public boolean contains(T element) {
         Node<T> current = head;
 
         while (current != null) {
-            if (current.data.equals(element)) { 
+            if (current.data.equals(element)) {
                 return true;
             } else {
                 current = current.next;

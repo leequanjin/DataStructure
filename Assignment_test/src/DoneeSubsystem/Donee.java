@@ -11,7 +11,7 @@ import java.time.LocalDate;
  *
  * @author Lee Quan Jin
  */
-abstract class Donee implements Serializable {
+public abstract class Donee implements Serializable {
 
     private String id;
     private String name;

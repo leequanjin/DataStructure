@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
  * @author Lee Quan Jin
  * @param <T>
  */
-public class ManageDonees<T extends Donee> extends LinkedList<T> {
+public class ManageDonee<T extends Donee> extends LinkedList<T> {
 
     // Method to delete data by ID
     public void deleteById(String id) {

@@ -4,6 +4,8 @@
  */
 package CommonResources;
 
+import java.io.Serializable;
+
 /**
  * Reference https://www.youtube.com/watch?v=sUcVDPDHFJg
  * https://www.youtube.com/watch?v=SMIq13-FZSE&t=1s
@@ -11,7 +13,7 @@ package CommonResources;
  * @author Lee Quan Jin
  * @param <T>
  */
-public class Node<T> {
+public class Node<T> implements Serializable{
 
     public T data;
     public Node<T> next;

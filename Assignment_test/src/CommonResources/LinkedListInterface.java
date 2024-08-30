@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 /**
  *
  * @author Lee Quan Jin
+ * @param <T>
  */
 public interface LinkedListInterface<T> {
     // Method to insert data at the end of the list 
@@ -28,12 +29,15 @@ public interface LinkedListInterface<T> {
 
     // Method to delete data at a specific index of the list
     void deleteAt(int index);
+    
+    // MEthod to remove element based on entry
+    void removeEntry(T item);
 
     // Method to remove elements based on a condition
     void removeIf(Predicate<T> filter);
 
     // Method to print out all nodes in the list
-    String show();
+    void show();
 
     // Method to save the linked list to a file
     void saveToFile(String filename);
