@@ -169,17 +169,26 @@ public class LinkedList<T> implements LinkedListInterface<T> {
     // Method to print out all nodes in the list
     // Time Complexity : O(n)
     @Override
-    public void show() {
+    public String show() {
+        
+        String result = null;
+        
         Node current = head;
 
         if (head == null) {
             // List is empty
+            return null;
         } else {
             while (current != null) {
-                System.out.print(current.data + "\n");
+                result += current.data.toString();
+                if(current.next != null){
+                    result += "\n";
+                }
                 current = current.next;
             }
         }
+        
+        return result;
     }
 
     // Method to save the linked list to a file
@@ -313,7 +322,6 @@ public class LinkedList<T> implements LinkedListInterface<T> {
     }
     
     // Method to check if a entry is contained in a list
-    
     public boolean contains(T element) {
         Node<T> current = head;
 

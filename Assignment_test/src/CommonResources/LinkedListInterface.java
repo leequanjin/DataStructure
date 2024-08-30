@@ -33,7 +33,7 @@ public interface LinkedListInterface<T> {
     void removeIf(Predicate<T> filter);
 
     // Method to print out all nodes in the list
-    void show();
+    String show();
 
     // Method to save the linked list to a file
     void saveToFile(String filename);
