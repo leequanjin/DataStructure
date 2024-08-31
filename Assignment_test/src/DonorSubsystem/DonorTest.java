@@ -1,7 +1,7 @@
 package DonorSubsystem;
 
-import CommonResources.LinkedList;
-import CommonResources.Node;
+import adt.LinkedList;
+import adt.Node;
 import DonationList.Item;
 import static DonationManagementSubsystem.DonationManagement.loadAllItemIntoList;
 import java.util.Scanner;

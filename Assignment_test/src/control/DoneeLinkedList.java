@@ -2,18 +2,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package DoneeSubsystem;
+package control;
 
-import CommonResources.LinkedList;
-import CommonResources.Node;
+import entity.Donee;
+import entity.DoneePeriodCount;
+import entity.DoneeStateCount;
+import adt.LinkedList;
+import adt.Node;
 import java.time.format.DateTimeFormatter;
 
 /**
  *
- * @author Lee Quan Jin
+ * @author Christopher Yap Jian Xing
  * @param <T>
  */
-public class ManageDonee<T extends Donee> extends LinkedList<T> {
+public class DoneeLinkedList<T extends Donee> extends LinkedList<T> {
 
     public String generateDoneeId() {
         String prefix = "DNE";
@@ -54,7 +57,7 @@ public class ManageDonee<T extends Donee> extends LinkedList<T> {
         }
     }
 
-// Method to delete data by ID
+    // Method to delete data by ID
     public void deleteById(String id) {
         if (head == null) {
             // Empty list
@@ -87,21 +90,6 @@ public class ManageDonee<T extends Donee> extends LinkedList<T> {
             current = current.next; // Move to the next node
         }
         return null; // Donor not found
-    }
-
-    public Donee changeToIndividual(Donee donee) {
-        Individual individualDonee = new Individual(donee.getId(), donee.getName(), donee.getLocation());
-        return individualDonee;
-    }
-
-    public Donee changeToFamily(Donee donee) {
-        Family familyDonee = new Family(donee.getId(), donee.getName(), donee.getLocation());
-        return familyDonee;
-    }
-
-    public Donee changeToOrganization(Donee donee) {
-        Organization organizationDonee = new Organization(donee.getId(), donee.getName(), donee.getLocation());
-        return organizationDonee;
     }
 
     public LinkedList<DoneePeriodCount> generateTotalDoneeByYear() {

@@ -4,9 +4,9 @@
  */
 package VolunteerSubsystem;
 
-import CommonResources.LinkedList;
-import CommonResources.LinkedListInterface;
-import CommonResources.Node;
+import adt.LinkedList;
+import adt.LinkedListInterface;
+import adt.Node;
 import EventSystem.Event;
 import java.util.Scanner;
 

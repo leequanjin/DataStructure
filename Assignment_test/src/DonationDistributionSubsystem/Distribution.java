@@ -4,7 +4,7 @@
  */
 package DonationDistributionSubsystem;
 
-import CommonResources.LinkedList;
+import adt.LinkedList;
 import DonationList.Item;
 import java.io.Serializable;
 import java.time.LocalDate;

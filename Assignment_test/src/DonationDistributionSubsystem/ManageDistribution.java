@@ -3,8 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package DonationDistributionSubsystem;
-import CommonResources.LinkedList;
-import CommonResources.Node;
+import adt.LinkedList;
+import adt.Node;
 import java.time.format.DateTimeFormatter;
 
 /**

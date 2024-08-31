@@ -5,8 +5,8 @@
 package EventSystem;
 
 
-import CommonResources.LinkedList;
-import CommonResources.Node;
+import adt.LinkedList;
+import adt.Node;
 import VolunteerSubsystem.EventVolunteer;
 import VolunteerSubsystem.Volunteer;
 

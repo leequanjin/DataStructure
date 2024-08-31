@@ -4,9 +4,9 @@
  */
 package DonationManagementSubsystem;
 
-import CommonResources.Node;
-import CommonResources.LinkedList;
-import CommonResources.LinkedListInterface;
+import adt.Node;
+import adt.LinkedList;
+import adt.LinkedListInterface;
 
 import DonorSubsystem.Donor;
 import DonorSubsystem.ManageDonors;

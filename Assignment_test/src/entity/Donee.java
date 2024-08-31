@@ -2,14 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package DoneeSubsystem;
+package entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  *
- * @author Lee Quan Jin
+ * @author Christopher Yap Jian Xing
  */
 public abstract class Donee implements Serializable {
 

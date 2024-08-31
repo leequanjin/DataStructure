@@ -4,8 +4,8 @@
  */
 package DonationDistributionSubsystem;
 
-import CommonResources.LinkedList;
-import CommonResources.Node;
+import adt.LinkedList;
+import adt.Node;
 import DonationList.Item;
 import java.io.Serializable;
 

@@ -4,9 +4,9 @@
  */
 package DonorSubsystem;
 
-import CommonResources.Node;
-import CommonResources.LinkedList;
-import DoneeSubsystem.DoneePeriodCount;
+import adt.Node;
+import adt.LinkedList;
+import entity.DoneePeriodCount;
 import java.time.format.DateTimeFormatter;
 
 /**

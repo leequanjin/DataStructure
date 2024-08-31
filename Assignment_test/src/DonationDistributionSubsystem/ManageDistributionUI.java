@@ -4,12 +4,12 @@
  */
 package DonationDistributionSubsystem;
 
-import CommonResources.LinkedList;
-import CommonResources.Node;
+import adt.LinkedList;
+import adt.Node;
 import DonationList.Item;
 import DonationManagementSubsystem.DMControl;
-import DoneeSubsystem.Donee;
-import DoneeSubsystem.ManageDonee;
+import entity.Donee;
+import control.DoneeLinkedList;
 import java.util.Scanner;
 
 /**
@@ -96,7 +96,7 @@ public class ManageDistributionUI {
     private static void addDistribution() {
         Scanner scanner = new Scanner(System.in);
         ManageDistribution<Distribution> distributionList = new ManageDistribution<>();
-        ManageDonee<Donee> doneeList = new ManageDonee<>();
+        DoneeLinkedList<Donee> doneeList = new DoneeLinkedList<>();
 
         distributionList.loadFromFile(DONATION_DISTRIBUTION_PATH);
         doneeList.loadFromFile(DONEE_PATH);
@@ -202,7 +202,7 @@ public class ManageDistributionUI {
     private static void deleteDistribution() {
         Scanner scanner = new Scanner(System.in);
         ManageDistribution<Distribution> distributionList = new ManageDistribution<>();
-        ManageDonee<Donee> doneeList = new ManageDonee<>();
+        DoneeLinkedList<Donee> doneeList = new DoneeLinkedList<>();
 
         distributionList.loadFromFile(DONATION_DISTRIBUTION_PATH);
         doneeList.loadFromFile(DONEE_PATH);
@@ -275,7 +275,7 @@ public class ManageDistributionUI {
     private static void updateDistribution() {
         Scanner scanner = new Scanner(System.in);
         ManageDistribution<Distribution> distributionList = new ManageDistribution<>();
-        ManageDonee<Donee> doneeList = new ManageDonee<>();
+        DoneeLinkedList<Donee> doneeList = new DoneeLinkedList<>();
 
         distributionList.loadFromFile(DONATION_DISTRIBUTION_PATH);
         doneeList.loadFromFile(DONEE_PATH);
