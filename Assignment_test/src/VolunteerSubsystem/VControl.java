@@ -288,10 +288,10 @@ public class VControl {
     public static void chkFileExist(String[] fileList){
     
         for (int i = 0; i < fileList.length; i++) {
-            boolean fileExist = VDAO.chkFileExist(fileList[i]);
+            boolean fileExist = DAO.chkFileExist(fileList[i]);
             if (!fileExist) {
                 VUtility.fileNoExist(fileList[i]);
-                boolean createFile = VDAO.createFile(fileList[i]);
+                boolean createFile = DAO.createFile(fileList[i]);
                 if (createFile) {
                     VUtility.createFileSuccesfully(fileList[i]);
                 } else {
