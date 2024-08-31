@@ -12,6 +12,11 @@ import java.util.function.Predicate;
  * @param <T>
  */
 public interface LinkedListInterface<T> {
+    
+    void setHead(Node<T> head);
+
+    Node<T> getHead();
+    
     // Method to insert data at the end of the list 
     void insert(T data);
 
@@ -37,7 +42,7 @@ public interface LinkedListInterface<T> {
     void removeIf(Predicate<T> filter);
 
     // Method to print out all nodes in the list
-    void show();
+    String show();
 
     // Method to save the linked list to a file
     void saveToFile(String filename);
@@ -59,4 +64,10 @@ public interface LinkedListInterface<T> {
     
     // Method to append two list
     void appendList(LinkedList anotherList);
+    
+    // Method to remove empty data if exist
+    void removeEmptyData();
+    
+    // Method to clear all data in list
+    void clear();
 }

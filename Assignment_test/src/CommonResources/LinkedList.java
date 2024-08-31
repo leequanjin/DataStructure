@@ -25,6 +25,16 @@ public class LinkedList<T> implements LinkedListInterface<T>, Serializable {
 
     public Node<T> head;
     public Node<T> tail;
+    
+    @Override
+    public void setHead(Node<T> head) {
+        this.head = head;
+    }
+
+    @Override
+    public Node<T> getHead() {
+        return this.head;
+    }
 
     // Method to insert data at the end of the list 
     // Time Complexity : O(1)
@@ -193,17 +203,25 @@ public class LinkedList<T> implements LinkedListInterface<T>, Serializable {
     // Method to print out all nodes in the list
     // Time Complexity : O(n)
     @Override
-    public void show() {
+    public String show() {
+        String result = "";
+        
         Node current = head;
 
         if (head == null) {
             // List is empty
         } else {
             while (current != null) {
-                System.out.print(current.data + "\n");
+                result += current.data.toString();
+                
+                if(current.next != null){
+                    result += "\n";
+                }
+                
                 current = current.next;
             }
         }
+        return result;
     }
 
     // Method to save the linked list to a file
@@ -349,5 +367,10 @@ public class LinkedList<T> implements LinkedListInterface<T>, Serializable {
         }
 
         return false; // Element not found
+    }
+    
+    public void clear(){
+        this.head = null;
+        this.tail = null;
     }
 }
