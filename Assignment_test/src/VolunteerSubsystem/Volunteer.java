@@ -67,4 +67,16 @@ public class Volunteer implements Serializable {
     public String toString() {
         return String.format("| %-12s | %-30s | %-10s | %-5d | %-15s |", volunteerID, name, gender, age, contactNo);
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        
+        Volunteer volunteer = (Volunteer) obj;
+        return name.equals(volunteer.name) &&
+               gender.equals(volunteer.gender) &&
+                age == volunteer.age &&
+               contactNo.equals(volunteer.contactNo);
+    }
 }

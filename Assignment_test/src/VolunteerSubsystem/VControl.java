@@ -353,7 +353,7 @@ public class VControl {
                     filterVolunteer();
                     break;
                 case 8:
-                    //report();
+                    report();
                     break;
                 case 9:
                     return;
@@ -685,7 +685,6 @@ public class VControl {
     // ---------------------------------
     // Filter Volunteer base on Criteria
     // ---------------------------------
-    
     public static void filterVolunteer(){
         VBoundary.disFilterVolunteer();
         if(VOL_LIST.isEmpty()){
@@ -697,15 +696,215 @@ public class VControl {
         
         switch(filterSelection){
             case 1:
-                //filterGenderSelection();
+                filterGenderSelection();
                 break;
             case 2:
-                //filterAge();
+                filterAge();
                 break;
             default:
                 VUtility.invalidMenuSelection();
                 break;
         }
+    }
+    
+    public static void filterGenderSelection(){
+        int filterSelection = VBoundary.disFilterGenderSelection();
+        
+        switch(filterSelection){
+            case 1:
+                filterGender(true);
+                break;
+            case 2:
+                filterGender(false);
+                break;
+            default:
+                VUtility.invalidMenuSelection();
+                break;
+        }
+    }
+    
+    public static void filterGender(boolean isMale){
+        Node<Volunteer> currentNode = VOL_LIST.getHead();
+        int show = 1;
+        String gender = null;
+        while(currentNode != null){
+            if(isMale == true){
+                gender = "male";
+                if(currentNode.data.getGender().toUpperCase().equalsIgnoreCase("MALE")){
+                    if(show == 1){
+                        VBoundary.maleHeading();
+                        VBoundary.disVolHeader();
+                    }
+                    VBoundary.disCertainVolunteer(currentNode.data);
+                    show++;
+                }
+            }else{
+                gender = "female";
+                if(currentNode.data.getGender().toUpperCase().equalsIgnoreCase("FEMALE")){
+                    if(show == 1){
+                        VBoundary.femaleHeading();
+                        VBoundary.disVolHeader();
+                    }
+                    VBoundary.disCertainVolunteer(currentNode.data);
+                    show++;
+                }
+            }
+            currentNode = currentNode.next;
+        }
+        if(show == 1){
+            VUtility.noCertainGenderVolunteer(gender);
+        }
+    }
+    
+    public static void filterAge(){
+        VBoundary.disFilterAge();
+        
+        int age = 0;
+        boolean validAge = false;
+        while(!validAge){
+            String inputA = scan.nextLine();
+            
+            validAge = chkIntInputInRange(inputA, 18, 60);
+            
+            if(validAge){
+                age = Integer.parseInt(inputA);
+            }
+        }
+        
+        Node<Volunteer> currentNode = VOL_LIST.getHead();
+        int show = 1;
+        while(currentNode != null){
+            if(currentNode.data.getAge() <= age){
+                if(show == 1){
+                    VBoundary.disAgeHeader(age);
+                    VBoundary.disVolHeader();
+                }
+                VBoundary.disCertainVolunteer(currentNode.data);
+                show++;
+            }
+            currentNode = currentNode.next;
+        }
+        
+        if(show == 1){
+            VUtility.noCertainVolBelowAge();
+        }
+        
+    }
+    
+    // ---------------
+    // Report Generate
+    // ---------------
+    public static void report(){
+        VBoundary.disReport();
+        if(VOL_LIST.isEmpty()){
+            VUtility.noDataForReport();
+            return;
+        }
+        
+        int reportSelection = VBoundary.disReportMenu();
+        
+        switch(reportSelection){
+            case 1:
+                genderDistribution();
+                break;
+            case 2:
+                volAgeGroup();
+                break;
+            case 3:
+                repeatVol();
+                break;
+            default:
+                VUtility.invalidMenuSelection();
+                break;
+        }
+    }
+    
+    public static void genderDistribution(){
+        Node<Volunteer> currentNode = VOL_LIST.getHead();
+        
+        int sumM = 0;
+        int sumF = 0;
+        while(currentNode!=null){
+            
+            String gender = currentNode.data.getGender();
+            if(gender.toUpperCase().equals("MALE")){
+                sumM++;
+            }else{
+                sumF++;
+            }
+            
+            currentNode = currentNode.next;
+        }
+        
+        VBoundary.disGenderDistribution(sumM, sumF);
+    }
+    
+    public static void volAgeGroup(){
+        Node<Volunteer> currentNode = VOL_LIST.getHead();
+        
+        int sumY = 0; // 18 - 30
+        int sumM = 0; // 31 - 45
+        int sumO = 0; // 45 - 60
+        while(currentNode!=null){
+            
+            int age = currentNode.data.getAge();
+            if(age <= 30){
+                sumY++;
+            }else if (age <= 45){
+                sumM++;
+            }else{
+                sumO++;
+            }
+            
+            currentNode = currentNode.next;
+        }
+        
+        int max = sumY;
+        String group ="young adults";
+        if(max < sumM){
+            max = sumM;
+            group = "middle-aged adults";
+        }
+        if(max < sumY){
+            max = sumY;
+            group = "old-aged adults";
+        }
+        
+        VBoundary.disVolAgeGroup(sumY, sumM, sumO);
+        VBoundary.ageGroupConclu(group, max);
+    }
+    
+    public static void printStar(int count){
+        if (count > 50){
+            int left = count % 50;
+            for (int i = 0; i < left; i ++){
+               VBoundary.disStar();
+            }
+        }
+    }
+    
+    public static void repeatVol() {
+        LinkedListInterface<Volunteer> volList = new LinkedList<>();
+        LinkedListInterface<Volunteer> dupList = new LinkedList<>();
+
+        Node<Volunteer> currentNode = VOL_LIST.getHead();
+
+        while (currentNode != null) {
+            Volunteer currentVolunteer = currentNode.data;
+            if (volList.contains(currentVolunteer)) {
+                dupList.insert(currentVolunteer);
+            } else {
+                volList.insert(currentVolunteer);
+            }
+            currentNode = currentNode.next;
+        }
+
+        if(!dupList.isEmpty()){
+            VBoundary.displayDuplicateVol(dupList);
+        }else{
+            VBoundary.displayNoDup();
+        }
+
     }
     
 }
