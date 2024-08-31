@@ -29,7 +29,7 @@ public class VControl {
     // -----------
     // Commmon use
     // -----------
-     // Validation
+    // Validation
     public static boolean chkEmptyInput(String input){
         if(input.isEmpty()){
             return false;

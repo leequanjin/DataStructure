@@ -20,12 +20,6 @@ import java.util.Scanner;
  */
 public class VBoundary {
 
-    private static final String VOLUNTEER_PATH = "volunteers.txt";
-    private static final String EVENT_PATH = "event.txt";
-    private static final String EV_PATH = "volunteer_event.txt";
-    
-    private LinkedListInterface<Volunteer> list = new LinkedList<>();
-
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
     public static final String YELLOW = "\u001B[33m";
