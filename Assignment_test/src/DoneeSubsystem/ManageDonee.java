@@ -15,7 +15,46 @@ import java.time.format.DateTimeFormatter;
  */
 public class ManageDonee<T extends Donee> extends LinkedList<T> {
 
-    // Method to delete data by ID
+    public String generateDoneeId() {
+        String prefix = "DNE";
+        int maxId = 0;
+
+        Node<T> current = head;
+
+        while (current != null) {
+            String currentId = current.data.getId().substring(prefix.length());
+            int idNumber = Integer.parseInt(currentId);
+            if (idNumber > maxId) {
+                maxId = idNumber;
+            }
+            current = current.next;
+        }
+
+        return prefix + String.format("%05d", maxId + 1);
+    }
+
+    public void changeStatus(String id, String status) {
+        if (head == null) {
+            // Empty list
+        } else if (head.data.getId().equals(id)) {
+            // First id match
+            head.data.setStatus(status);
+        } else {
+            Node<T> current = head;
+
+            while (current.data != null && !current.data.getId().equals(id)) {
+                current = current.next;
+            }
+
+            if (current.data.getId().equals(id)) {
+                current.data.setStatus(status);
+            } else {
+                // ID not found
+            }
+        }
+    }
+
+// Method to delete data by ID
     public void deleteById(String id) {
         if (head == null) {
             // Empty list

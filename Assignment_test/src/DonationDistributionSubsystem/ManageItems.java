@@ -21,7 +21,7 @@ public class ManageItems<T extends Item> extends LinkedList<T> implements Serial
             // Empty list
         } else if (head.data.getId().equals(id)) {
             // First id match
-            head.data.setAvailability("Unavailable");
+            head.data.setAvailability(status);
         } else {
             Node<T> current = head;
 

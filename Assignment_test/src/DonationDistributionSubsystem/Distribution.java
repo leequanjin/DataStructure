@@ -71,9 +71,13 @@ class Distribution implements Serializable {
         this.status = status;
     }
 
+    public LocalDate getDistibutionDate() {
+        return distibutionDate;
+    }
+
     @Override
     public String toString() {
-       
+
         return String.format(
                 "%-20s |%-20s |%-30s |%-20s |%-20s |%s\n",
                 id,

@@ -45,9 +45,8 @@ public class ManageDistributionUI {
 
         distributionList.loadFromFile(DONATION_DISTRIBUTION_PATH);
         doneeList.loadFromFile(DONEE_PATH);
-        
+
         LinkedList<Item> allItemList = DonationManagement.loadAllItemIntoList();
-        System.out.println(allItemList.show());
 
         boolean running = true;
 
@@ -59,8 +58,7 @@ public class ManageDistributionUI {
             System.out.println("4. Monitor/track distributed items "); // check pending / check success 
             System.out.println("5. List all distributed donations");
             System.out.println("6. Generate Summary Report"); // which donee receive most item
-            System.out.println("7. Save Changes");
-            System.out.println("8. Exit");
+            System.out.println("7. Exit");
             System.out.print("\nEnter your choice: ");
 
             String choice = scanner.nextLine();
@@ -87,7 +85,7 @@ public class ManageDistributionUI {
                                 if (itemId.length() != 7) {
                                     System.out.println(Red + "Invalid length. The length should be 7 and format AA00000." + Reset);
                                 } else {
-                                    
+
                                     Item item = DonationManagement.searchByID(allItemList, itemId);
                                     if (item == null) {
                                         System.out.println(Red + "Donation Item not found." + Reset);
@@ -129,8 +127,6 @@ public class ManageDistributionUI {
                                         }
 
                                         ManageItems<Item> itemList = new ManageItems<>();
-                                        donee.setStatus("Pending Distribution");
-                                        doneeList.saveToFile(DONEE_PATH);
 
                                         itemList.loadFromFile(filePath);
                                         itemList.changeStatus(itemId, "Unavailable");
@@ -146,10 +142,15 @@ public class ManageDistributionUI {
                                 }
                             } while (!choice.equals("N"));
 
-                            donee.setStatus("Pending Distribution");
-                            String id = generateDistributionId(distributionList);
+                            doneeList.changeStatus(doneeId, "Pending Distribution");
+                            doneeList.saveToFile(DONEE_PATH);
+
+                            String id = distributionList.generateDistributionId();
                             Distribution donationDistribution = new Distribution(id, doneeId, doneeName, distributionItemList);
                             distributionList.insertAtStart(donationDistribution);
+
+                            System.out.println(Green + "Donation Distribution added with ID: " + id + Reset);
+                            distributionList.saveToFile(DONATION_DISTRIBUTION_PATH);
 
                             System.out.println();
                         } else {
@@ -163,10 +164,15 @@ public class ManageDistributionUI {
                 case "2" -> {
                     System.out.print("Enter Distribution ID to remove: ");
                     String id = scanner.nextLine();
-                    
+
                     Distribution distributionToRemove = distributionList.findById(id);
                     if (distributionToRemove != null) {
                         distributionList.removeEntry(distributionToRemove);
+
+                        String doneeId = distributionToRemove.getDoneeId();
+                        doneeList.changeStatus(doneeId, "Active");
+                        doneeList.saveToFile(DONEE_PATH);
+
                         LinkedList<Item> distributionItemList = new ManageItems<>();
                         ManageItems<Item> itemList = new ManageItems<>();
                         String filePath = null;
@@ -211,9 +217,11 @@ public class ManageDistributionUI {
                             itemList.loadFromFile(filePath);
                             itemList.changeStatus(itemId, "Available");
                             itemList.saveToFile(filePath);
+                            current = current.next;
                         }
 
                         System.out.println(Green + "Distribution (" + distributionToRemove.getId() + ") was removed successfully." + Reset);
+                        distributionList.saveToFile(DONATION_DISTRIBUTION_PATH);
                     } else {
                         System.out.println(Red + "Invalid ID. No distribution found with the given ID.\n" + Reset);
                     }
@@ -222,10 +230,198 @@ public class ManageDistributionUI {
                 case "3" -> {
                     System.out.print("Enter Distribution ID to update: ");
                     String id = scanner.nextLine();
-                    Distribution distributionToCancel = distributionList.findById(id);
-                    if (distributionToCancel != null) {
-                        distributionToCancel.setStatus("Cancelled");
-                        System.out.println(Green + "Distribution (" + distributionToCancel.getId() + ") was cancelled successfully." + Reset);
+                    Distribution distribution = distributionList.findById(id);
+                    if (distribution != null) {
+
+                        System.out.println("Update status to:");
+                        System.out.println("1. Completed");
+                        System.out.println("2. Cancelled");
+                        System.out.println("3. In Progress");
+
+                        do {
+                            System.out.print("\nEnter your choice: ");
+
+                            choice = scanner.nextLine();
+                            System.out.println("");
+
+                            switch (choice) {
+                                case "1" -> {
+                                    String status = "Completed";
+                                    distribution.setStatus(status);
+                                    System.out.println(Green + "Distribution (" + distribution.getId() + ") status was updated to " + status + " successfully." + Reset);
+                                    distributionList.saveToFile(DONATION_DISTRIBUTION_PATH);
+
+                                    String doneeId = distribution.getDoneeId();
+                                    doneeList.changeStatus(doneeId, "Completed");
+                                    doneeList.saveToFile(DONEE_PATH);
+
+                                    LinkedList<Item> distributionItemList = new ManageItems<>();
+                                    ManageItems<Item> itemList = new ManageItems<>();
+                                    String filePath = null;
+
+                                    distributionItemList = distribution.getDonations();
+
+                                    Node<Item> current = distributionItemList.head;
+
+                                    while (current != null) {
+                                        String itemId = current.data.getId();
+                                        String prefix = itemId.substring(0, 2);
+
+                                        switch (prefix) {
+                                            case "MB" ->
+                                                filePath = BANK_PATH;
+                                            case "MC" ->
+                                                filePath = CASH_PATH;
+                                            case "FA" ->
+                                                filePath = BAKED_PATH;
+                                            case "FO" ->
+                                                filePath = BOXED_PATH;
+                                            case "FC" ->
+                                                filePath = CANNED_PATH;
+                                            case "FD" ->
+                                                filePath = DRY_PATH;
+                                            case "FE" ->
+                                                filePath = ESS_PATH;
+                                            case "AJ" ->
+                                                filePath = JACKET_PATH;
+                                            case "AP" ->
+                                                filePath = PANT_PATH;
+                                            case "AI" ->
+                                                filePath = SHIRT_PATH;
+                                            case "AO" ->
+                                                filePath = SHOES_PATH;
+                                            case "AS" ->
+                                                filePath = SOCKS_PATH;
+                                            default ->
+                                                System.out.println("Error");
+                                        }
+
+                                        itemList.loadFromFile(filePath);
+                                        itemList.changeStatus(itemId, "Unavailable");
+                                        itemList.saveToFile(filePath);
+                                        current = current.next;
+                                    }
+                                }
+                                case "2" -> {
+                                    String status = "Cancelled";
+                                    distribution.setStatus(status);
+                                    System.out.println(Green + "Distribution (" + distribution.getId() + ") status was updated to " + status + " successfully." + Reset);
+                                    distributionList.saveToFile(DONATION_DISTRIBUTION_PATH);
+
+                                    String doneeId = distribution.getDoneeId();
+                                    doneeList.changeStatus(doneeId, "Active");
+                                    doneeList.saveToFile(DONEE_PATH);
+
+                                    LinkedList<Item> distributionItemList = new ManageItems<>();
+                                    ManageItems<Item> itemList = new ManageItems<>();
+                                    String filePath = null;
+
+                                    distributionItemList = distribution.getDonations();
+
+                                    Node<Item> current = distributionItemList.head;
+
+                                    while (current != null) {
+                                        String itemId = current.data.getId();
+                                        String prefix = itemId.substring(0, 2);
+
+                                        switch (prefix) {
+                                            case "MB" ->
+                                                filePath = BANK_PATH;
+                                            case "MC" ->
+                                                filePath = CASH_PATH;
+                                            case "FA" ->
+                                                filePath = BAKED_PATH;
+                                            case "FO" ->
+                                                filePath = BOXED_PATH;
+                                            case "FC" ->
+                                                filePath = CANNED_PATH;
+                                            case "FD" ->
+                                                filePath = DRY_PATH;
+                                            case "FE" ->
+                                                filePath = ESS_PATH;
+                                            case "AJ" ->
+                                                filePath = JACKET_PATH;
+                                            case "AP" ->
+                                                filePath = PANT_PATH;
+                                            case "AI" ->
+                                                filePath = SHIRT_PATH;
+                                            case "AO" ->
+                                                filePath = SHOES_PATH;
+                                            case "AS" ->
+                                                filePath = SOCKS_PATH;
+                                            default ->
+                                                System.out.println("Error");
+                                        }
+
+                                        itemList.loadFromFile(filePath);
+                                        itemList.changeStatus(itemId, "Available");
+                                        itemList.saveToFile(filePath);
+                                        current = current.next;
+                                    }
+                                }
+                                case "3" -> {
+                                    String status = "In Progress";
+                                    distribution.setStatus(status);
+                                    System.out.println(Green + "Distribution (" + distribution.getId() + ") status was updated to " + status + " successfully." + Reset);
+                                    distributionList.saveToFile(DONATION_DISTRIBUTION_PATH);
+
+                                    String doneeId = distribution.getDoneeId();
+                                    doneeList.changeStatus(doneeId, "Pending Distribution");
+                                    doneeList.saveToFile(DONEE_PATH);
+
+                                    LinkedList<Item> distributionItemList = new ManageItems<>();
+                                    ManageItems<Item> itemList = new ManageItems<>();
+                                    String filePath = null;
+
+                                    distributionItemList = distribution.getDonations();
+
+                                    Node<Item> current = distributionItemList.head;
+
+                                    while (current != null) {
+                                        String itemId = current.data.getId();
+                                        String prefix = itemId.substring(0, 2);
+
+                                        switch (prefix) {
+                                            case "MB" ->
+                                                filePath = BANK_PATH;
+                                            case "MC" ->
+                                                filePath = CASH_PATH;
+                                            case "FA" ->
+                                                filePath = BAKED_PATH;
+                                            case "FO" ->
+                                                filePath = BOXED_PATH;
+                                            case "FC" ->
+                                                filePath = CANNED_PATH;
+                                            case "FD" ->
+                                                filePath = DRY_PATH;
+                                            case "FE" ->
+                                                filePath = ESS_PATH;
+                                            case "AJ" ->
+                                                filePath = JACKET_PATH;
+                                            case "AP" ->
+                                                filePath = PANT_PATH;
+                                            case "AI" ->
+                                                filePath = SHIRT_PATH;
+                                            case "AO" ->
+                                                filePath = SHOES_PATH;
+                                            case "AS" ->
+                                                filePath = SOCKS_PATH;
+                                            default ->
+                                                System.out.println("Error");
+                                        }
+
+                                        itemList.loadFromFile(filePath);
+                                        itemList.changeStatus(itemId, "Unavailable");
+                                        itemList.saveToFile(filePath);
+                                        current = current.next;
+                                    }
+                                }
+                                default -> {
+                                    System.out.println(Red + "Invalid category. Please only enter '1', '2' or '3'.\n" + Reset);
+                                }
+                            }
+                        } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
+
                     } else {
                         System.out.println(Red + "Invalid ID. No distribution found with the given ID.\n" + Reset);
                     }
@@ -238,7 +434,14 @@ public class ManageDistributionUI {
                     Distribution distribution = distributionList.findById(id);
                     if (distribution != null) {
                         System.out.println(Green + "\nFound distribution: " + Reset);
-                        System.out.printf("%-20s |%-20s |%-30s |%-20s |%-20s |%-20s |%s\n", "Distribution ID", "Donee ID", "Donee Name", "Donation ID", "Donation Type", "Distribution Date", "Status");
+                        System.out.printf("%-20s |%-20s |%-30s |%-20s |%-20s |%-20s |%s\n",
+                            "Distribution ID",
+                            "Donee ID",
+                            "Donee Name",
+                            "Distribution Date",
+                            "Status",
+                            "Donation ID",
+                            "Donation Type");
                         String line = String.format("-").repeat(160);
                         System.out.println(line);
                         System.out.println(distribution.toString() + "\n");
@@ -263,41 +466,57 @@ public class ManageDistributionUI {
                 }
                 case "6" -> {
 
+                    do {
+                        System.out.println("1. Number of distributions by year");
+                        System.out.println("2. Number of distributions by month");
+                        System.out.println("3. All time distributions by status \n");
+                        System.out.print("Enter your choice: ");
+                        choice = scanner.nextLine();
+
+                        switch (choice) {
+                            case "1" -> {
+                                LinkedList distributionListByYear = distributionList.generateTotalDistributionByYear();
+                                System.out.println(Green + "\nNumber of distributions by year report: " + Reset);
+                                System.out.printf("%-15s |%-20s |%-20s |%s\n", "Year", "Completed", "Cancelled", "In Progress");
+                                String line = String.format("-").repeat(74);
+                                System.out.println(line);
+                                System.out.println(distributionListByYear.show());
+                            }
+                            case "2" -> {
+                                LinkedList distributionListByMonth = distributionList.generateTotalDistributionByMonth();
+                                System.out.println(Green + "\nNumber of distributions by month report: " + Reset);
+                                System.out.printf("%-15s |%-20s |%-20s |%s\n", "Month", "Completed", "Cancelled", "In Progress");
+                                String line = String.format("-").repeat(74);
+                                System.out.println(line);
+                                System.out.println(distributionListByMonth.show());
+                            }
+                            case "3" -> {
+                                DistributionStatusCount distributionListByStatus = distributionList.generateTotalDistributionsByStatus();
+                                System.out.println(Green + "\nNumber of distributions by status: " + Reset);
+                                String line = String.format("-").repeat(35);
+                                System.out.println(line);
+                                System.out.println(distributionListByStatus.toString());
+                                System.out.println();
+                            }
+
+                            default -> {
+                                System.out.println(Red + "Invalid category. Please only enter '1', '2' or '3'.\n" + Reset);
+                            }
+                        }
+                    } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
+
                 }
                 case "7" -> {
-                    distributionList.saveToFile(DONATION_DISTRIBUTION_PATH);
-
-                    System.out.println(Green + "Changes saved sucessfully..." + Reset);
-                }
-                case "8" -> {
                     // Exit the program
                     running = false;
                     System.out.println(Green + "Exiting..." + Reset);
                 }
                 default -> {
-
+                    System.out.println(Red + "Invalid option, please try again." + Reset);
                 }
             }
 
         }
 
-    }
-
-    private static String generateDistributionId(ManageDistribution<Distribution> distributionList) {
-        String prefix = "DIS";
-        int maxId = 0;
-
-        Node<Distribution> current = distributionList.head;
-
-        while (current != null) {
-            String currentId = current.data.getId().substring(prefix.length());
-            int idNumber = Integer.parseInt(currentId);
-            if (idNumber > maxId) {
-                maxId = idNumber;
-            }
-            current = current.next;
-        }
-
-        return prefix + String.format("%05d", maxId + 1);
     }
 }

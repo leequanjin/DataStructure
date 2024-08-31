@@ -18,11 +18,13 @@ public class ManageDoneeUI {
     static String Red = "\u001b[31m";
     static String Green = "\u001b[32;2m";
     static String Reset = "\u001b[0m";
+    
+    private static final String DONEE_PATH = "donees.txt";
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         ManageDonee<Donee> doneeList = new ManageDonee<>();
-        doneeList.loadFromFile("donees.txt");
+        doneeList.loadFromFile(DONEE_PATH);
 
         boolean running = true;
 
@@ -34,9 +36,8 @@ public class ManageDoneeUI {
             System.out.println("4. Search donee details");
             System.out.println("5. List donees");
             System.out.println("6. Filter donee based on category");
-            System.out.println("7. Save Changes");
-            System.out.println("8. Generate Summary Report");
-            System.out.println("9. Exit");
+            System.out.println("7. Generate Summary Report");
+            System.out.println("8. Exit");
             System.out.print("\nEnter your choice: ");
 
             String choice = scanner.nextLine();
@@ -55,7 +56,7 @@ public class ManageDoneeUI {
 
                         switch (choice) {
                             case "1" -> {
-                                String id = generateDoneeId(doneeList);
+                                String id = doneeList.generateDoneeId();
                                 String name = null;
                                 while (isEmpty(name)) {
                                     System.out.print("Enter name: ");
@@ -68,9 +69,10 @@ public class ManageDoneeUI {
 
                                 doneeList.insertAtStart(new Individual(id, name, state));
                                 System.out.println(Green + "Individual added with Donee ID: " + id + Reset);
+                                doneeList.saveToFile(DONEE_PATH);
                             }
                             case "2" -> {
-                                String id = generateDoneeId(doneeList);
+                                String id = doneeList.generateDoneeId();
                                 String name = null;
                                 while (isEmpty(name)) {
                                     System.out.print("Enter family name: ");
@@ -82,9 +84,10 @@ public class ManageDoneeUI {
                                 String state = selectState();
                                 doneeList.insertAtStart(new Family(id, name, state));
                                 System.out.println(Green + "Family added with Donee ID: " + id + Reset);
+                                doneeList.saveToFile(DONEE_PATH);
                             }
                             case "3" -> {
-                                String id = generateDoneeId(doneeList);
+                                String id = doneeList.generateDoneeId();
                                 String name = null;
                                 while (isEmpty(name)) {
                                     System.out.print("Enter organization name: ");
@@ -96,6 +99,7 @@ public class ManageDoneeUI {
                                 String state = selectState();
                                 doneeList.insertAtStart(new Organization(id, name, state));
                                 System.out.println(Green + "Organization added with Donee ID: " + id + Reset);
+                                doneeList.saveToFile(DONEE_PATH);
                             }
                             default -> {
                                 System.out.println(Red + "Invalid choice. Please only enter '1', '2' or '3'.\n" + Reset);
@@ -111,6 +115,7 @@ public class ManageDoneeUI {
                     if (doneeToRemove != null) {
                         doneeList.deleteById(id);
                         System.out.println(Green + "Donee (" + doneeToRemove.getName() + ") was removed successfully." + Reset);
+                        doneeList.saveToFile(DONEE_PATH);
                     } else {
                         System.out.println(Red + "Invalid ID. No donee found with the given ID." + Reset);
                     }
@@ -144,6 +149,7 @@ public class ManageDoneeUI {
                                     if (!isEmpty(newName)) {
                                         doneeToUpdate.setName(newName);
                                         System.out.println(Green + "Name updated to " + newName + " successfully." + Reset);
+                                        doneeList.saveToFile(DONEE_PATH);
                                         break;
                                     } else {
                                         System.out.println(Red + "Name cannot be empty!" + Reset);
@@ -164,14 +170,17 @@ public class ManageDoneeUI {
                                         case "1" -> {
                                             doneeList.replace(doneeToUpdate, doneeList.changeToIndividual(doneeToUpdate));
                                             System.out.println(Green + "Category updated to individual successfully." + Reset);
+                                            doneeList.saveToFile(DONEE_PATH);
                                         }
                                         case "2" -> {
                                             doneeList.replace(doneeToUpdate, doneeList.changeToFamily(doneeToUpdate));
                                             System.out.println(Green + "Category updated to family successfully." + Reset);
+                                            doneeList.saveToFile(DONEE_PATH);
                                         }
                                         case "3" -> {
                                             doneeList.replace(doneeToUpdate, doneeList.changeToOrganization(doneeToUpdate));
                                             System.out.println(Green + "Category updated to organization successfully." + Reset);
+                                            doneeList.saveToFile(DONEE_PATH);
                                         }
 
                                         default -> {
@@ -261,6 +270,7 @@ public class ManageDoneeUI {
                                         && !"Terengganu".equals(state));
                                 doneeToUpdate.setLocation(state);
                                 System.out.println(Green + "State updated to " + state + " successfully." + Reset);
+                                doneeList.saveToFile(DONEE_PATH);
                             }
                             case "4" -> {
                                 System.out.println("\nSelect new status");
@@ -273,13 +283,22 @@ public class ManageDoneeUI {
 
                                 switch (choice) {
                                     case "1" -> {
-                                        doneeToUpdate.setStatus("Active");
+                                        String status = "Active";
+                                        doneeToUpdate.setStatus(status);
+                                        System.out.println(Green + "Status updated to " + status + " successfully." + Reset);
+                                        doneeList.saveToFile(DONEE_PATH);
                                     }
                                     case "2" -> {
-                                        doneeToUpdate.setStatus("Pending Distribution");
+                                        String status = "Pending Distribution";
+                                        doneeToUpdate.setStatus(status);
+                                        System.out.println(Green + "Status updated to " + status + " successfully." + Reset);
+                                        doneeList.saveToFile(DONEE_PATH);
                                     }
                                     case "3" -> {
-                                        doneeToUpdate.setStatus("Completed");
+                                        String status = "Completed";
+                                        doneeToUpdate.setStatus(status);
+                                        System.out.println(Green + "Status updated to " + status + " successfully." + Reset);
+                                        doneeList.saveToFile(DONEE_PATH);
                                     }
                                     default ->
                                         System.out.println(Red + "Invalid option. No changes made." + Reset);
@@ -395,11 +414,6 @@ public class ManageDoneeUI {
                     } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
                 }
                 case "7" -> {
-                    // Save changes to the file
-                    doneeList.saveToFile("donees.txt");
-                    System.out.println(Green + "Changes saved sucessfully..." + Reset);
-                }
-                case "8" -> {
                     do {
                         System.out.println("1. Number of new donees by year");
                         System.out.println("2. Number of new donees by month");
@@ -419,7 +433,7 @@ public class ManageDoneeUI {
                             case "2" -> {
                                 LinkedList doneeListByMonth = doneeList.generateTotalDoneeByMonth();
                                 System.out.println(Green + "\nNumber of new donees by month report: " + Reset);
-                                System.out.printf("%-15s |%-20s |%-20s |%s\n", "Year", "Individuals", "Families", "Organizations");
+                                System.out.printf("%-15s |%-20s |%-20s |%s\n", "Month", "Individuals", "Families", "Organizations");
                                 String line = String.format("-").repeat(74);
                                 System.out.println(line);
                                 System.out.println(doneeListByMonth.show());
@@ -438,7 +452,7 @@ public class ManageDoneeUI {
                         }
                     } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
                 }
-                case "9" -> {
+                case "8" -> {
                     // Exit the program
                     running = false;
                     System.out.println(Green + "Exiting..." + Reset);
@@ -449,24 +463,6 @@ public class ManageDoneeUI {
 
             System.out.println();
         }
-    }
-
-    private static String generateDoneeId(ManageDonee<Donee> doneeList) {
-        String prefix = "DNE";
-        int maxId = 0;
-
-        Node<Donee> current = doneeList.head;
-
-        while (current != null) {
-            String currentId = current.data.getId().substring(prefix.length());
-            int idNumber = Integer.parseInt(currentId);
-            if (idNumber > maxId) {
-                maxId = idNumber;
-            }
-            current = current.next;
-        }
-
-        return prefix + String.format("%05d", maxId + 1);
     }
 
     private static boolean isEmpty(String string) {
