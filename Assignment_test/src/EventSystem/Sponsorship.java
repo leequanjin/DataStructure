@@ -62,7 +62,7 @@ public class Sponsorship implements Serializable {
     
    @Override
     public String toString(){
-        return "Sponsor ID: " +sponsorID + "\n" + "Sponsor Name: " +sponsorName + "\n" +"Sponsor Amount: RM" +sponsorAmount;
+        return "Sponsor ID: " +sponsorID + "\n" + "Sponsor Name: " +sponsorName +"Sponsor Amount: RM" + String.format("%.2f", sponsorAmount) ;
     } 
     
     
