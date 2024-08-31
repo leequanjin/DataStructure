@@ -204,7 +204,9 @@ public class VBoundary {
         System.out.printf("%-4s %-50s\n", " -> ", eventName);
     }
     
-    // Filter volunteer base on criteria
+    // ---------------------------------
+    // Filter Volunteer base on Criteria
+    // ---------------------------------
     public static void disFilterVolunteer(){
         System.out.println(BLUE + "\n- - - Filter Volunteer - - - " + RESET);
     }
@@ -214,208 +216,99 @@ public class VBoundary {
         return VControl.menuIntReturn(filterMenu);
     }
     
-    public static void filterGenderSelection(LinkedList list){
+    public static int disFilterGenderSelection(){
         System.out.println("\nFilter by:");
         String[] filterMenu = {"Male", "Female"};
-        int filterSelection = menuIntReturn(filterMenu);
-        
-        switch(filterSelection){
-            case 1:
-                filterGender(list, true);
-                break;
-            case 2:
-                filterGender(list, false);
-                break;
-            default:
-                System.out.println(RED + "Invalid filter selection." + RESET);
-                break;
-        }
+        return VControl.menuIntReturn(filterMenu);
     }
     
-    public static void filterGender(LinkedList list, boolean isMale){
-        Node<Volunteer> currentNode = list.head;
-        int show = 1;
-        String gender = null;
-        while(currentNode != null){
-            if(isMale == true){
-                gender = "male";
-                if(currentNode.data.getGender().toUpperCase().equalsIgnoreCase("MALE")){
-                    if(show == 1){
-                        System.out.println("\n --- Male Volunteer ---");
-                        System.out.printf("| %-12s | %-30s | %-10s | %-5s | %-15s |\n", "Volunteer ID", "Name", "Gender", "Age", "Contect No.");
-                    }
-                    System.out.println(currentNode.data.toString());
-                    show++;
-                }
-            }else{
-                gender = "female";
-                if(currentNode.data.getGender().toUpperCase().equalsIgnoreCase("FEMALE")){
-                    if(show == 1){
-                        System.out.println("\n --- Female Volunteer ---");
-                        System.out.printf("| %-12s | %-30s | %-10s | %-5s | %-15s |\n", "Volunteer ID", "Name", "Gender", "Age", "Contect No.");
-                    }
-                    System.out.println(currentNode.data.toString());
-                    show++;
-                }
-            }
-            currentNode = currentNode.next;
-        }
-        if(show == 1){
-            System.out.println("\n" + RED + "There are no " + gender + " volunteer." + RESET);
-        }
+    public static void maleHeading(){
+        System.out.println("\n --- Male Volunteer ---");
     }
     
-    public static void filterAge(LinkedList list){
-        Scanner scan = new Scanner(System.in);
+    public static void femaleHeading(){
+        System.out.println("\n --- Female Volunteer ---");
+    }
+
+    public static void disFilterAge(){
         System.out.println("\nRemarks: (1)Volunteer before within the age will be shown. "
                          + "\n         (2)Only volunteer betwwen the age 18 to 60 can participant as a volunteer.");
         System.out.print("Enter age: ");
-        
-        int age = 0;
-        boolean validAge = false;
-        while(!validAge){
-            String inputA = scan.nextLine();
-            
-            validAge = chkIntInputInRange(inputA, 18, 60);
-            
-            if(validAge){
-                age = Integer.parseInt(inputA);
-            }
-        }
-        
-        Node<Volunteer> currentNode = list.head;
-        int show = 1;
-        while(currentNode != null){
-            if(currentNode.data.getAge() <= age){
-                if(show == 1){
-                    System.out.println("\n --- Volunteer before Age " + age +" ---");
-                    System.out.printf("| %-12s | %-30s | %-10s | %-5s | %-15s |\n", "Volunteer ID", "Name", "Gender", "Age", "Contect No.");
-                }
-                System.out.println(currentNode.data.toString());
-                show++;
-            }
-            currentNode = currentNode.next;
-        }
-        
-        if(show == 1){
-            System.out.println("\n" + RED + "No volunteer currently below or within this age." + RESET);
-        }
-        
     }
     
-    // Generate report
-    public static void report(LinkedList list){
+    public static void disAgeHeader(int age){
+        System.out.println("\n --- Volunteer before Age " + age +" ---");
+    }
+    
+    // ---------------
+    // Report Generate
+    // ---------------
+    public static void disReport(){
         System.out.println(BLUE + "\n- - - Report - - - " + RESET);
-        
-        if(list.isEmpty()){
-            System.out.println(RED + "No volunteer yet. No data to generate report." + RESET);
-            return;
-        }
-        
-        String[] reportMenu = {"Gender Distribution in Volunteer Involvement", 
-            "Volunteer Participation Frequency by Age Group"};
-        int reportSelection = menuIntReturn(reportMenu);
-        
-        switch(reportSelection){
-            case 1:
-                genderDistribution(list);
-                break;
-            case 2:
-                volAgeGroup(list);
-                break;
-            default:
-                System.out.println(RED + "Invalid filter selection." + RESET);
-                break;
-        }
-    
     }
     
-    public static void genderDistribution(LinkedList list){
-        Node<Volunteer> currentNode = list.head;
-        
-        int sumM = 0;
-        int sumF = 0;
-        while(currentNode!=null){
-            
-            String gender = currentNode.data.getGender();
-            if(gender.toUpperCase().equals("MALE")){
-                sumM++;
-            }else{
-                sumF++;
-            }
-            
-            currentNode = currentNode.next;
-        }
+    public static int disReportMenu(){
+        String[] reportMenu = {"Gender Distribution in Volunteer Involvement", 
+            "Volunteer Participation Frequency by Age Group",
+            "Duplicate Volunteer Report"};
+        return VControl.menuIntReturn(reportMenu);
+    }
+    
+    public static void disGenderDistribution(int sumM, int sumF){
         
         System.out.println("\n- Gender Distibution in Volunteer Involvement -");
         
-        int sum = sumM + sumF;
-        double dM = sumM/sum;
-        double dF = sumF/sum;
+        double dm = sumM;
+        double df = sumF;
+        double sum = sumM + sumF;
+        double dM = (dm/sum) *100;
+        double dF = (df/sum) *100;
         
-        System.out.printf("%-8s %-3s %-5d %-1s %-2.2f %-2s", "Male", "->", sumM, "(", dM, "%)");
-        System.out.printf("\n%-8s %-3s %-5d %-1s %-2.2f %-2s", "Female", "->", sumF, "(", dF, "%)");
+        System.out.printf("%-8s %-3s %-5d %-1s %-4.2f %-2s", "Male", "->", sumM, "(", dM, "%)");
+        System.out.printf("\n%-8s %-3s %-5d %-1s %-4.2f %-2s", "Female", "->", sumF, "(", dF, "%)");
         
         System.out.print("\n\nConclusion: ");
         if(sumM > sumF){
             System.out.println("Male volunteer is more than female volunteer.");
-        }else{
+        }else if(sumM < sumF){
             System.out.println("Female volunteer is more than male volunteer.");
+        }else{
+            System.out.println("Both contribution of female and male volunteer are equal.");
         }
     }
     
-    public static void volAgeGroup(LinkedList list){
-        Node<Volunteer> currentNode = list.head;
-        
-        int sumY = 0; // 18 - 30
-        int sumM = 0; // 31 - 45
-        int sumO = 0; // 45 - 60
-        while(currentNode!=null){
-            
-            int age = currentNode.data.getAge();
-            if(age <= 30){
-                sumY++;
-            }else if (age <= 45){
-                sumM++;
-            }else{
-                sumO++;
-            }
-            
-            currentNode = currentNode.next;
-        }
+    public static void disVolAgeGroup(int sumY, int sumM, int sumO){
         
         System.out.println("\n- Volunteer Participation Frequency by Age Group -");
         System.out.printf("%-20s %-10s %-3s %-5d", "Young Adults", "(18 - 30)", "-> ", sumY);
-        printStar(sumY);
+        VControl.printStar(sumY);
         
         System.out.printf("\n%-20s %-10s %-3s %-5d", "Midle-aged Adults", "(31 - 45)", "-> ", sumM);
-        printStar(sumM);
+        VControl.printStar(sumM);
         
         System.out.printf("\n%-20s %-10s %-3s %-5d", "Old-aged Adults", "(46 - 60)", "-> ", sumO);
-        printStar(sumO);
+        VControl.printStar(sumO);
         
-        int max = sumY;
-        String group ="young adults";
-        if(max < sumM){
-            max = sumM;
-            group = "middle-aged adults";
-        }
-        if(max < sumY){
-            max = sumY;
-            group = "old-aged adults";
-        }
-        
+    }
+    
+    public static void ageGroupConclu(String group, int max){
         System.out.println("\n\nRemarks: Symbol * will be display if item's total exceed 50 and each * represent 50 items");
         System.out.println("The most frequent participant age group is " + group + ", with total amount of " + max );
     }
     
-    public static void printStar(int count){
-        if (count > 50){
-            int left = count % 50;
-            for (int i = 0; i < left; i ++){
-                System.out.print(BLUE + " *" + RESET);
-            }
-        }
+    public static void disStar(){
+        System.out.print(BLUE + " *" + RESET);
+    }
+    
+    public static<T> void displayDuplicateVol(LinkedListInterface<T> dupList){
+        System.out.println("\n- Duplicate Volunteer Report -");
+        disVolHeader();
+        System.out.println(dupList.show());
+        System.out.println("\n" + RED + "- " + dupList.length() + " duplicate volunteers - " + RESET);
+    }
+    
+    public static void displayNoDup(){
+        System.out.println("\n" + GREEN + "There are no duplicate volunteer." + RESET);
     }
     
 }

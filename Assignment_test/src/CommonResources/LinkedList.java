@@ -328,6 +328,7 @@ public class LinkedList<T> implements LinkedListInterface<T>, Serializable {
     }
 
     // Method to remove empty data in between list
+    @Override
     public void removeEmptyData() {
         if (!isEmpty()) {
 
@@ -355,6 +356,7 @@ public class LinkedList<T> implements LinkedListInterface<T>, Serializable {
     }
 
     // Method to check if a entry is contained in a list
+    @Override
     public boolean contains(T element) {
         Node<T> current = head;
 
@@ -369,6 +371,7 @@ public class LinkedList<T> implements LinkedListInterface<T>, Serializable {
         return false; // Element not found
     }
     
+    @Override
     public void clear(){
         this.head = null;
         this.tail = null;

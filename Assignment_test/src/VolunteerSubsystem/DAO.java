@@ -11,7 +11,7 @@ import java.io.IOException;
  *
  * @author Asus
  */
-public class VDAO {
+public class DAO {
     
     // Create file if file not exist
     public static boolean chkFileExist(String filePath) {

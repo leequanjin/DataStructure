@@ -110,4 +110,16 @@ public class VUtility {
     public static void volNoAttendEvent(){
         System.out.print("\n" + RED + "No event had been participate.\n" + RESET);
     }
+    
+    public static void noCertainGenderVolunteer(String gender){
+        System.out.println("\n" + RED + "There are no " + gender + " volunteer." + RESET);
+    }
+    
+    public static void noCertainVolBelowAge(){
+        System.out.println("\n" + RED + "No volunteer currently below or within this age." + RESET);
+    }
+    
+    public static void noDataForReport(){
+        System.out.println(RED + "No volunteer yet. No data to generate report." + RESET);
+    }
 }

@@ -69,7 +69,6 @@ public class DonationManagement {
     public static void main(String[] args) {
         
         chkAllFileExist();
-        //addRecord(); //alr store one individual and organisation in donor.txt
         donationManagementMainMenu();
         
     }
@@ -136,26 +135,6 @@ public class DonationManagement {
                 System.out.println(); // further do if return true then need clear screen
             }
         }
-    }
-    
-    public static void addRecord(){
-        // instance individual
-        Individual a = new Individual("EI00000", "Anonymous","private"); 
-        Individual idv = new Individual("EI00001", "HAHA","public"); 
-        
-        // instance organization
-        Organization org = new Organization("EO00001", "OMO Company","private");
-        
-        // save into list
-        LinkedList dList = new LinkedList();
-        dList.insert(a);
-        dList.insert(idv);
-        dList.insert(org);
-        
-        //dList.show();
-        
-        //load into file
-        dList.saveToFile(DONOR_PATH);
     }
     
     // ----------------

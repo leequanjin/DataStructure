@@ -70,4 +70,6 @@ public interface LinkedListInterface<T> {
     
     // Method to clear all data in list
     void clear();
+    
+    boolean contains(T element);
 }
