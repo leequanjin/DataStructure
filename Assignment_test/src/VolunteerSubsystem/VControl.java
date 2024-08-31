@@ -344,13 +344,13 @@ public class VControl {
                     assignEvent();
                     break;
                 case 5:
-                    //searchVolunteerEvent();
+                    searchVolunteerEvent();
                     break;
                 case 6:
-                    //listVolunteer();
+                    listVolunteer();
                     break;
                 case 7:
-                    //filterVolunteer();
+                    filterVolunteer();
                     break;
                 case 8:
                     //report();
@@ -560,7 +560,12 @@ public class VControl {
         }
         
         String volID = VBoundary.inputVolID();
-
+        Volunteer foundVolunteer = findVolById(volID);
+        if (foundVolunteer == null) {
+            VUtility.volNoExist();
+            return;
+        } 
+        
         EventVolunteer ev = new EventVolunteer(eventID, volID);
         EV_LIST.insert(ev);
         EV_LIST.saveToFile(EV_PATH);
@@ -629,4 +634,78 @@ public class VControl {
         VBoundary.breakLine();
         return contAdd;
     }
+    
+    // ----------------------
+    // Search volunteer event
+    // ----------------------
+    public static void searchVolunteerEvent() {
+        VBoundary.disSearchVolunteerEvent();
+        
+        String volID = VBoundary.inputVolID();
+        Volunteer foundVolunteer = findVolById(volID);
+        if (foundVolunteer == null) {
+            VUtility.volNoExist();
+            return;
+        } 
+
+        disVolAttendedEvent(volID);
+        
+    }
+    
+    public static void disVolAttendedEvent(String volID){
+        VBoundary.disCurentVolunteer(volID);
+        Node<EventVolunteer> evNode = EV_LIST.getHead();
+        int show = 1;
+        while(evNode != null){
+            if (evNode.data.getVolunteerID().equals(volID)){
+                VBoundary.disVolCEventID(show, evNode.data.getEventID());
+                Node<Event> event = EVENT_LIST.getHead();
+                while(event != null){
+                    if(event.data.getEventID().equals(evNode.data.getEventID())){
+                        VBoundary.disVolCEventName(event.data.getEventName());
+                    }
+                    event = event.next;
+                }
+                show++;
+            }
+            evNode = evNode.next;
+        }
+        if (show == 1){
+            VUtility.volNoAttendEvent();
+        }
+    }
+    
+    // --------------
+    // List Volunteer
+    // ---------------
+    public static void listVolunteer(){
+        VBoundary.displayVol(VOL_LIST);
+    }
+    
+    // ---------------------------------
+    // Filter Volunteer base on Criteria
+    // ---------------------------------
+    
+    public static void filterVolunteer(){
+        VBoundary.disFilterVolunteer();
+        if(VOL_LIST.isEmpty()){
+            VUtility.noVolInList();
+            return;
+        }
+        
+        int filterSelection = VBoundary.filterMainMenu();
+        
+        switch(filterSelection){
+            case 1:
+                //filterGenderSelection();
+                break;
+            case 2:
+                //filterAge();
+                break;
+            default:
+                VUtility.invalidMenuSelection();
+                break;
+        }
+    }
+    
 }

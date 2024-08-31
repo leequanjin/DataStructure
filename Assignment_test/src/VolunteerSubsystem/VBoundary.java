@@ -162,7 +162,7 @@ public class VBoundary {
     }
     
     public static String inputVolID(){
-        System.out.print("Enter volunteer id: ");
+        System.out.print("Enter volunteer ID: ");
         return VControl.idValidation("VL");
     }
 
@@ -181,79 +181,37 @@ public class VBoundary {
     }
 
     public static String inputEventID(){
-        System.out.print("Enter event id: ");
+        System.out.print("Enter event ID: ");
         return VControl.idValidation("EV");
     }
 
-    
-
-
-    
-    // Search events under a volunteer
-    public static void searchVolunteerEvent(LinkedList list) {
-        Scanner scan = new Scanner(System.in);
-        
-        LinkedList<EventVolunteer> combineList = new LinkedList<>();
-        combineList.loadFromFile(EV_PATH);
-        
-        // search volunteer
-        // check if any event under it
+    // ----------------------
+    // Search volunteer event
+    // ----------------------
+    public static void disSearchVolunteerEvent() {
         System.out.println(BLUE + "\n- - - Search Event under Volunteer - - - " + RESET);
-        System.out.print("Enter volunteer ID: ");
-        
-        String volID = null;
-        boolean validVol = false;
-        while(!validVol){
-            volID = scan.nextLine();
-            validVol = idValidation(volID, "VL");
-        }
-        
-        volID = volID.substring(0, 2).toUpperCase() + volID.substring(2, 7);
-
-        System.out.println("\nCurrent Volunteer: " + volID);
-        Node<EventVolunteer> evNode = combineList.head;
-        int show = 1;
-        while(evNode != null){
-            if (evNode.data.getVolunteerID().equals(volID)){
-                System.out.println("Event " + show + ": " + evNode.data.getEventID());
-                show++;
-            }
-            evNode = evNode.next;
-        }
-        if(show == 1){
-            System.out.println(RED + "No event attended." + RESET);
-        }
     }
-
-    // List all volunteers
-    public static void listVolunteer(LinkedList list) {
-        System.out.println(BLUE + "\n- - - List Volunteer - - - " + RESET);
-        System.out.printf("| %-12s | %-30s | %-10s | %-5s | %-15s |\n", "Volunteer ID", "Name", "Gender", "Age", "Contect No.");
-        list.show();
+    
+    public static void disCurentVolunteer(String volID){
+        System.out.println("\nCurrent Volunteer: " + volID);
+    }
+    
+    public static void disVolCEventID(int show, String eventID){
+        System.out.printf("%-6s %-3s %-2s %-8s", "Event " , show , ": " , eventID);
+    }
+    
+    public static void disVolCEventName(String eventName){
+        System.out.printf("%-4s %-50s\n", " -> ", eventName);
     }
     
     // Filter volunteer base on criteria
-    public static void filterVolunteer(LinkedList list){
+    public static void disFilterVolunteer(){
         System.out.println(BLUE + "\n- - - Filter Volunteer - - - " + RESET);
-        if(list.isEmpty()){
-            System.out.println(RED + "No volunteer yet. Nothing to filter. Exiting." + RESET);
-            return;
-        }
-        
+    }
+    
+    public static int filterMainMenu(){
         String[] filterMenu = {"Gender", "Before Age (e.g. 20)"};
-        int filterSelection = menuIntReturn(filterMenu);
-        
-        switch(filterSelection){
-            case 1:
-                filterGenderSelection(list);
-                break;
-            case 2:
-                filterAge(list);
-                break;
-            default:
-                System.out.println(RED + "Invalid filter selection." + RESET);
-                break;
-        }
+        return VControl.menuIntReturn(filterMenu);
     }
     
     public static void filterGenderSelection(LinkedList list){

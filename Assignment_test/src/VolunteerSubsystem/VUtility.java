@@ -106,4 +106,8 @@ public class VUtility {
     public static void volAsssignEvent(){
         System.out.println("\n" + GREEN + "Volunteer assign to event successfully.\n" + RESET);
     }
+    
+    public static void volNoAttendEvent(){
+        System.out.print("\n" + RED + "No event had been participate.\n" + RESET);
+    }
 }
