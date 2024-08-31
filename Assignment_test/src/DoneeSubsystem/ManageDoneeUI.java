@@ -18,476 +18,399 @@ public class ManageDoneeUI {
     static String Red = "\u001b[31m";
     static String Green = "\u001b[32;2m";
     static String Reset = "\u001b[0m";
-    
+
     private static final String DONEE_PATH = "donees.txt";
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        ManageDonee<Donee> doneeList = new ManageDonee<>();
-        doneeList.loadFromFile(DONEE_PATH);
+    Scanner scanner = new Scanner(System.in);
+    String choice = null;
+
+// ------------    
+// Main Method
+// ------------ 
+    
+    public void main(String[] args) {
+        doneeMenu();
+    }
+    
+// ------------    
+// Menu Method
+// ------------ 
+
+    public void doneeMenu() {
 
         boolean running = true;
 
         while (running) {
-            System.out.println("Choose an option:");
-            System.out.println("1. Add a new donee");
-            System.out.println("2. Remove a donee");
-            System.out.println("3. Update donee details");
-            System.out.println("4. Search donee details");
-            System.out.println("5. List donees");
-            System.out.println("6. Filter donee based on category");
-            System.out.println("7. Generate Summary Report");
-            System.out.println("8. Exit");
-            System.out.print("\nEnter your choice: ");
-
-            String choice = scanner.nextLine();
-            System.out.println("");
+            displayMenuChoice();
+            choice = scanner.nextLine();
 
             switch (choice) {
                 case "1" -> {
-                    // Add a new donee
-                    do {
-                        System.out.println("Enter donee type: ");
-                        System.out.println("1. Individual ");
-                        System.out.println("2. Family ");
-                        System.out.println("3. Organization \n");
-                        System.out.print("Enter your choice: ");
-                        choice = scanner.nextLine();
-
-                        switch (choice) {
-                            case "1" -> {
-                                String id = doneeList.generateDoneeId();
-                                String name = null;
-                                while (isEmpty(name)) {
-                                    System.out.print("Enter name: ");
-                                    name = scanner.nextLine().trim();
-                                    if (isEmpty(name)) {
-                                        System.out.println(Red + "Name cannot be empty!" + Reset);
-                                    }
-                                }
-                                String state = selectState();
-
-                                doneeList.insertAtStart(new Individual(id, name, state));
-                                System.out.println(Green + "Individual added with Donee ID: " + id + Reset);
-                                doneeList.saveToFile(DONEE_PATH);
-                            }
-                            case "2" -> {
-                                String id = doneeList.generateDoneeId();
-                                String name = null;
-                                while (isEmpty(name)) {
-                                    System.out.print("Enter family name: ");
-                                    name = scanner.nextLine().trim();
-                                    if (isEmpty(name)) {
-                                        System.out.println(Red + "Name cannot be empty!" + Reset);
-                                    }
-                                }
-                                String state = selectState();
-                                doneeList.insertAtStart(new Family(id, name, state));
-                                System.out.println(Green + "Family added with Donee ID: " + id + Reset);
-                                doneeList.saveToFile(DONEE_PATH);
-                            }
-                            case "3" -> {
-                                String id = doneeList.generateDoneeId();
-                                String name = null;
-                                while (isEmpty(name)) {
-                                    System.out.print("Enter organization name: ");
-                                    name = scanner.nextLine().trim();
-                                    if (isEmpty(name)) {
-                                        System.out.println(Red + "Name cannot be empty!" + Reset);
-                                    }
-                                }
-                                String state = selectState();
-                                doneeList.insertAtStart(new Organization(id, name, state));
-                                System.out.println(Green + "Organization added with Donee ID: " + id + Reset);
-                                doneeList.saveToFile(DONEE_PATH);
-                            }
-                            default -> {
-                                System.out.println(Red + "Invalid choice. Please only enter '1', '2' or '3'.\n" + Reset);
-                            }
-                        }
-                    } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
+                    addDonee();
                 }
                 case "2" -> {
-                    // Remove a donee
-                    System.out.print("Enter donee ID to remove: ");
-                    String id = scanner.nextLine();
-                    Donee doneeToRemove = doneeList.findById(id);
-                    if (doneeToRemove != null) {
-                        doneeList.deleteById(id);
-                        System.out.println(Green + "Donee (" + doneeToRemove.getName() + ") was removed successfully." + Reset);
-                        doneeList.saveToFile(DONEE_PATH);
-                    } else {
-                        System.out.println(Red + "Invalid ID. No donee found with the given ID." + Reset);
-                    }
+                    removeDonee();
                 }
                 case "3" -> {
-                    // Update donee details
-                    System.out.print("Enter donee ID to update: ");
-                    String id = scanner.nextLine();
-                    Donee doneeToUpdate = doneeList.findById(id);
-                    if (doneeToUpdate != null) {
-                        System.out.println(Green + "\nFound donee: " + Reset);
-                        System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
-                        String line = String.format("-").repeat(125);
-                        System.out.println(line);
-                        System.out.println(doneeToUpdate.toString() + "\n");
-                        System.out.println("What would you like to update?");
-                        System.out.println("1. Name");
-                        System.out.println("2. Category");
-                        System.out.println("3. Location");
-                        System.out.println("4. Status \n");
-                        System.out.print("Enter your choice: ");
-
-                        choice = scanner.nextLine();
-
-                        switch (choice) {
-                            case "1" -> {
-                                // Update Name
-                                do {
-                                    System.out.print("\nEnter new donee name: ");
-                                    String newName = scanner.nextLine().trim();
-                                    if (!isEmpty(newName)) {
-                                        doneeToUpdate.setName(newName);
-                                        System.out.println(Green + "Name updated to " + newName + " successfully." + Reset);
-                                        doneeList.saveToFile(DONEE_PATH);
-                                        break;
-                                    } else {
-                                        System.out.println(Red + "Name cannot be empty!" + Reset);
-                                    }
-                                } while (true);
-                            }
-                            case "2" -> {
-                                // Update Category
-                                do {
-                                    System.out.println("Choose a new donee category: ");
-                                    System.out.println("1. Individual ");
-                                    System.out.println("2. Family ");
-                                    System.out.println("3. Organization \n");
-                                    System.out.print("Enter your choice: ");
-                                    choice = scanner.nextLine();
-
-                                    switch (choice) {
-                                        case "1" -> {
-                                            doneeList.replace(doneeToUpdate, doneeList.changeToIndividual(doneeToUpdate));
-                                            System.out.println(Green + "Category updated to individual successfully." + Reset);
-                                            doneeList.saveToFile(DONEE_PATH);
-                                        }
-                                        case "2" -> {
-                                            doneeList.replace(doneeToUpdate, doneeList.changeToFamily(doneeToUpdate));
-                                            System.out.println(Green + "Category updated to family successfully." + Reset);
-                                            doneeList.saveToFile(DONEE_PATH);
-                                        }
-                                        case "3" -> {
-                                            doneeList.replace(doneeToUpdate, doneeList.changeToOrganization(doneeToUpdate));
-                                            System.out.println(Green + "Category updated to organization successfully." + Reset);
-                                            doneeList.saveToFile(DONEE_PATH);
-                                        }
-
-                                        default -> {
-                                            System.out.println(Red + "Invalid category. Please only enter '1', '2', or '3'." + Reset);
-                                        }
-                                    }
-                                } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
-                            }
-                            case "3" -> {
-                                line = String.format("-").repeat(64);
-                                System.out.println(line);
-                                System.out.printf("|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n",
-                                        "1. Johor",
-                                        "2. Kedah",
-                                        "3. Kelantan",
-                                        "4. Melaka",
-                                        "5. Negeri Sembilan",
-                                        "6. Pahang",
-                                        "7. Penang",
-                                        "8. Perak",
-                                        "9. Perlis",
-                                        "10. Sabah",
-                                        "11. Sarawak",
-                                        "12. Selangor",
-                                        "13. Terengganu", "", "");
-                                System.out.println(line);
-                                String state = null;
-                                do {
-                                    System.out.print("Select your State: ");
-                                    state = scanner.nextLine();
-                                    switch (state) {
-                                        case "1" -> {
-                                            state = "Johor";
-                                        }
-                                        case "2" -> {
-                                            state = "Kedah";
-                                        }
-                                        case "3" -> {
-                                            state = "Kelantan";
-                                        }
-                                        case "4" -> {
-                                            state = "Melaka";
-                                        }
-                                        case "5" -> {
-                                            state = "Negeri Sembilan";
-                                        }
-                                        case "6" -> {
-                                            state = "Pahang";
-                                        }
-                                        case "7" -> {
-                                            state = "Penang";
-                                        }
-                                        case "8" -> {
-                                            state = "Perak";
-                                        }
-                                        case "9" -> {
-                                            state = "Perlis";
-                                        }
-                                        case "10" -> {
-                                            state = "Sabah";
-                                        }
-                                        case "11" -> {
-                                            state = "Sarawak";
-                                        }
-                                        case "12" -> {
-                                            state = "Selangor";
-                                        }
-                                        case "13" -> {
-                                            state = "Terengganu";
-                                        }
-                                        default -> {
-                                            System.out.println(Red + "Invalid Input : Please only enter a value between 1-13 or the state name" + Reset);
-                                        }
-                                    }
-                                } while (!"Johor".equals(state)
-                                        && !"Kedah".equals(state)
-                                        && !"Kelantan".equals(state)
-                                        && !"Melaka".equals(state)
-                                        && !"Negeri Sembilan".equals(state)
-                                        && !"Pahang".equals(state)
-                                        && !"Penang".equals(state)
-                                        && !"Perak".equals(state)
-                                        && !"Perlis".equals(state)
-                                        && !"Sabah".equals(state)
-                                        && !"Sarawak".equals(state)
-                                        && !"Selangor".equals(state)
-                                        && !"Terengganu".equals(state));
-                                doneeToUpdate.setLocation(state);
-                                System.out.println(Green + "State updated to " + state + " successfully." + Reset);
-                                doneeList.saveToFile(DONEE_PATH);
-                            }
-                            case "4" -> {
-                                System.out.println("\nSelect new status");
-                                System.out.println("1. Active"); // eligible to receive donations
-                                System.out.println("2. Pending Distribution"); // distributed but haven't received donations
-                                System.out.println("3. Completed\n"); // received donations
-                                System.out.print("Enter your choice: ");
-
-                                choice = scanner.nextLine();
-
-                                switch (choice) {
-                                    case "1" -> {
-                                        String status = "Active";
-                                        doneeToUpdate.setStatus(status);
-                                        System.out.println(Green + "Status updated to " + status + " successfully." + Reset);
-                                        doneeList.saveToFile(DONEE_PATH);
-                                    }
-                                    case "2" -> {
-                                        String status = "Pending Distribution";
-                                        doneeToUpdate.setStatus(status);
-                                        System.out.println(Green + "Status updated to " + status + " successfully." + Reset);
-                                        doneeList.saveToFile(DONEE_PATH);
-                                    }
-                                    case "3" -> {
-                                        String status = "Completed";
-                                        doneeToUpdate.setStatus(status);
-                                        System.out.println(Green + "Status updated to " + status + " successfully." + Reset);
-                                        doneeList.saveToFile(DONEE_PATH);
-                                    }
-                                    default ->
-                                        System.out.println(Red + "Invalid option. No changes made." + Reset);
-                                }
-                            }
-                            default ->
-                                System.out.println(Red + "Invalid option. No changes made." + Reset);
-                        }
-                    } else {
-                        System.out.println(Red + "Invalid ID. No donee found with the given ID." + Reset);
-                    }
+                    updateDonee();
                 }
                 case "4" -> {
-                    do {
-                        System.out.println("Search Donor by:");
-                        System.out.println("1. Donee ID");
-                        System.out.println("2. Donee Name \n");
-                        System.out.print("Enter your choice: ");
-
-                        choice = scanner.nextLine().trim();
-
-                        switch (choice) {
-                            case "1" -> {
-                                System.out.print("Enter donee ID to search: ");
-                                String id = scanner.nextLine().trim();
-
-                                Donee donee = doneeList.findById(id);
-                                if (donee != null) {
-                                    System.out.println(Green + "\nFound donee: " + Reset);
-                                    System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
-                                    String line = String.format("-").repeat(125);
-                                    System.out.println(line);
-                                    System.out.println(donee.toString() + "\n");
-                                } else {
-                                    System.out.println(Red + "\nNo donee found with ID: " + id + Reset);
-                                }
-                            }
-                            case "2" -> {
-                                System.out.print("Enter donee name to search: ");
-                                String name = scanner.nextLine().trim().toLowerCase();
-
-                                LinkedList<Donee> matchingDonees = new LinkedList<>();
-                                Node<Donee> current = doneeList.head;
-
-                                while (current != null) {
-                                    if (current.data.getName().toLowerCase().contains(name)) {
-                                        matchingDonees.insertAtStart(current.data);
-                                    }
-                                    current = current.next;
-                                }
-
-                                if (!matchingDonees.isEmpty()) {
-                                    System.out.println(Green + "\nMatching donees found: " + Reset);
-                                    System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
-                                    String line = String.format("-").repeat(125);
-                                    System.out.println(line);
-                                    System.out.println(matchingDonees.show());
-                                } else {
-                                    System.out.println(Red + "\nNo donees found with name containing: " + name + Reset);
-                                }
-                            }
-                            default ->
-                                System.out.println(Red + "Invalid choice. Please enter '1' for ID search or '2' for Name search.\n " + Reset);
-                        }
-                    } while (!"1".equals(choice) && !"2".equals(choice));
+                    searchDonee();
                 }
                 case "5" -> {
-                    // List donees with all donations made
-                    System.out.println(Green + "List of all Donees: " + Reset);
-                    System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
-                    String line = String.format("-").repeat(125);
-                    System.out.println(line);
-                    System.out.println(doneeList.show());
+                    listDonee();
                 }
                 case "6" -> {
-                    // Filter donee based on criteria
-                    do {
-                        System.out.println("1. Filter by Individual");
-                        System.out.println("2. Filter by Family");
-                        System.out.println("3. Filter by Organization \n");
-                        System.out.print("Enter your choice: ");
-                        choice = scanner.nextLine();
-
-                        switch (choice) {
-                            case "1" -> {
-                                LinkedList<Individual> individualList = doneeList.filterByCategory(Individual.class);
-                                System.out.println(Green + "\nList of all Individual Donees: " + Reset);
-                                System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
-                                String line = String.format("-").repeat(125);
-                                System.out.println(line);
-                                System.out.println(individualList.show());
-                            }
-                            case "2" -> {
-                                LinkedList<Family> familyList = doneeList.filterByCategory(Family.class);
-                                System.out.println(Green + "\nList of all Family Donees: " + Reset);
-                                System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
-                                String line = String.format("-").repeat(125);
-                                System.out.println(line);
-                                System.out.println(familyList.show());
-                            }
-                            case "3" -> {
-                                LinkedList<Organization> organizationList = doneeList.filterByCategory(Organization.class);
-                                System.out.println(Green + "\nList of all Organization Donees: " + Reset);
-                                System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
-                                String line = String.format("-").repeat(125);
-                                System.out.println(line);
-                                System.out.println(organizationList.show());
-                            }
-                            default -> {
-                                System.out.println(Red + "Invalid category. Please only enter '1', '2', or '3'.\n" + Reset);
-                            }
-                        }
-                    } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
+                    filterDonee();
                 }
                 case "7" -> {
-                    do {
-                        System.out.println("1. Number of new donees by year");
-                        System.out.println("2. Number of new donees by month");
-                        System.out.println("3. Number of donees by state \n");
-                        System.out.print("Enter your choice: ");
-                        choice = scanner.nextLine();
-
-                        switch (choice) {
-                            case "1" -> {
-                                LinkedList doneeListByYear = doneeList.generateTotalDoneeByYear();
-                                System.out.println(Green + "\nNumber of new donees by year report: " + Reset);
-                                System.out.printf("%-15s |%-20s |%-20s |%s\n", "Year", "Individuals", "Families", "Organizations");
-                                String line = String.format("-").repeat(74);
-                                System.out.println(line);
-                                System.out.println(doneeListByYear.show());
-                            }
-                            case "2" -> {
-                                LinkedList doneeListByMonth = doneeList.generateTotalDoneeByMonth();
-                                System.out.println(Green + "\nNumber of new donees by month report: " + Reset);
-                                System.out.printf("%-15s |%-20s |%-20s |%s\n", "Month", "Individuals", "Families", "Organizations");
-                                String line = String.format("-").repeat(74);
-                                System.out.println(line);
-                                System.out.println(doneeListByMonth.show());
-                            }
-                            case "3" -> {
-                                DoneeStateCount doneeListByState = doneeList.generateTotalDoneeByState();
-                                System.out.println(Green + "\nNumber of donees by state: " + Reset);
-                                String line = String.format("-").repeat(25);
-                                System.out.println(line);
-                                System.out.println(doneeListByState.toString());
-                            }
-
-                            default -> {
-                                System.out.println(Red + "Invalid category. Please only enter '1', '2' or '3'.\n" + Reset);
-                            }
-                        }
-                    } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
+                    reportDonee();
                 }
                 case "8" -> {
                     // Exit the program
                     running = false;
-                    System.out.println(Green + "Exiting..." + Reset);
+                    displayExitMessage();
                 }
-                default ->
-                    System.out.println(Red + "Invalid option, please try again." + Reset);
+                default -> {
+                    displayInvalidChoiceMessage();
+                }
             }
-
             System.out.println();
         }
     }
 
-    private static boolean isEmpty(String string) {
+// ------------    
+// Menu Choices
+// ------------     
+
+    // Add a new donee
+    public void addDonee() {
+        ManageDonee<Donee> doneeList = new ManageDonee<>();
+        doneeList.loadFromFile(DONEE_PATH);
+
+        displayDoneeTypeChoice();
+        do {
+            choice = getChoice();
+
+            switch (choice) {
+                case "1" -> {
+                    String id = doneeList.generateDoneeId();
+                    String name = getName();
+                    String state = getState();
+
+                    doneeList.insertAtStart(new Individual(id, name, state));
+                    System.out.println(Green + "Individual added with Donee ID: " + id + Reset);
+                    doneeList.saveToFile(DONEE_PATH);
+                }
+                case "2" -> {
+                    String id = doneeList.generateDoneeId();
+                    String name = getName();
+                    String state = getState();
+
+                    doneeList.insertAtStart(new Family(id, name, state));
+                    System.out.println(Green + "Family added with Donee ID: " + id + Reset);
+                    doneeList.saveToFile(DONEE_PATH);
+                }
+                case "3" -> {
+                    String id = doneeList.generateDoneeId();
+                    String name = getName();
+                    String state = getState();
+
+                    doneeList.insertAtStart(new Organization(id, name, state));
+                    System.out.println(Green + "Organization added with Donee ID: " + id + Reset);
+                    doneeList.saveToFile(DONEE_PATH);
+                }
+                default -> {
+                    displayInvalidChoiceMessage();
+                }
+            }
+        } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
+    }
+
+    // Remove a donee
+    public void removeDonee() {
+
+        ManageDonee<Donee> doneeList = new ManageDonee<>();
+        doneeList.loadFromFile(DONEE_PATH);
+
+        String id = getDoneeID();
+        Donee doneeToRemove = doneeList.findById(id);
+        if (doneeToRemove != null) {
+            doneeList.deleteById(id);
+            System.out.println(Green + "Donee (" + doneeToRemove.getName() + ") was removed successfully." + Reset);
+            doneeList.saveToFile(DONEE_PATH);
+        } else {
+            displayInvalidDoneeIdMessage();
+        }
+    }
+
+    // Update donee details
+    public void updateDonee() {
+        ManageDonee<Donee> doneeList = new ManageDonee<>();
+        doneeList.loadFromFile(DONEE_PATH);
+
+        String id = getDoneeID();
+        Donee doneeToUpdate = doneeList.findById(id);
+        if (doneeToUpdate != null) {
+            displayFoundDonee(doneeToUpdate);
+            displayUpdateDoneeChoice();
+
+            choice = getChoice();
+            switch (choice) {
+                // Update Name
+                case "1" -> {
+                    String newName = getName();
+                    doneeToUpdate.setName(newName);
+                    System.out.println(Green + "Name updated to " + newName + " successfully." + Reset);
+                    doneeList.saveToFile(DONEE_PATH);
+                }
+                // Update Category
+                case "2" -> {
+                    displayDoneeTypeChoice();
+                    do {
+                        choice = getChoice();
+
+                        switch (choice) {
+                            case "1" -> {
+                                doneeList.replace(doneeToUpdate, doneeList.changeToIndividual(doneeToUpdate));
+                                System.out.println(Green + "Category updated to individual successfully." + Reset);
+                                doneeList.saveToFile(DONEE_PATH);
+                            }
+                            case "2" -> {
+                                doneeList.replace(doneeToUpdate, doneeList.changeToFamily(doneeToUpdate));
+                                System.out.println(Green + "Category updated to family successfully." + Reset);
+                                doneeList.saveToFile(DONEE_PATH);
+                            }
+                            case "3" -> {
+                                doneeList.replace(doneeToUpdate, doneeList.changeToOrganization(doneeToUpdate));
+                                System.out.println(Green + "Category updated to organization successfully." + Reset);
+                                doneeList.saveToFile(DONEE_PATH);
+                            }
+
+                            default -> {
+                                displayInvalidChoiceMessage();
+                            }
+                        }
+                    } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
+                }
+                // Update Location
+                case "3" -> {
+                    displayStateChoice();
+                    String state = getState();
+                    doneeToUpdate.setLocation(state);
+                    System.out.println(Green + "State updated to " + state + " successfully." + Reset);
+                    doneeList.saveToFile(DONEE_PATH);
+                }
+                // Update Status
+                case "4" -> {
+                    displayStatusChoice();
+                    choice = getChoice();
+
+                    switch (choice) {
+                        case "1" -> {
+                            String status = "Active";
+                            doneeToUpdate.setStatus(status);
+                            System.out.println(Green + "Status updated to " + status + " successfully." + Reset);
+                            doneeList.saveToFile(DONEE_PATH);
+                        }
+                        case "2" -> {
+                            String status = "Pending Distribution";
+                            doneeToUpdate.setStatus(status);
+                            System.out.println(Green + "Status updated to " + status + " successfully." + Reset);
+                            doneeList.saveToFile(DONEE_PATH);
+                        }
+                        case "3" -> {
+                            String status = "Completed";
+                            doneeToUpdate.setStatus(status);
+                            System.out.println(Green + "Status updated to " + status + " successfully." + Reset);
+                            doneeList.saveToFile(DONEE_PATH);
+                        }
+                        default ->
+                            System.out.println(Red + "Invalid option. No changes made." + Reset);
+                    }
+                }
+                default ->
+                    displayInvalidChoiceMessage();
+            }
+        } else {
+            displayInvalidDoneeIdMessage();
+        }
+    }
+
+    // Search for a specific donee
+    public void searchDonee() {
+        ManageDonee<Donee> doneeList = new ManageDonee<>();
+        doneeList.loadFromFile(DONEE_PATH);
+
+        do {
+            displaySearchChoice();
+            choice = getChoice();
+
+            switch (choice) {
+                case "1" -> {
+                    String id = getDoneeID();
+                    Donee donee = doneeList.findById(id);
+                    if (donee != null) {
+                        displayFoundDonee(donee);
+                    } else {
+                        displayInvalidDoneeIdMessage();
+                    }
+                }
+                case "2" -> {
+                    String name = getName().toLowerCase();
+
+                    LinkedList<Donee> matchingDonees = new LinkedList<>();
+                    Node<Donee> current = doneeList.head;
+
+                    while (current != null) {
+                        if (current.data.getName().toLowerCase().contains(name)) {
+                            matchingDonees.insertAtStart(current.data);
+                        }
+                        current = current.next;
+                    }
+
+                    if (!matchingDonees.isEmpty()) {
+                        System.out.println(Green + "\nMatching donees found: " + Reset);
+                        displayDoneeList(matchingDonees);
+                    } else {
+                        displayInvalidDoneeNameMessage(name);
+                    }
+                }
+                default ->
+                    displayInvalidChoiceMessage();
+            }
+        } while (!"1".equals(choice) && !"2".equals(choice));
+    }
+
+    // List donees with all donations made
+    public void listDonee() {
+        ManageDonee<Donee> doneeList = new ManageDonee<>();
+        doneeList.loadFromFile(DONEE_PATH);
+
+        System.out.println(Green + "List of all Donees: " + Reset);
+        displayDoneeList(doneeList);
+    }
+
+    // Filter donee based on criteria
+    public void filterDonee() {
+        ManageDonee<Donee> doneeList = new ManageDonee<>();
+        doneeList.loadFromFile(DONEE_PATH);
+
+        displayFilterChoice();
+        do {
+            choice = getChoice();
+
+            switch (choice) {
+                case "1" -> {
+                    LinkedList<Individual> individualList = doneeList.filterByCategory(Individual.class);
+                    System.out.println(Green + "\nList of all Individual Donees: " + Reset);
+                    displayDoneeList(individualList);
+                }
+                case "2" -> {
+                    LinkedList<Family> familyList = doneeList.filterByCategory(Family.class);
+                    System.out.println(Green + "\nList of all Family Donees: " + Reset);
+                    displayDoneeList(familyList);
+                }
+                case "3" -> {
+                    LinkedList<Organization> organizationList = doneeList.filterByCategory(Organization.class);
+                    System.out.println(Green + "\nList of all Organization Donees: " + Reset);
+                    displayDoneeList(organizationList);
+                }
+                default -> {
+                    displayInvalidChoiceMessage();
+                }
+            }
+        } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
+    }
+
+    // Generate donee summary report
+    public void reportDonee() {
+        ManageDonee<Donee> doneeList = new ManageDonee<>();
+        doneeList.loadFromFile(DONEE_PATH);
+
+        displayReportChoice();
+        do {
+            choice = getChoice();
+
+            switch (choice) {
+                case "1" -> {
+                    LinkedList doneeYearCountList = doneeList.generateTotalDoneeByYear();
+                    System.out.println(Green + "\nNumber of new donees by year report: " + Reset);
+                    displayPeriodCountReport(doneeYearCountList);
+                }
+                case "2" -> {
+                    LinkedList doneeMonthCountList = doneeList.generateTotalDoneeByMonth();
+                    System.out.println(Green + "\nNumber of new donees by month report: " + Reset);
+                    displayPeriodCountReport(doneeMonthCountList);
+                }
+                case "3" -> {
+                    DoneeStateCount doneeStateCount = doneeList.generateTotalDoneeByState();
+                    displayStateCountReport(doneeStateCount);
+                }
+
+                default -> {
+                    displayInvalidChoiceMessage();
+                }
+            }
+        } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
+    }
+
+// ---------    
+// Utilities
+// --------- 
+    
+    public boolean isEmpty(String string) {
         return string == null;
     }
 
-    private static String selectState() {
-        Scanner scanner = new Scanner(System.in);
-        String line = String.format("-").repeat(64);
-        System.out.println(line);
-        System.out.printf("|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n",
-                "1. Johor",
-                "2. Kedah",
-                "3. Kelantan",
-                "4. Melaka",
-                "5. Negeri Sembilan",
-                "6. Pahang",
-                "7. Penang",
-                "8. Perak",
-                "9. Perlis",
-                "10. Sabah",
-                "11. Sarawak",
-                "12. Selangor",
-                "13. Terengganu", "", "");
-        System.out.println(line);
+    public void displayInvalidChoiceMessage() {
+        System.out.println(Red + "Invalid option, please try again." + Reset);
+    }
+
+    public void displayInvalidDoneeIdMessage() {
+        System.out.println(Red + "Invalid ID. No donee found with the given ID." + Reset);
+    }
+
+    public void displayInvalidDoneeNameMessage(String name) {
+        System.out.println(Red + "\nNo donees found with name containing: " + name + Reset);
+    }
+
+    public void displayExitMessage() {
+        System.out.println(Green + "Exiting donee menu..." + Reset);
+    }
+
+// --------       
+// Boundary
+// --------    
+    
+    public String getChoice() {
+        System.out.print("Enter your choice: ");
+        choice = scanner.nextLine();
+        System.out.println("");
+
+        return choice;
+    }
+
+    public String getDoneeID() {
+        System.out.print("Enter donee ID: ");
+        String id = scanner.nextLine();
+        return id;
+    }
+
+    public String getName() {
+        String name = null;
+        while (isEmpty(name)) {
+            System.out.print("Enter name: ");
+            name = scanner.nextLine().trim();
+            if (isEmpty(name)) {
+                System.out.println(Red + "Name cannot be empty!" + Reset);
+            }
+        }
+        return name;
+    }
+
+    public String getState() {
+        displayStateChoice();
         String state = null;
         do {
             System.out.print("Select your State: ");
@@ -532,24 +455,124 @@ public class ManageDoneeUI {
                 case "13" -> {
                     state = "Terengganu";
                 }
-
                 default -> {
-                    System.out.println(Red + "Invalid Input : Please only enter a value between 1-13 or the state name" + Reset);
+                    displayInvalidChoiceMessage();
                 }
             }
-        } while (!"Johor".equals(state)
-                && !"Kedah".equals(state)
-                && !"Kelantan".equals(state)
-                && !"Melaka".equals(state)
-                && !"Negeri Sembilan".equals(state)
-                && !"Pahang".equals(state)
-                && !"Penang".equals(state)
-                && !"Perak".equals(state)
-                && !"Perlis".equals(state)
-                && !"Sabah".equals(state)
-                && !"Sarawak".equals(state)
-                && !"Selangor".equals(state)
-                && !"Terengganu".equals(state));
+        } while (!state.equals("1")
+                && !state.equals("2")
+                && !state.equals("3")
+                && !state.equals("4")
+                && !state.equals("5")
+                && !state.equals("6")
+                && !state.equals("7")
+                && !state.equals("8")
+                && !state.equals("9")
+                && !state.equals("10")
+                && !state.equals("11")
+                && !state.equals("12")
+                && !state.equals("13"));
         return state;
+    }
+
+    public void displayMenuChoice() {
+        System.out.println("Choose an option:");
+        System.out.println("1. Add a new donee");
+        System.out.println("2. Remove a donee");
+        System.out.println("3. Update donee details");
+        System.out.println("4. Search donee details");
+        System.out.println("5. List donees");
+        System.out.println("6. Filter donee based on category");
+        System.out.println("7. Generate Summary Report");
+        System.out.println("8. Exit \n");
+    }
+
+    public void displayDoneeTypeChoice() {
+        System.out.println("Enter donee type: ");
+        System.out.println("1. Individual ");
+        System.out.println("2. Family ");
+        System.out.println("3. Organization \n");
+    }
+
+    public void displayStateChoice() {
+        String line = String.format("-").repeat(64);
+        System.out.println(line);
+        System.out.printf("|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n|%-20s|%-20s|%-20s|\n",
+                "1. Johor",
+                "2. Kedah",
+                "3. Kelantan",
+                "4. Melaka",
+                "5. Negeri Sembilan",
+                "6. Pahang",
+                "7. Penang",
+                "8. Perak",
+                "9. Perlis",
+                "10. Sabah",
+                "11. Sarawak",
+                "12. Selangor",
+                "13. Terengganu", "", "");
+        System.out.println(line);
+    }
+
+    public void displayFoundDonee(Donee doneeToUpdate) {
+        System.out.println(Green + "\nFound donee: " + Reset);
+        System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
+        String line = String.format("-").repeat(125);
+        System.out.println(line);
+        System.out.println(doneeToUpdate.toString() + "\n");
+    }
+
+    public void displayUpdateDoneeChoice() {
+        System.out.println("What would you like to update?");
+        System.out.println("1. Name");
+        System.out.println("2. Category");
+        System.out.println("3. Location");
+        System.out.println("4. Status \n");
+    }
+
+    public void displayStatusChoice() {
+        System.out.println("\nSelect new status");
+        System.out.println("1. Active"); // eligible to receive donations
+        System.out.println("2. Pending Distribution"); // distributed but haven't received donations
+        System.out.println("3. Completed\n"); // received donations
+    }
+
+    public void displaySearchChoice() {
+        System.out.println("Search Donor by:");
+        System.out.println("1. Donee ID");
+        System.out.println("2. Donee Name \n");
+    }
+
+    public void displayDoneeList(LinkedList doneeList) {
+        System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
+        String line = String.format("-").repeat(125);
+        System.out.println(line);
+        System.out.println(doneeList.show());
+    }
+
+    public void displayFilterChoice() {
+        System.out.println("1. Filter by Individual");
+        System.out.println("2. Filter by Family");
+        System.out.println("3. Filter by Organization \n");
+    }
+
+    public void displayReportChoice() {
+        System.out.println("1. Number of new donees by year");
+        System.out.println("2. Number of new donees by month");
+        System.out.println("3. Number of donees by state \n");
+    }
+
+    public void displayPeriodCountReport(LinkedList doneePeriodCountList) {
+        System.out.printf("%-15s |%-20s |%-20s |%s\n", "Year", "Individuals", "Families", "Organizations");
+        String line = String.format("-").repeat(74);
+        System.out.println(line);
+        System.out.println(doneePeriodCountList.show());
+    }
+
+    public void displayStateCountReport(DoneeStateCount doneeStateCount) {
+        System.out.println(Green + "\nNumber of donees by state: " + Reset);
+        String line = String.format("-").repeat(25);
+        System.out.println(line);
+        System.out.println(doneeStateCount.toString());
     }
 }
