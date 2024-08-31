@@ -17,12 +17,14 @@ public abstract class Donee implements Serializable {
     private String name;
     private String location;
     final private LocalDate registrationDate;
+    private String status;
 
     public Donee(String id, String name, String location) {
         this.id = id;
         this.name = name;
         this.location = location;
         this.registrationDate = LocalDate.now();
+        this.status = "Active";
     }
 
     public String getId() {
@@ -53,17 +55,26 @@ public abstract class Donee implements Serializable {
         return registrationDate;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public abstract String getType();
 
     @Override
     public String toString() {
         return String.format(
-                "%-15s |%-30s |%-15s |%-15s |%s",
+                "%-15s |%-30s |%-15s |%-15s |%-20s |%s",
                 id,
                 name,
                 getType(),
                 location,
-                registrationDate.toString()
+                registrationDate.toString(),
+                status
         );
     }
 }

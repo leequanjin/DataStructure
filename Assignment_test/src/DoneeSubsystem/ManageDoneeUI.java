@@ -122,14 +122,15 @@ public class ManageDoneeUI {
                     Donee doneeToUpdate = doneeList.findById(id);
                     if (doneeToUpdate != null) {
                         System.out.println(Green + "\nFound donee: " + Reset);
-                        System.out.printf("%-15s |%-30s |%-15s |%-15s |%s\n", "ID", "Name", "Type", "Location", "Registration Date");
-                        String line = String.format("-").repeat(100);
+                        System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
+                        String line = String.format("-").repeat(125);
                         System.out.println(line);
                         System.out.println(doneeToUpdate.toString() + "\n");
                         System.out.println("What would you like to update?");
                         System.out.println("1. Name");
                         System.out.println("2. Category");
-                        System.out.println("3. Location \n");
+                        System.out.println("3. Location");
+                        System.out.println("4. Status \n");
                         System.out.print("Enter your choice: ");
 
                         choice = scanner.nextLine();
@@ -261,6 +262,29 @@ public class ManageDoneeUI {
                                 doneeToUpdate.setLocation(state);
                                 System.out.println(Green + "State updated to " + state + " successfully." + Reset);
                             }
+                            case "4" -> {
+                                System.out.println("\nSelect new status");
+                                System.out.println("1. Active"); // eligible to receive donations
+                                System.out.println("2. Pending Distribution"); // distributed but haven't received donations
+                                System.out.println("3. Completed\n"); // received donations
+                                System.out.print("Enter your choice: ");
+
+                                choice = scanner.nextLine();
+
+                                switch (choice) {
+                                    case "1" -> {
+                                        doneeToUpdate.setStatus("Active");
+                                    }
+                                    case "2" -> {
+                                        doneeToUpdate.setStatus("Pending Distribution");
+                                    }
+                                    case "3" -> {
+                                        doneeToUpdate.setStatus("Completed");
+                                    }
+                                    default ->
+                                        System.out.println(Red + "Invalid option. No changes made." + Reset);
+                                }
+                            }
                             default ->
                                 System.out.println(Red + "Invalid option. No changes made." + Reset);
                         }
@@ -285,8 +309,8 @@ public class ManageDoneeUI {
                                 Donee donee = doneeList.findById(id);
                                 if (donee != null) {
                                     System.out.println(Green + "\nFound donee: " + Reset);
-                                    System.out.printf("%-15s |%-30s |%-15s |%-15s |%s\n", "ID", "Name", "Type", "Location", "Registration Date");
-                                    String line = String.format("-").repeat(100);
+                                    System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
+                                    String line = String.format("-").repeat(125);
                                     System.out.println(line);
                                     System.out.println(donee.toString() + "\n");
                                 } else {
@@ -308,8 +332,11 @@ public class ManageDoneeUI {
                                 }
 
                                 if (!matchingDonees.isEmpty()) {
-                                    System.out.print(Green + "\nMatching donees found: " + Reset);
-                                    matchingDonees.show();
+                                    System.out.println(Green + "\nMatching donees found: " + Reset);
+                                    System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
+                                    String line = String.format("-").repeat(125);
+                                    System.out.println(line);
+                                    System.out.println(matchingDonees.show());
                                 } else {
                                     System.out.println(Red + "\nNo donees found with name containing: " + name + Reset);
                                 }
@@ -322,10 +349,10 @@ public class ManageDoneeUI {
                 case "5" -> {
                     // List donees with all donations made
                     System.out.println(Green + "List of all Donees: " + Reset);
-                    System.out.printf("%-15s |%-30s |%-15s |%-15s |%s\n", "ID", "Name", "Type", "Location", "Registration Date");
-                    String line = String.format("-").repeat(100);
+                    System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
+                    String line = String.format("-").repeat(125);
                     System.out.println(line);
-                    doneeList.show();
+                    System.out.println(doneeList.show());
                 }
                 case "6" -> {
                     // Filter donee based on criteria
@@ -340,26 +367,26 @@ public class ManageDoneeUI {
                             case "1" -> {
                                 LinkedList<Individual> individualList = doneeList.filterByCategory(Individual.class);
                                 System.out.println(Green + "\nList of all Individual Donees: " + Reset);
-                                System.out.printf("%-15s |%-30s |%-15s |%-15s |%s\n", "ID", "Name", "Type", "Location", "Registration Date");
-                                String line = String.format("-").repeat(100);
+                                System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
+                                String line = String.format("-").repeat(125);
                                 System.out.println(line);
-                                individualList.show();
+                                System.out.println(individualList.show());
                             }
                             case "2" -> {
                                 LinkedList<Family> familyList = doneeList.filterByCategory(Family.class);
                                 System.out.println(Green + "\nList of all Family Donees: " + Reset);
-                                System.out.printf("%-15s |%-30s |%-15s |%-15s |%s\n", "ID", "Name", "Type", "Location", "Registration Date");
-                                String line = String.format("-").repeat(100);
+                                System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
+                                String line = String.format("-").repeat(125);
                                 System.out.println(line);
-                                familyList.show();
+                                System.out.println(familyList.show());
                             }
                             case "3" -> {
                                 LinkedList<Organization> organizationList = doneeList.filterByCategory(Organization.class);
                                 System.out.println(Green + "\nList of all Organization Donees: " + Reset);
-                                System.out.printf("%-15s |%-30s |%-15s |%-15s |%s\n", "ID", "Name", "Type", "Location", "Registration Date");
-                                String line = String.format("-").repeat(100);
+                                System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
+                                String line = String.format("-").repeat(125);
                                 System.out.println(line);
-                                organizationList.show();
+                                System.out.println(organizationList.show());
                             }
                             default -> {
                                 System.out.println(Red + "Invalid category. Please only enter '1', '2', or '3'.\n" + Reset);
@@ -387,7 +414,7 @@ public class ManageDoneeUI {
                                 System.out.printf("%-15s |%-20s |%-20s |%s\n", "Year", "Individuals", "Families", "Organizations");
                                 String line = String.format("-").repeat(74);
                                 System.out.println(line);
-                                doneeListByYear.show();
+                                System.out.println(doneeListByYear.show());
                             }
                             case "2" -> {
                                 LinkedList doneeListByMonth = doneeList.generateTotalDoneeByMonth();
@@ -395,7 +422,7 @@ public class ManageDoneeUI {
                                 System.out.printf("%-15s |%-20s |%-20s |%s\n", "Year", "Individuals", "Families", "Organizations");
                                 String line = String.format("-").repeat(74);
                                 System.out.println(line);
-                                doneeListByMonth.show();
+                                System.out.println(doneeListByMonth.show());
                             }
                             case "3" -> {
                                 DoneeStateCount doneeListByState = doneeList.generateTotalDoneeByState();

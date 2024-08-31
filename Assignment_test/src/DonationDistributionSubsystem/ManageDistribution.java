@@ -13,27 +13,6 @@ import CommonResources.Node;
  */
 public class ManageDistribution<T extends Distribution> extends LinkedList<T> {
     
-    public void changeStatusToCancelled(String id) {
-        if (head == null) {
-            // Empty list
-        } else if (head.data.getId().equals(id)) {
-            // First id match
-            head.data.setStatus("Cancelled");
-        } else {
-            Node<T> current = head;
-
-            while (current.data != null && !current.data.getId().equals(id)) {
-                current = current.next;
-            }
-
-            if (current.data.getId().equals(id)) {
-                current.data.setStatus("Cancelled");
-            } else {
-                // ID not found
-            }
-        }
-    }
-    
     public Distribution findById(String id) {
         Node<T> current = head; // Start from the head of the list
 

@@ -75,13 +75,13 @@ class Distribution implements Serializable {
     public String toString() {
        
         return String.format(
-                "%-20s |%-20s |%-30s |%-41s |%-20s |%s",
+                "%-20s |%-20s |%-30s |%-20s |%-20s |%s\n",
                 id,
                 doneeId,
                 doneeName,
-                donations.toStringDonations(),
                 distibutionDate,
-                status
+                status,
+                donations.toStringDonations()
         );
     }
 }

@@ -14,9 +14,9 @@ import java.io.Serializable;
  * @author Lee Quan Jin
  * @param <T>
  */
-public class ManageItems<T extends Item> extends LinkedList<T> implements Serializable{
+public class ManageItems<T extends Item> extends LinkedList<T> implements Serializable {
 
-    public void changeStatusToUnavailable(String id) {
+    public void changeStatus(String id, String status) {
         if (head == null) {
             // Empty list
         } else if (head.data.getId().equals(id)) {
@@ -30,7 +30,7 @@ public class ManageItems<T extends Item> extends LinkedList<T> implements Serial
             }
 
             if (current.data.getId().equals(id)) {
-                current.data.setAvailability("Unavailable");
+                current.data.setAvailability(status);
             } else {
                 // ID not found
             }
@@ -42,9 +42,17 @@ public class ManageItems<T extends Item> extends LinkedList<T> implements Serial
 
         Node<T> current = head;
 
+        donationsStr.append(String.format(
+                "%-20s |%-20s",
+                current.data.getId(),
+                current.data.getType()
+        ));
+        current = current.next;
+
         while (current != null) {
             donationsStr.append(String.format(
-                    "%-20s |%-20s",
+                    "\n%-118s |%-20s |%-20s",
+                    "",
                     current.data.getId(),
                     current.data.getType()
             ));
