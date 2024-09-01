@@ -432,7 +432,7 @@ public class VolunteerManagement {
         boolean validPhone = false;
         String phone = null;
         while (!validPhone) {
-            phone = scan.nextLine();
+            phone = scan.nextLine().trim();
 
             validPhone = VolunteerManagement.chkEmptyInput(phone);
             if (validPhone) {

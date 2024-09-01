@@ -61,7 +61,7 @@ public class VolunteerUtility {
     }
     
     public static void invalidIntInput(){
-        System.out.println(RED + "Invalid input. Please enter valid integer number.\n" + RESET);
+        System.out.println(RED + "Invalid input. Please enter valid integer number and do not space between number.\n" + RESET);
     }
     
     public static void intNotInRange(int initial, int end){
@@ -85,7 +85,7 @@ public class VolunteerUtility {
     }
     
     public static void invalidPhone(){
-        System.out.print(RED + "Invalid phone format.\n" + RESET);
+        System.out.println(RED + "Invalid phone format. Please do not space between number.\n" + RESET);
     }
     
     public static void addVolSuccess(){

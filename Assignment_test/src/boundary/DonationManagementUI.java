@@ -8,9 +8,11 @@ import adt.Node;
 import adt.LinkedListInterface;
 
 import entity.DonationManagement.Item;
+import entity.DonationManagement.TotalMoney;
+import entity.Donor.Donor;
+
 import control.DonationManagement;
 import utility.DonationManagementUtility;
-import entity.Donor.Donor;
 
 /**
  *
@@ -115,6 +117,7 @@ public class DonationManagementUI {
             "List donation by different donor",
             "List all donation",
             "Filter donation base on criteria",
+            "Display total money flow",
             "Generate sumary report",
             "Exit"};
         return DonationManagement.menuIntReturn(donationManagementMenu);
@@ -124,13 +127,20 @@ public class DonationManagementUI {
     // Part 1: Add new donation
     // -------------------------
     public static void addDonation(LinkedListInterface<Donor> donorList) {
-        System.out.println(BLUE + "\n - - - Add Donation - - - " + RESET);
+        System.out.println("\n" + BLUE + " - - - Add Donation - - - " + RESET);
+        System.out.printf("%-15s |%-30s |%-15s |%-15s |%s\n", "ID", "Name", "Type", "Category", "Registration Date");
         System.out.println(donorList.show());
-        System.out.println("***Enter \"NONE\" if is anonymous donor. ");
+        System.out.println("\nRemarks: Enter \"NONE\" if is anonymous donor. ");
     }
 
     public static void inputDonorID() {
         System.out.print("Enter donor's id: ");
+    }
+    
+    public static void disAnonymousDonor(){
+        System.out.println("\n - - - Current Donor - - -");
+        System.out.printf("%-10s %-2s %-50s\n", "ID", ":", "DNR00000");
+        System.out.printf("%-10s %-2s %-50s\n", "Name", ":", "Anonymous");
     }
 
     public static <T> void disTempDonorData(Donor donor) {
@@ -610,8 +620,19 @@ public class DonationManagementUI {
         System.out.print("Enter the year: ");
     }
     
+    // ---------------------------
+    // Part 9: Display money flow 
+    // ---------------------------
+    public static void moneyFlowHeader(){
+        System.out.println(BLUE + "\n- - - Current Money Flow - - -" + RESET);
+    }
+    
+    public static void disMoneyFlow(Node<TotalMoney> money){
+        System.out.println(money.data.toString());
+    }
+    
     // --------------------------------
-    // Part 9: Generate summary reports 
+    // Part 10: Generate summary reports 
     // --------------------------------
     public static int reportMainMenu(){
         System.out.println(BLUE + "\n- - - Report - - -" + RESET);

@@ -144,7 +144,7 @@ public class VolunteerUI {
     }
     
     public static void inputPhone(){
-        System.out.print("\nEnter phone number (e.g. 011 2345 6789): ");
+        System.out.print("\nEnter phone number (e.g. 01123456789): ");
     }
 
     // -----------------

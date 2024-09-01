@@ -103,9 +103,12 @@ public class DonationManagement {
                     filterDonation();
                     break;
                 case 9:
-                    report();
+                    disTotalMoneyFlow();
                     break;
                 case 10:
+                    report();
+                    break;
+                case 11:
                     System.exit(0); // later redirect to previous menu
                 default:
                     System.out.println("Invalid choice.");
@@ -630,6 +633,11 @@ public class DonationManagement {
             do{
                 dID = donorIdValidation();
                 
+                if(dID.equalsIgnoreCase("DNR00000")){
+                    DonationManagementUI.disAnonymousDonor();
+                    break;
+                }
+                
                 Donor donor = chkDonorExist(dID, donorList);
                 if (donor == null){// if does not exist, enter other
                     DonationManagementUtility.donorNoExist();
@@ -678,6 +686,10 @@ public class DonationManagement {
         String id;
         do{
             id = scan.nextLine().trim();
+            
+            if(id.equalsIgnoreCase("NONE")){
+                return "DNR00000";
+            }
             
             // chk is it empty
             validID = chkEmptyInput(id);
@@ -796,6 +808,7 @@ public class DonationManagement {
             list.insert(tempBank);
             list.saveToFile(BANK_PATH);
             
+            addTotalBank(tempBank);
             newItemList.insert(tempBank);
         
         }else{
@@ -889,9 +902,42 @@ public class DonationManagement {
         return bankName;
     }
     
+    public static void addTotalBank(Bank bank){
+        LinkedListInterface<TotalMoney> list = new LinkedList<>();
+        list.loadFromFile(TOTAL_PATH);
+        
+        if(list.isEmpty()){
+            TotalMoney t = new TotalMoney(bank.getAmount(), 0);
+            list.insert(t);
+            list.saveToFile(TOTAL_PATH);
+            return;
+        }else{
+            Node<TotalMoney> node = list.getHead();
+            double balance = node.data.getTtlBank();
+            balance += bank.getAmount();
+            node.data.setTtlBank(balance);
+            list.saveToFile(TOTAL_PATH);
+        }
+        
+    }
+    
     public static void addTotalCash(Cash cash){
         LinkedListInterface<TotalMoney> list = new LinkedList<>();
         list.loadFromFile(TOTAL_PATH);
+        
+        if(list.isEmpty()){
+            TotalMoney t = new TotalMoney(0, cash.getAmount());
+            list.insert(t);
+            list.saveToFile(TOTAL_PATH);
+            return;
+        }else{
+            Node<TotalMoney> node = list.getHead();
+            double balance = node.data.getTtlCash();
+            balance += cash.getAmount();
+            node.data.setTtlCash(balance);
+            list.saveToFile(TOTAL_PATH);
+        }
+        
     }
     
     public static void inputFood(LinkedListInterface<Item> newItemList, String dID){
@@ -1756,6 +1802,7 @@ public class DonationManagement {
 
                 list.saveToFile(filePath);
                 if (filePath.equals(CASH_PATH) || filePath.equals(BANK_PATH)) {
+                    minusTotalMoney(item);
                     printSameTable(filePath, false);
                 } else {
                     printSameTable(filePath, true);
@@ -1764,7 +1811,25 @@ public class DonationManagement {
                 DonationManagementUtility.itemNoExist();
             }
         }
+    }
+    
+    public static void minusTotalMoney(Item item){
+        LinkedListInterface<TotalMoney> list = new LinkedList<>();
+        list.loadFromFile(TOTAL_PATH);
         
+        Node<TotalMoney> node = list.getHead();
+        double balance;
+        if(item instanceof Bank){
+            balance = node.data.getTtlBank();
+            balance -= ((Bank) item).getAmount();
+            node.data.setTtlBank(balance);
+        }else if(item instanceof Cash){
+            balance = node.data.getTtlCash();
+            balance -= ((Cash) item).getAmount();
+            node.data.setTtlCash(balance);
+        }
+        
+        list.saveToFile(TOTAL_PATH);
     }
         
     public static<T> void deleteById(String id, LinkedListInterface<Item> list) {
@@ -1980,7 +2045,7 @@ public class DonationManagement {
 
                     if (item instanceof Money){
 
-                        moneyAmend(amendOption, item);
+                        moneyAmend(amendOption, item, ((Money) item).getAmount());
 
                     }else if(item instanceof PhysicalItem){
 
@@ -2005,10 +2070,11 @@ public class DonationManagement {
         
     }
     
-    public static void moneyAmend(int amendOption, Item item){
+    public static void moneyAmend(int amendOption, Item item, double oriAmt){
         if (amendOption == 1){
             double amt = amountValidation();
             ((Money) item).setAmount(amt);
+            updateTotalAmt(item, oriAmt);
         }
 
         if (item instanceof Bank){
@@ -2019,8 +2085,26 @@ public class DonationManagement {
         }
     }
     
+    public static void updateTotalAmt(Item item, double oriAmt){
+        LinkedListInterface<TotalMoney> list = new LinkedList<>();
+        list.loadFromFile(TOTAL_PATH);
+        
+        Node<TotalMoney> node = list.getHead();
+        double balance;
+        if(item instanceof Bank){
+            balance = node.data.getTtlBank();
+            balance = (balance - oriAmt) + ((Bank) item).getAmount();
+            node.data.setTtlBank(balance);
+        }else if (item instanceof Cash){
+            balance = node.data.getTtlCash();
+            balance = (balance - oriAmt) + ((Cash) item).getAmount();
+            node.data.setTtlCash(balance);
+        }
+        
+        list.saveToFile(TOTAL_PATH);
+    }
+    
     public static void physicalItemAmend(int amendOption, Item item, String filePath){
-        Scanner scan = new Scanner(System.in);
         
         if(amendOption == 1){
             DonationManagementUI.inputRemark();
@@ -3051,9 +3135,25 @@ public class DonationManagement {
         return year;
     }
     
-    // --------------------------------
-    // Part 9: Generate summary reports 
-    // --------------------------------
+    // ---------------------------
+    // Part 9: Display money flow 
+    // ---------------------------
+    public static void disTotalMoneyFlow(){
+        LinkedListInterface<TotalMoney> list = new LinkedList<>();
+        list.loadFromFile(TOTAL_PATH);
+        
+        DonationManagementUI.moneyFlowHeader();
+        if(list.isEmpty()){
+            DonationManagementUtility.noMoney();
+            return;
+        }
+        Node<TotalMoney> money = list.getHead();
+        DonationManagementUI.disMoneyFlow(money);
+    }
+    
+    // ---------------------------------
+    // Part 10: Generate summary reports 
+    // ---------------------------------
     public static void report(){
         
         boolean cont = true;
