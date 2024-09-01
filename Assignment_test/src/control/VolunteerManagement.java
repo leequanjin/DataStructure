@@ -4,11 +4,18 @@
  */
 package control;
 
-import VolunteerSubsystem.*;
 import adt.LinkedList;
 import adt.LinkedListInterface;
 import adt.Node;
+
 import EventSystem.Event;
+
+import entity.Volunteer.Volunteer;
+import entity.Volunteer.EventVolunteer;
+import utility.VolunteerUtility;
+import boundary.VolunteerUI;
+import dao.DAO;
+
 import java.util.Scanner;
 
 /**
@@ -79,7 +86,7 @@ public class VolunteerManagement {
     
     public static int menuIntReturn(String[] selectionList) {
         
-        VBoundary.displayMenu(selectionList);
+        VolunteerUI.displayMenu(selectionList);
         
         int intInput = 0;
         boolean validInput = false;
@@ -113,19 +120,19 @@ public class VolunteerManagement {
                 int intInput = Integer.parseInt(input);
                 validInput = intSelectionValidation(intInput, initial, end);
                 if (!validInput) {
-                    VUtility.intNotInRange(initial, end);
+                    VolunteerUtility.intNotInRange(initial, end);
                 }
 
             } else {
-                VUtility.invalidIntInput();
+                VolunteerUtility.invalidIntInput();
             }
 
         } else {
-            VUtility.emptyInputErrorMsg();
+            VolunteerUtility.emptyInputErrorMsg();
         }
 
         if (!validInput) {
-            VBoundary.reEnter();
+            VolunteerUI.reEnter();
         }
 
         return validInput;
@@ -156,7 +163,7 @@ public class VolunteerManagement {
         boolean validInput = false;
         String input = null;
 
-        VBoundary.inputYN(sentence);
+        VolunteerUI.inputYN(sentence);
         while (!validInput) {
 
             input = (scan.nextLine()).toUpperCase().trim();
@@ -167,14 +174,14 @@ public class VolunteerManagement {
                 String[] inputList = {"Y", "N"};
                 validInput = chkSpecificWord(inputList, input);
                 if (!validInput) {
-                    VUtility.enterYNOnly();
+                    VolunteerUtility.enterYNOnly();
                 }
             } else {
-                VUtility.emptyInputErrorMsg();
+                VolunteerUtility.emptyInputErrorMsg();
             }
 
             if (!validInput) {
-                VBoundary.reEnter();
+                VolunteerUI.reEnter();
             }
 
         }
@@ -229,17 +236,17 @@ public class VolunteerManagement {
                     // chk if correct format
                     validID = idFormat(id, constrant);
                     if (!validID) {
-                        VUtility.invalidIDFormat(constrant);
+                        VolunteerUtility.invalidIDFormat(constrant);
                     }
                 } else {
-                    VUtility.invalidLength();
+                    VolunteerUtility.invalidLength();
                 }
             } else {
-                VUtility.emptyInputErrorMsg();
+                VolunteerUtility.emptyInputErrorMsg();
             }
 
             if (!validID) {
-                VBoundary.reEnter();
+                VolunteerUI.reEnter();
             }
             
         }while(!validID);
@@ -291,18 +298,17 @@ public class VolunteerManagement {
         for (int i = 0; i < fileList.length; i++) {
             boolean fileExist = DAO.chkFileExist(fileList[i]);
             if (!fileExist) {
-                VUtility.fileNoExist(fileList[i]);
+                VolunteerUtility.fileNoExist(fileList[i]);
                 boolean createFile = DAO.createFile(fileList[i]);
                 if (createFile) {
-                    VUtility.createFileSuccesfully(fileList[i]);
+                    VolunteerUtility.createFileSuccesfully(fileList[i]);
                 } else {
-                    VUtility.createFileFail(fileList[i]);
+                    VolunteerUtility.createFileFail(fileList[i]);
                 }
             } else{
-                //VUtility.fileExist(fileList[i]);
+                //VolunteerUtility.fileExist(fileList[i]);
             }
         }
-        
     }
     
     public static void clearAllFile(){
@@ -330,7 +336,7 @@ public class VolunteerManagement {
             clearAllFile();
             loadAllFile();
             
-            int selection = VBoundary.volunteerMainMenu();
+            int selection = VolunteerUI.volunteerMainMenu();
             switch (selection) {
                 case 1:
                     addVolunteer();
@@ -359,7 +365,7 @@ public class VolunteerManagement {
                 case 9:
                     return;
                 default:
-                    VUtility.invalidMenuSelection();
+                    VolunteerUtility.invalidMenuSelection();
                     break;
             }
 
@@ -379,7 +385,7 @@ public class VolunteerManagement {
         String id = VolunteerManagement.idGenerator("VL");
 
         // Name
-        VBoundary.inputName();
+        VolunteerUI.inputName();
         String name = null;
         boolean validName = false;
         while (!validName) {
@@ -387,13 +393,13 @@ public class VolunteerManagement {
 
             validName = VolunteerManagement.chkEmptyInput(name);
             if (!validName) {
-                VUtility.emptyInputErrorMsg();
-                VBoundary.reEnter();
+                VolunteerUtility.emptyInputErrorMsg();
+                VolunteerUI.reEnter();
             }
         }
 
         // Gender
-        int gSelection = VBoundary.inputGender();
+        int gSelection = VolunteerUI.inputGender();
 
         String gender = null;
         switch (gSelection) {
@@ -404,12 +410,12 @@ public class VolunteerManagement {
                 gender = "Female";
                 break;
             default:
-                VUtility.invalidGender();
+                VolunteerUtility.invalidGender();
                 break;
         }
 
         // Age
-        VBoundary.inputAge();
+        VolunteerUI.inputAge();
         int age = 0;
         boolean validAge = false;
         while (validAge == false) {
@@ -422,7 +428,7 @@ public class VolunteerManagement {
         }
 
         // Contact Num
-        VBoundary.inputPhone();
+        VolunteerUI.inputPhone();
         boolean validPhone = false;
         String phone = null;
         while (!validPhone) {
@@ -439,18 +445,18 @@ public class VolunteerManagement {
                     //  check correct phone format
                     validPhone = VolunteerManagement.chkPhoneValidation(phone);
                     if (!validPhone) {
-                        VUtility.invalidPhone();
+                        VolunteerUtility.invalidPhone();
                     }
                 } else {
-                    VUtility.invalidIntInput();
+                    VolunteerUtility.invalidIntInput();
                 }
 
             } else {
-                VUtility.emptyInputErrorMsg();
+                VolunteerUtility.emptyInputErrorMsg();
             }
 
             if (!validPhone) {
-                VBoundary.reEnter();
+                VolunteerUI.reEnter();
             }
 
         }
@@ -458,7 +464,7 @@ public class VolunteerManagement {
         Volunteer newVol = new Volunteer(id, name, gender, age, phone);
         VOL_LIST.insert(newVol);
         
-        VBoundary.displayVol(VOL_LIST);
+        VolunteerUI.displayVol(VOL_LIST);
         VOL_LIST.saveToFile(VOLUNTEER_PATH);
     }
     
@@ -467,12 +473,12 @@ public class VolunteerManagement {
     // -----------------
     public static void remVolunteer() {
         
-        VBoundary.disRemVolunteer();
-        VBoundary.displayVol(VOL_LIST);
-        VBoundary.breakLine();
+        VolunteerUI.disRemVolunteer();
+        VolunteerUI.displayVol(VOL_LIST);
+        VolunteerUI.breakLine();
         
         if (VOL_LIST.isEmpty()) {
-            VUtility.noVolInList();
+            VolunteerUtility.noVolInList();
             return;
         } else {
             VOL_LIST.show();
@@ -481,21 +487,21 @@ public class VolunteerManagement {
         boolean cont;
         do{
         
-            String id = VBoundary.inputVolID();
+            String id = VolunteerUI.inputVolID();
 
             Volunteer foundVolunteer = findVolById(id);
             if (foundVolunteer == null) {
-                VUtility.volNoExist();
+                VolunteerUtility.volNoExist();
                 cont = YN("Do you want to remove other volunteer?");
-                VBoundary.breakLine();
+                VolunteerUI.breakLine();
             } else {
                 boolean remove = VolunteerManagement.deleteVolById(id);
                 cont = false;
                 if (remove == false) {
-                    VUtility.remVolFail();
+                    VolunteerUtility.remVolFail();
                 } else {
-                    VUtility.remVolSuccess();
-                    VBoundary.displayVol(VOL_LIST);
+                    VolunteerUtility.remVolSuccess();
+                    VolunteerUI.displayVol(VOL_LIST);
                     VOL_LIST.saveToFile(VOLUNTEER_PATH);
                 }
             }
@@ -508,25 +514,25 @@ public class VolunteerManagement {
     // -----------------
     public static void searchVolunteer() {
         
-        VBoundary.disSearchVolunteer();
+        VolunteerUI.disSearchVolunteer();
         if (VOL_LIST.isEmpty()) {
-            VUtility.noVolInList();
+            VolunteerUtility.noVolInList();
             return;
         }
         
         boolean cont;
         do{
-            String id = VBoundary.inputVolID();
+            String id = VolunteerUI.inputVolID();
 
             Volunteer foundVolunteer = findVolById(id);
             if (foundVolunteer == null) {
-                VUtility.volNoExist();
+                VolunteerUtility.volNoExist();
                 cont = YN("Do you want to remove other volunteer?");
-                VBoundary.breakLine();
+                VolunteerUI.breakLine();
             } else {
                 cont = false;
-                VBoundary.disVolHeader();
-                VBoundary.disCertainVolunteer(foundVolunteer);
+                VolunteerUI.disVolHeader();
+                VolunteerUI.disCertainVolunteer(foundVolunteer);
             }
         }while(cont);
     }
@@ -536,23 +542,23 @@ public class VolunteerManagement {
     // -----------------
     public static void assignEvent() {
         
-        VBoundary.disAssignEvent();
+        VolunteerUI.disAssignEvent();
         
         if (EVENT_LIST.isEmpty()) {
-            VUtility.noEventInList();
+            VolunteerUtility.noEventInList();
             return;
         }
 
         if (VOL_LIST.isEmpty()) {
-            VUtility.noVolInList();
+            VolunteerUtility.noVolInList();
             return;
         }
 
-        VBoundary.breakLine();
-        VBoundary.displayEventTable(EVENT_LIST);
-        VBoundary.breakLine();
+        VolunteerUI.breakLine();
+        VolunteerUI.displayEventTable(EVENT_LIST);
+        VolunteerUI.breakLine();
 
-        String eventID = VBoundary.inputEventID();
+        String eventID = VolunteerUI.inputEventID();
         
         
         boolean contAddVol = volHavenAttendEvent(eventID);
@@ -560,10 +566,10 @@ public class VolunteerManagement {
             return;
         }
         
-        String volID = VBoundary.inputVolID();
+        String volID = VolunteerUI.inputVolID();
         Volunteer foundVolunteer = findVolById(volID);
         if (foundVolunteer == null) {
-            VUtility.volNoExist();
+            VolunteerUtility.volNoExist();
             return;
         } 
         
@@ -571,14 +577,14 @@ public class VolunteerManagement {
         EV_LIST.insert(ev);
         EV_LIST.saveToFile(EV_PATH);
         
-        VUtility.volAsssignEvent();
+        VolunteerUtility.volAsssignEvent();
         
         if (EV_LIST.isEmpty()) {
-            VUtility.noEVInList();
+            VolunteerUtility.noEVInList();
             return;
         }
         
-        VBoundary.displayEVTable(EV_LIST);
+        VolunteerUI.displayEVTable(EV_LIST);
     }
     
     public static<T> boolean volHavenAttendEvent(String eventID) {
@@ -591,7 +597,7 @@ public class VolunteerManagement {
         // if combine list empty
         if (EV_LIST.isEmpty()) {
 
-            VBoundary.displayVol(VOL_LIST);
+            VolunteerUI.displayVol(VOL_LIST);
             
         } else {
             Node<Volunteer> volCurrentNode = VOL_LIST.getHead();
@@ -615,11 +621,11 @@ public class VolunteerManagement {
                 // If the volunteer is not involved in the event, print their details
                 if (!isInvolved) {
                     if(show == 0){
-                        VBoundary.breakLine();
-                        VBoundary.disVolHeader();
+                        VolunteerUI.breakLine();
+                        VolunteerUI.disVolHeader();
                         show++;
                     }
-                    VBoundary.disCertainVolunteer(volCurrentNode.data);
+                    VolunteerUI.disCertainVolunteer(volCurrentNode.data);
                 }
 
                 volCurrentNode = volCurrentNode.next;
@@ -627,12 +633,12 @@ public class VolunteerManagement {
             
             // all volunteer had been assign
             if(sum == VOL_LIST.length()){
-                VUtility.allVolAttendEvent();
+                VolunteerUtility.allVolAttendEvent();
                 contAdd = false;
             }
         }
         
-        VBoundary.breakLine();
+        VolunteerUI.breakLine();
         return contAdd;
     }
     
@@ -640,12 +646,12 @@ public class VolunteerManagement {
     // Search volunteer event
     // ----------------------
     public static void searchVolunteerEvent() {
-        VBoundary.disSearchVolunteerEvent();
+        VolunteerUI.disSearchVolunteerEvent();
         
-        String volID = VBoundary.inputVolID();
+        String volID = VolunteerUI.inputVolID();
         Volunteer foundVolunteer = findVolById(volID);
         if (foundVolunteer == null) {
-            VUtility.volNoExist();
+            VolunteerUtility.volNoExist();
             return;
         } 
 
@@ -654,16 +660,16 @@ public class VolunteerManagement {
     }
     
     public static void disVolAttendedEvent(String volID){
-        VBoundary.disCurentVolunteer(volID);
+        VolunteerUI.disCurentVolunteer(volID);
         Node<EventVolunteer> evNode = EV_LIST.getHead();
         int show = 1;
         while(evNode != null){
             if (evNode.data.getVolunteerID().equals(volID)){
-                VBoundary.disVolCEventID(show, evNode.data.getEventID());
+                VolunteerUI.disVolCEventID(show, evNode.data.getEventID());
                 Node<Event> event = EVENT_LIST.getHead();
                 while(event != null){
                     if(event.data.getEventID().equals(evNode.data.getEventID())){
-                        VBoundary.disVolCEventName(event.data.getEventName());
+                        VolunteerUI.disVolCEventName(event.data.getEventName());
                     }
                     event = event.next;
                 }
@@ -672,7 +678,7 @@ public class VolunteerManagement {
             evNode = evNode.next;
         }
         if (show == 1){
-            VUtility.volNoAttendEvent();
+            VolunteerUtility.volNoAttendEvent();
         }
     }
     
@@ -680,20 +686,20 @@ public class VolunteerManagement {
     // List Volunteer
     // ---------------
     public static void listVolunteer(){
-        VBoundary.displayVol(VOL_LIST);
+        VolunteerUI.displayVol(VOL_LIST);
     }
     
     // ---------------------------------
     // Filter Volunteer base on Criteria
     // ---------------------------------
     public static void filterVolunteer(){
-        VBoundary.disFilterVolunteer();
+        VolunteerUI.disFilterVolunteer();
         if(VOL_LIST.isEmpty()){
-            VUtility.noVolInList();
+            VolunteerUtility.noVolInList();
             return;
         }
         
-        int filterSelection = VBoundary.filterMainMenu();
+        int filterSelection = VolunteerUI.filterMainMenu();
         
         switch(filterSelection){
             case 1:
@@ -703,13 +709,13 @@ public class VolunteerManagement {
                 filterAge();
                 break;
             default:
-                VUtility.invalidMenuSelection();
+                VolunteerUtility.invalidMenuSelection();
                 break;
         }
     }
     
     public static void filterGenderSelection(){
-        int filterSelection = VBoundary.disFilterGenderSelection();
+        int filterSelection = VolunteerUI.disFilterGenderSelection();
         
         switch(filterSelection){
             case 1:
@@ -719,7 +725,7 @@ public class VolunteerManagement {
                 filterGender(false);
                 break;
             default:
-                VUtility.invalidMenuSelection();
+                VolunteerUtility.invalidMenuSelection();
                 break;
         }
     }
@@ -733,32 +739,32 @@ public class VolunteerManagement {
                 gender = "male";
                 if(currentNode.data.getGender().toUpperCase().equalsIgnoreCase("MALE")){
                     if(show == 1){
-                        VBoundary.maleHeading();
-                        VBoundary.disVolHeader();
+                        VolunteerUI.maleHeading();
+                        VolunteerUI.disVolHeader();
                     }
-                    VBoundary.disCertainVolunteer(currentNode.data);
+                    VolunteerUI.disCertainVolunteer(currentNode.data);
                     show++;
                 }
             }else{
                 gender = "female";
                 if(currentNode.data.getGender().toUpperCase().equalsIgnoreCase("FEMALE")){
                     if(show == 1){
-                        VBoundary.femaleHeading();
-                        VBoundary.disVolHeader();
+                        VolunteerUI.femaleHeading();
+                        VolunteerUI.disVolHeader();
                     }
-                    VBoundary.disCertainVolunteer(currentNode.data);
+                    VolunteerUI.disCertainVolunteer(currentNode.data);
                     show++;
                 }
             }
             currentNode = currentNode.next;
         }
         if(show == 1){
-            VUtility.noCertainGenderVolunteer(gender);
+            VolunteerUtility.noCertainGenderVolunteer(gender);
         }
     }
     
     public static void filterAge(){
-        VBoundary.disFilterAge();
+        VolunteerUI.disFilterAge();
         
         int age = 0;
         boolean validAge = false;
@@ -777,17 +783,17 @@ public class VolunteerManagement {
         while(currentNode != null){
             if(currentNode.data.getAge() <= age){
                 if(show == 1){
-                    VBoundary.disAgeHeader(age);
-                    VBoundary.disVolHeader();
+                    VolunteerUI.disAgeHeader(age);
+                    VolunteerUI.disVolHeader();
                 }
-                VBoundary.disCertainVolunteer(currentNode.data);
+                VolunteerUI.disCertainVolunteer(currentNode.data);
                 show++;
             }
             currentNode = currentNode.next;
         }
         
         if(show == 1){
-            VUtility.noCertainVolBelowAge();
+            VolunteerUtility.noCertainVolBelowAge();
         }
         
     }
@@ -796,13 +802,13 @@ public class VolunteerManagement {
     // Report Generate
     // ---------------
     public static void report(){
-        VBoundary.disReport();
+        VolunteerUI.disReport();
         if(VOL_LIST.isEmpty()){
-            VUtility.noDataForReport();
+            VolunteerUtility.noDataForReport();
             return;
         }
         
-        int reportSelection = VBoundary.disReportMenu();
+        int reportSelection = VolunteerUI.disReportMenu();
         
         switch(reportSelection){
             case 1:
@@ -815,7 +821,7 @@ public class VolunteerManagement {
                 repeatVol();
                 break;
             default:
-                VUtility.invalidMenuSelection();
+                VolunteerUtility.invalidMenuSelection();
                 break;
         }
     }
@@ -837,7 +843,7 @@ public class VolunteerManagement {
             currentNode = currentNode.next;
         }
         
-        VBoundary.disGenderDistribution(sumM, sumF);
+        VolunteerUI.disGenderDistribution(sumM, sumF);
     }
     
     public static void volAgeGroup(){
@@ -871,15 +877,15 @@ public class VolunteerManagement {
             group = "old-aged adults";
         }
         
-        VBoundary.disVolAgeGroup(sumY, sumM, sumO);
-        VBoundary.ageGroupConclu(group, max);
+        VolunteerUI.disVolAgeGroup(sumY, sumM, sumO);
+        VolunteerUI.ageGroupConclu(group, max);
     }
     
     public static void printStar(int count){
         if (count > 50){
             int left = count % 50;
             for (int i = 0; i < left; i ++){
-               VBoundary.disStar();
+               VolunteerUI.disStar();
             }
         }
     }
@@ -901,9 +907,9 @@ public class VolunteerManagement {
         }
 
         if(!dupList.isEmpty()){
-            VBoundary.displayDuplicateVol(dupList);
+            VolunteerUI.displayDuplicateVol(dupList);
         }else{
-            VBoundary.displayNoDup();
+            VolunteerUI.displayNoDup();
         }
 
     }

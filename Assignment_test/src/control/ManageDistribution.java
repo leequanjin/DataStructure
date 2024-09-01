@@ -5,8 +5,8 @@
 package control;
 
 import adt.Node;
-import DonationList.Item;
-import DonationManagementSubsystem.DMControl;
+import entity.DonationManagement.Item;
+import control.DonationManagement;
 import adt.Distribution.DistributionLinkedList;
 import adt.Distribution.DistributionLinkedListInterface;
 import adt.Distribution.ItemLinkedList;
@@ -103,7 +103,7 @@ public class ManageDistribution {
         distributionList.loadFromFile(DONATION_DISTRIBUTION_PATH);
         doneeList.loadFromFile(DONEE_PATH);
 
-        LinkedListInterface<Item> allItemList = DMControl.loadAllItemIntoList();
+        LinkedListInterface<Item> allItemList = DonationManagement.loadAllItemIntoList();
 
         ItemLinkedListInterface<Item> distributionItemList = new ItemLinkedList<>();
 
@@ -122,7 +122,7 @@ public class ManageDistribution {
                         distributionMessageUI.displayInvalidDonationMessage();
                     } else {
 
-                        Item item = DMControl.findByID(itemId, allItemList);
+                        Item item = DonationManagement.findByID(itemId, allItemList);
                         if (item == null) {
                             distributionMessageUI.displayInvalidIdMessage("donation");
                         } else if (item.getAvailability().equals("Unavailable")) {

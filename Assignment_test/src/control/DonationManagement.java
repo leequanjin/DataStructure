@@ -4,14 +4,17 @@
  */
 package control;
 
-import DonationManagementSubsystem.*;
 import adt.Node;
 import adt.LinkedList;
 import adt.LinkedListInterface;
 
-import DonorSubsystem.Donor;
-import DonorSubsystem.Individual;
-import DonorSubsystem.Organization;
+import entity.Donor.Donor;
+import entity.Donor.IndividualDonor;
+import entity.Donor.OrganizationDonor;
+
+import boundary.DonationManagementUI;
+import utility.DonationManagementUtility;
+import dao.DAO;
 
 import entity.DonationManagement.Item;
 import entity.DonationManagement.Money;
@@ -73,7 +76,7 @@ public class DonationManagement {
         boolean contDM = true;
         
         while(contDM == true){
-            int dmChoice = DMUI.donationManagementMainMenu();
+            int dmChoice = DonationManagementUI.donationManagementMainMenu();
             switch (dmChoice) {
                 case 1:
                     addDonation();
@@ -111,7 +114,7 @@ public class DonationManagement {
             
             contDM = YN("Do you want to continue manage donation? (Back to Donation Management main menu)");
             if (contDM == true){
-                DMUI.breakLine();
+                DonationManagementUI.breakLine();
             }
         }
     }
@@ -135,15 +138,15 @@ public class DonationManagement {
         for (int i = 0; i < fileList.length; i++) {
             boolean fileExist = DAO.chkFileExist(fileList[i]);
             if (!fileExist) {
-                DMUtility.fileNoExist(fileList[i]);
+                DonationManagementUtility.fileNoExist(fileList[i]);
                 boolean createFile = DAO.createFile(fileList[i]);
                 if (createFile) {
-                    DMUtility.createFileSuccesfully(fileList[i]);
+                    DonationManagementUtility.createFileSuccesfully(fileList[i]);
                 } else {
-                    DMUtility.createFileFail(fileList[i]);
+                    DonationManagementUtility.createFileFail(fileList[i]);
                 }
             } else{
-                //DMUtility.fileExist(fileList[i]);
+                //DonationManagementUtility.fileExist(fileList[i]);
             }
         }
         
@@ -216,7 +219,7 @@ public class DonationManagement {
     
     public static int menuIntReturn(String[] selectionList) {
         
-        DMUI.displayMenu(selectionList);
+        DonationManagementUI.displayMenu(selectionList);
         
         int intInput = 0;
         boolean validInput = false;
@@ -245,8 +248,8 @@ public class DonationManagement {
             int intInput = Integer.parseInt(input);
             validInput = intSelectionValidation(intInput, initial, end);
             if (!validInput) {
-                DMUtility.intNotInRange(initial, end);
-                DMUI.reEnter();
+                DonationManagementUtility.intNotInRange(initial, end);
+                DonationManagementUI.reEnter();
             }
             
         }
@@ -258,12 +261,16 @@ public class DonationManagement {
         
         boolean validInput = chkIntInput(input);
 
-        // chk is within the integer range
-        int intInput = Integer.parseInt(input);
-        validInput = intInput > 0;
-        if (!validInput) {
-            DMUtility.intCannotNeg();
-            DMUI.reEnter();
+        if(validInput){
+        
+            // chk is within the integer range
+            int intInput = Integer.parseInt(input);
+            validInput = intInput > 0;
+            if (!validInput) {
+                DonationManagementUtility.intCannotNeg();
+                DonationManagementUI.reEnter();
+            }
+            
         }
 
         return validInput;
@@ -279,15 +286,15 @@ public class DonationManagement {
             // chk is it an integer
             validInput = chkInt(input);
             if (!validInput) {
-                DMUtility.invalidIntInput();
+                DonationManagementUtility.invalidIntInput();
             }
 
         } else {
-            DMUtility.emptyInputErrorMsg();
+            DonationManagementUtility.emptyInputErrorMsg();
         }
 
         if (!validInput) {
-            DMUI.reEnter();
+            DonationManagementUI.reEnter();
         }
 
         return validInput;
@@ -318,7 +325,7 @@ public class DonationManagement {
         boolean validInput = false;
         String input = null;
 
-        DMUI.inputYN(sentence);
+        DonationManagementUI.inputYN(sentence);
         while (!validInput) {
 
             input = (scan.nextLine()).toUpperCase().trim();
@@ -329,14 +336,14 @@ public class DonationManagement {
                 String[] inputList = {"Y", "N"};
                 validInput = chkSpecificWord(inputList, input);
                 if (!validInput) {
-                    DMUtility.enterYNOnly();
+                    DonationManagementUtility.enterYNOnly();
                 }
             } else {
-                DMUtility.emptyInputErrorMsg();
+                DonationManagementUtility.emptyInputErrorMsg();
             }
 
             if (!validInput) {
-                DMUI.reEnter();
+                DonationManagementUI.reEnter();
             }
 
         }
@@ -392,10 +399,10 @@ public class DonationManagement {
         boolean validID = false;
         
         if (inputID.isEmpty()) {
-            DMUtility.emptyInputErrorMsg();
+            DonationManagementUtility.emptyInputErrorMsg();
         } else {
             if (inputID.length() != 7) {
-                DMUtility.invalidLength();
+                DonationManagementUtility.invalidLength();
             } else {
                 inputID = inputID.substring(0, 2).toUpperCase() + inputID.substring(2, 7);
 
@@ -406,13 +413,13 @@ public class DonationManagement {
                 prefix.equals("AI") || prefix.equals("AO") || prefix.equals("AS") ){
                     validID = true;
                 }else{
-                    DMUtility.invalidIDFormat("AA");
+                    DonationManagementUtility.invalidIDFormat("AA");
                 }
             }
         }
                 
         if(!validID){
-            DMUI.reEnter();
+            DonationManagementUI.reEnter();
         }
         
         return validID;
@@ -423,38 +430,38 @@ public class DonationManagement {
         Node<Item> currentNode = list.getHead();
         
         if(list.isEmpty()){
-            DMUtility.noItemInList();
+            DonationManagementUtility.noItemInList();
             return;
         }
         
         int count = 1;
         while(currentNode != null){
-            DMUI.printedItemCount(count);
-            DMUI.commonItemHeader();
+            DonationManagementUI.printedItemCount(count);
+            DonationManagementUI.commonItemHeader();
             if(currentNode.data instanceof Money){
-                    DMUI.commonMoneyHeader();
+                    DonationManagementUI.commonMoneyHeader();
                 if (currentNode.data instanceof Bank){
-                    DMUI.bankHeader();
+                    DonationManagementUI.bankHeader();
                 }
             }else {
 
-                DMUI.commonPhyItemHeader();
+                DonationManagementUI.commonPhyItemHeader();
                 if (currentNode.data instanceof Food){
-                    DMUI.commonFoodHeader();
+                    DonationManagementUI.commonFoodHeader();
                 }else{ // Apparel
-                    DMUI.commonAppHeader();
+                    DonationManagementUI.commonAppHeader();
                     if (currentNode.data instanceof Shoes){
-                        DMUI.commonShoeHeader();
+                        DonationManagementUI.commonShoeHeader();
                     }
                 }
             }
             
-            DMUI.breakLine();
-            DMUI.printNode(currentNode);
+            DonationManagementUI.breakLine();
+            DonationManagementUI.printNode(currentNode);
             
             count++;
             currentNode = currentNode.next;
-            DMUI.breakLine();
+            DonationManagementUI.breakLine();
         }
     }
     
@@ -465,7 +472,7 @@ public class DonationManagement {
         list.removeEmptyData();
         
         if(list.isEmpty()){
-            DMUtility.noSuchItem();
+            DonationManagementUtility.noSuchItem();
             return;
         }
         
@@ -485,7 +492,7 @@ public class DonationManagement {
         list.removeEmptyData();
         
         if(list.isEmpty()){
-            DMUtility.noSuchItem();
+            DonationManagementUtility.noSuchItem();
             return;
         }
         
@@ -512,7 +519,7 @@ public class DonationManagement {
         list.removeEmptyData();
         
         if(list.isEmpty()){
-            DMUtility.noSuchItem();
+            DonationManagementUtility.noSuchItem();
             return;
         }
         
@@ -525,20 +532,20 @@ public class DonationManagement {
         int stop = 1;
         int pageNum = 1;
         
-        DMUI.startOfPage(pageNum);
+        DonationManagementUI.startOfPage(pageNum);
         headerIdentifier(currentNode);
-        DMUI.breakLine();
+        DonationManagementUI.breakLine();
         while(currentNode != null){
-            DMUI.printNode(currentNode);
+            DonationManagementUI.printNode(currentNode);
             
             if(stop % 50 == 0 && currentNode.next != null){
-                DMUI.endOfPage(pageNum);
-                boolean cont = YN(DMUI.showMorePgQ());
+                DonationManagementUI.endOfPage(pageNum);
+                boolean cont = YN(DonationManagementUI.showMorePgQ());
                 if (cont){
                     pageNum++;
-                    DMUI.startOfPage(pageNum);
+                    DonationManagementUI.startOfPage(pageNum);
                     headerIdentifier(currentNode);
-                    DMUI.breakLine();
+                    DonationManagementUI.breakLine();
                     stop = 0;
                 }else{
                     return;
@@ -551,21 +558,21 @@ public class DonationManagement {
     }
     
     public static void headerIdentifier(Node<Item> currentNode){
-        DMUI.commonItemHeader();
+        DonationManagementUI.commonItemHeader();
         if(currentNode.data instanceof Money){
-            DMUI.commonMoneyHeader();
+            DonationManagementUI.commonMoneyHeader();
             if (currentNode.data instanceof Bank){
-                DMUI.bankHeader();
+                DonationManagementUI.bankHeader();
             }
         }else {
         
-            DMUI.commonPhyItemHeader();
+            DonationManagementUI.commonPhyItemHeader();
             if (currentNode.data instanceof Food){
-                DMUI.commonFoodHeader();
+                DonationManagementUI.commonFoodHeader();
             }else{ // Apparel
-                DMUI.commonAppHeader();
+                DonationManagementUI.commonAppHeader();
                 if (currentNode.data instanceof Shoes){
-                    DMUI.commonShoeHeader();
+                    DonationManagementUI.commonShoeHeader();
                 }
             }
         }
@@ -574,30 +581,30 @@ public class DonationManagement {
     public static void printSpecificItem(Item item){
         
         if (item == null){
-            DMUtility.noSuchItem();
+            DonationManagementUtility.noSuchItem();
             return;
         }
         
-        DMUI.commonItemHeader();
+        DonationManagementUI.commonItemHeader();
         if(item instanceof Money){
-            DMUI.commonMoneyHeader();
+            DonationManagementUI.commonMoneyHeader();
             if (item instanceof Bank){
-                DMUI.bankHeader();
+                DonationManagementUI.bankHeader();
             }
         }else {
         
-            DMUI.commonPhyItemHeader();
+            DonationManagementUI.commonPhyItemHeader();
             if (item instanceof Food){
-                DMUI.commonFoodHeader();
+                DonationManagementUI.commonFoodHeader();
             }else{ // Apparel
-                DMUI.commonAppHeader();
+                DonationManagementUI.commonAppHeader();
                 if (item instanceof Shoes){
-                    DMUI.commonShoeHeader();
+                    DonationManagementUI.commonShoeHeader();
                 }
             }
         }
 
-        DMUI.printItem(item);
+        DonationManagementUI.printItem(item);
     }
     
     // -------------------------
@@ -610,14 +617,14 @@ public class DonationManagement {
         while(contAddDonation){
             
             if(donorList.isEmpty()){
-                DMUtility.noDonorInList();
-                DMUtility.addFunctionDown();
+                DonationManagementUtility.noDonorInList();
+                DonationManagementUtility.addFunctionDown();
                 return;
             }
                 
-            DMUI.addDonation(donorList);
+            DonationManagementUI.addDonation(donorList);
             
-            DMUI.inputDonorID();
+            DonationManagementUI.inputDonorID();
             String dID;
             boolean contInputID = false;
             do{
@@ -625,15 +632,15 @@ public class DonationManagement {
                 
                 Donor donor = chkDonorExist(dID, donorList);
                 if (donor == null){// if does not exist, enter other
-                    DMUtility.donorNoExist();
-                    int selectionToCont = DMUI.donorNoExistSelection();
+                    DonationManagementUtility.donorNoExist();
+                    int selectionToCont = DonationManagementUI.donorNoExistSelection();
                     if (selectionToCont == 1){
                         contInputID = true;
                     }else{
                         donationManagementMainMenu();
                     }
                 }else{
-                    DMUI.disTempDonorData(donor);
+                    DonationManagementUI.disTempDonorData(donor);
                 }
                 
             }while(contInputID);
@@ -644,15 +651,15 @@ public class DonationManagement {
 
                 addItem(dID);
 
-                contAddItem = YN(DMUI.contAddItemForSameDonor());
+                contAddItem = YN(DonationManagementUI.contAddItemForSameDonor());
                 if (contAddItem == false){
                     break;
                 }
             }
 
-            contAddDonation = YN(DMUI.contAddItemForDissDonor());
+            contAddDonation = YN(DonationManagementUI.contAddItemForDissDonor());
             if(contAddDonation == true){
-                DMUI.breakLine();
+                DonationManagementUI.breakLine();
             } 
         }
         
@@ -682,17 +689,17 @@ public class DonationManagement {
                     // chk if correct format
                     validID = donorIdFormat(id);
                     if (!validID) {
-                        DMUtility.invalidIDFormat("DNR");
+                        DonationManagementUtility.invalidIDFormat("DNR");
                     }
                 } else {
-                    DMUtility.invalidLength();
+                    DonationManagementUtility.invalidLength();
                 }
             } else {
-                DMUtility.emptyInputErrorMsg();
+                DonationManagementUtility.emptyInputErrorMsg();
             }
 
             if (!validID) {
-                DMUI.reEnter();
+                DonationManagementUI.reEnter();
             }
             
         }while(!validID);
@@ -717,7 +724,7 @@ public class DonationManagement {
             }
             
         }else{
-            DMUtility.noDonorInList();
+            DonationManagementUtility.noDonorInList();
         }
         
         return null;
@@ -725,7 +732,7 @@ public class DonationManagement {
     
     public static void addItem(String dID){
         
-        DMUI.numOfItemToAdd();
+        DonationManagementUI.numOfItemToAdd();
         int numItem;
         String numSItem = null;
         boolean validNumItem = false;
@@ -740,7 +747,7 @@ public class DonationManagement {
         
         for (int i = 0; i< numItem; i++){
             
-            int itemCat = DMUI.itemCatMenu(i);
+            int itemCat = DonationManagementUI.itemCatMenu(i);
             
             switch(itemCat){
                 case 1:
@@ -756,15 +763,15 @@ public class DonationManagement {
                     inputApparel(newItemList, dID);
                     break;
                 default:
-                    DMUtility.invalidMenuSelection();
+                    DonationManagementUtility.invalidMenuSelection();
                     break;
             }
         }
         
-        DMUtility.itemAdded();
+        DonationManagementUtility.itemAdded();
         
         //show all item to be added
-        DMUI.disAddedItemHeader();
+        DonationManagementUI.disAddedItemHeader();
         printEachTable(newItemList);
     }
     
@@ -810,14 +817,14 @@ public class DonationManagement {
     
     public static double amountValidation(){
         
-        DMUI.inputAmtDonated();
+        DonationManagementUI.inputAmtDonated();
         double amt = 0;
         boolean validAmt = false;
         while(validAmt == false){
             String SAmt = scan.nextLine();
             if(SAmt.isEmpty()){
 
-                DMUtility.emptyInputErrorMsg();
+                DonationManagementUtility.emptyInputErrorMsg();
 
             }else{
                 try {
@@ -825,7 +832,7 @@ public class DonationManagement {
 
                     if (amt <= 0) {
                         
-                        DMUtility.invalidAmt();
+                        DonationManagementUtility.invalidAmt();
 
                     } else {
                         validAmt = true; 
@@ -833,20 +840,20 @@ public class DonationManagement {
 
                 } catch (NumberFormatException e) {
 
-                    DMUtility.invalidInputType("amount");
+                    DonationManagementUtility.invalidInputType("amount");
 
                 }
             }
             
             if (!validAmt){
-                DMUI.reEnter();
+                DonationManagementUI.reEnter();
             }
         }
         return amt;
     }
     
     public static String bankTypeValidation(){
-        int bankType = DMUI.inputBankMenu();
+        int bankType = DonationManagementUI.inputBankMenu();
 
         String bankName = null;
         switch(bankType){
@@ -875,7 +882,7 @@ public class DonationManagement {
                 bankName = "RHB Bank";
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
         }
         
@@ -890,26 +897,26 @@ public class DonationManagement {
     public static void inputFood(LinkedListInterface<Item> newItemList, String dID){
         
         // food category
-        int foodCat = DMUI.inputFoodCat();
+        int foodCat = DonationManagementUI.inputFoodCat();
         
         switch(foodCat){
             case 1:
-                DMUI.inputBAHeader();
+                DonationManagementUI.inputBAHeader();
                 break;
             case 2:
-                DMUI.inputBOHeader();
+                DonationManagementUI.inputBOHeader();
                 break;
             case 3:
-                DMUI.inputCHeader();
+                DonationManagementUI.inputCHeader();
                 break;
             case 4:
-                DMUI.inputDHeader();
+                DonationManagementUI.inputDHeader();
                 break;
             case 5:
-                DMUI.inputEHeader();
+                DonationManagementUI.inputEHeader();
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
         }
         
@@ -920,26 +927,26 @@ public class DonationManagement {
     public static void inputApparel(LinkedListInterface<Item> newItemList, String dID){
         
         // apparel category
-        int appCat = DMUI.inputAppCat();
+        int appCat = DonationManagementUI.inputAppCat();
         
         switch(appCat){
             case 1: 
-                DMUI.inputJHeader();
+                DonationManagementUI.inputJHeader();
                 break;
             case 2:
-                DMUI.inputPHeader();
+                DonationManagementUI.inputPHeader();
                 break;
             case 3:
-                DMUI.inputShirtHeader();
+                DonationManagementUI.inputShirtHeader();
                 break;
             case 4:
-                DMUI.inputShoesHeader();
+                DonationManagementUI.inputShoesHeader();
                 break;
             case 5:
-                DMUI.inputSockHeader();
+                DonationManagementUI.inputSockHeader();
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
         }
         
@@ -949,13 +956,13 @@ public class DonationManagement {
     
     public static void commonItemInput(LinkedListInterface<Item> newItemList, int detailCat, int itemCat, String dID){
         
-        DMUI.mustEnterMsg();
+        DonationManagementUI.mustEnterMsg();
         
         // quantity
         int qty = qtyValidation();
         
         //note
-        DMUI.inputRemark();
+        DonationManagementUI.inputRemark();
         String note = scan.nextLine().trim();
         if (note.isEmpty()){
             note = "None";
@@ -976,7 +983,7 @@ public class DonationManagement {
     
     public static int qtyValidation(){
         
-        DMUI.inputQty();
+        DonationManagementUI.inputQty();
         int qty = 0;
         boolean validQty = false;
         while(validQty == false){
@@ -984,7 +991,7 @@ public class DonationManagement {
             
             if(qtyS.isEmpty()){
 
-                DMUtility.emptyInputErrorMsg();
+                DonationManagementUtility.emptyInputErrorMsg();
 
             }else{
                 try {
@@ -992,11 +999,11 @@ public class DonationManagement {
 
                     if (qty == 0) {
                         
-                        DMUtility.invalidQtyZ();
+                        DonationManagementUtility.invalidQtyZ();
                         
                     } else if(qty  < 0){
                         
-                        DMUtility.invalidQtyNeg();
+                        DonationManagementUtility.invalidQtyNeg();
                         
                     }else {
                         validQty = true; 
@@ -1004,13 +1011,13 @@ public class DonationManagement {
 
                 } catch (NumberFormatException e) {
 
-                    DMUtility.invalidInputType("quantity");
+                    DonationManagementUtility.invalidInputType("quantity");
 
                 }
             }
             
             if(!validQty){
-                DMUI.reEnter();
+                DonationManagementUI.reEnter();
             }
         }
         return qty;
@@ -1119,7 +1126,7 @@ public class DonationManagement {
                 list.saveToFile(ESS_PATH);
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1127,7 +1134,7 @@ public class DonationManagement {
     
     public static Date expiryDateValidation(LinkedListInterface<Item> newItemList, String dID){
         
-        DMUI.inputExpDate();
+        DonationManagementUI.inputExpDate();
         Date expiryDate = null;
         boolean validExp = false;
         
@@ -1136,7 +1143,7 @@ public class DonationManagement {
             
             if (exp.isEmpty()){
                 
-                DMUtility.emptyInputErrorMsg();
+                DonationManagementUtility.emptyInputErrorMsg();
                 
             } else{
                 
@@ -1150,7 +1157,7 @@ public class DonationManagement {
                     Date today = new Date();
 
                     if (expiryDate.before(today)) {
-                        int selection = DMUI.inputExpAction();
+                        int selection = DonationManagementUI.inputExpAction();
                         
                         if(selection == 1){
                             expiryDateValidation(newItemList, dID);
@@ -1163,13 +1170,13 @@ public class DonationManagement {
                     }
                     
                 } catch (ParseException e) {
-                    DMUtility.invalidDateFormat();
+                    DonationManagementUtility.invalidDateFormat();
                 }
                 
             }
             
             if(!validExp){
-                DMUI.reEnter();
+                DonationManagementUI.reEnter();
             }
         }
         
@@ -1179,7 +1186,7 @@ public class DonationManagement {
     
     public static int weightValidation(){
         
-        DMUI.inputWeight();
+        DonationManagementUI.inputWeight();
         
         int w = 0;
         boolean validW = false;
@@ -1188,7 +1195,7 @@ public class DonationManagement {
             
             if(wS.isEmpty()){
 
-                DMUtility.emptyInputErrorMsg();
+                DonationManagementUtility.emptyInputErrorMsg();
 
             }else{
                 try {
@@ -1196,7 +1203,7 @@ public class DonationManagement {
 
                     if (w == 0) {
                         
-                        DMUtility.invalidWZ();
+                        DonationManagementUtility.invalidWZ();
 
                     } else if(w  < 0){
                         System.out.print("Enter again: ");
@@ -1206,12 +1213,12 @@ public class DonationManagement {
 
                 } catch (NumberFormatException e) {
 
-                    DMUtility.invalidInputType("weight");
+                    DonationManagementUtility.invalidInputType("weight");
 
                 }
             }
             if(!validW){
-                DMUI.reEnter();
+                DonationManagementUI.reEnter();
             }
         }
         
@@ -1220,7 +1227,7 @@ public class DonationManagement {
     
     public static String foodStaValidation(){
         
-        int foodSta = DMUI.inputFoodStatus();
+        int foodSta = DonationManagementUI.inputFoodStatus();
         
         String foodStaName = null;
         switch(foodSta){
@@ -1231,7 +1238,7 @@ public class DonationManagement {
                 foodStaName = "Good";
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1241,7 +1248,7 @@ public class DonationManagement {
     public static String inputBaked() {
         
         // baked food type
-        int type = DMUI.inputBakedT();
+        int type = DonationManagementUI.inputBakedT();
         
         String name = null;
         switch(type){
@@ -1252,7 +1259,7 @@ public class DonationManagement {
                 name = "Crackers";
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1262,7 +1269,7 @@ public class DonationManagement {
     public static String inputBoxed(){
         
         // boxed food type
-        int type = DMUI.inputBoxedT();
+        int type = DonationManagementUI.inputBoxedT();
         
         String name = null;
         switch(type){
@@ -1273,7 +1280,7 @@ public class DonationManagement {
                 name = "Snacks";
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1283,7 +1290,7 @@ public class DonationManagement {
     public static String inputCanned(){
         
         // canned food type
-        int type = DMUI.inputCannedT();
+        int type = DonationManagementUI.inputCannedT();
         
         String name = null;
         switch(type){
@@ -1315,7 +1322,7 @@ public class DonationManagement {
                 name = "Tuna can";
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1325,7 +1332,7 @@ public class DonationManagement {
     public static String inputDry(){
         
         // dry food type
-        int type = DMUI.inputDryT();
+        int type = DonationManagementUI.inputDryT();
         
         String name = null;
         switch(type){
@@ -1342,7 +1349,7 @@ public class DonationManagement {
                 name = "Rice";
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1352,7 +1359,7 @@ public class DonationManagement {
     public static String inputEss(){
         
         // essentials type
-        int type = DMUI.inputEssT();
+        int type = DonationManagementUI.inputEssT();
         
         String name = null;
        
@@ -1370,7 +1377,7 @@ public class DonationManagement {
                 name = "Sugar";
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1476,13 +1483,13 @@ public class DonationManagement {
                 list.saveToFile(SOCKS_PATH);
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
         }
     }
     
     public static String sizeValidation(){
-        int appSize = DMUI.inputAppSize();
+        int appSize = DonationManagementUI.inputAppSize();
         
         String size = null;
         switch(appSize){
@@ -1505,7 +1512,7 @@ public class DonationManagement {
                 size = "Free Size";
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1514,7 +1521,7 @@ public class DonationManagement {
     
     public static String shoesSizeValidation(){
         
-        DMUI.inputShoeSize();
+        DonationManagementUI.inputShoeSize();
         String sizeStr = null;
         boolean validSize = false;
         while(validSize == false){
@@ -1523,7 +1530,7 @@ public class DonationManagement {
             validSize = chkIntInputInRange(sizeStr, 1, 16);
             
             if(!validSize){
-                DMUI.reEnter();
+                DonationManagementUI.reEnter();
             }
         }
         
@@ -1532,7 +1539,7 @@ public class DonationManagement {
     
     public static String colorValidation(){
         
-        int appColor = DMUI.inputColor();
+        int appColor = DonationManagementUI.inputColor();
         
         String color = null;
         switch(appColor){
@@ -1564,7 +1571,7 @@ public class DonationManagement {
                 color = "Black";
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1573,7 +1580,7 @@ public class DonationManagement {
     
     public static String conditionValidation(){
         
-        int appCon = DMUI.inputAppCon();
+        int appCon = DonationManagementUI.inputAppCon();
         
         String condition = null;
         switch(appCon){
@@ -1590,7 +1597,7 @@ public class DonationManagement {
                 condition = "Poor";
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1598,7 +1605,7 @@ public class DonationManagement {
     }
     
     public static String brandValidation(){
-        int appBrand = DMUI.inputAppBrand();
+        int appBrand = DonationManagementUI.inputAppBrand();
         
         String brand = null;
         switch(appBrand){
@@ -1621,7 +1628,7 @@ public class DonationManagement {
                 brand = "Others";
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1630,7 +1637,7 @@ public class DonationManagement {
     
     public static String inputShoes(){
         
-        int s = DMUI.inputShoesT();
+        int s = DonationManagementUI.inputShoesT();
         
         switch(s){
             case 1: 
@@ -1638,7 +1645,7 @@ public class DonationManagement {
             case 2:
                 return "Sport shoes";
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 return "Unknown";
         }
     }
@@ -1647,7 +1654,7 @@ public class DonationManagement {
     // Part 2: Remove a donation
     // -------------------------
     public static void remDonation(){
-        int itemRem = DMUI.inputRemCat();
+        int itemRem = DonationManagementUI.inputRemCat();
         
         switch(itemRem){
             case 1: 
@@ -1657,7 +1664,7 @@ public class DonationManagement {
                 remItem(CASH_PATH, "MC");
                 break;
             case 3:
-                int foodCat = DMUI.inputFoodCat();
+                int foodCat = DonationManagementUI.inputFoodCat();
 
                 switch(foodCat){
                     case 1: 
@@ -1676,12 +1683,12 @@ public class DonationManagement {
                         remItem(ESS_PATH, "FE");
                         break;
                     default:
-                        DMUtility.invalidMenuSelection();
+                        DonationManagementUtility.invalidMenuSelection();
                         break;
                 }
                 break;
             case 4:
-                int appCat = DMUI.inputAppCat();
+                int appCat = DonationManagementUI.inputAppCat();
 
                 switch(appCat){
                     case 1: 
@@ -1700,12 +1707,12 @@ public class DonationManagement {
                         remItem(SOCKS_PATH, "AS");
                         break;
                     default:
-                        DMUtility.invalidMenuSelection();
+                        DonationManagementUtility.invalidMenuSelection();
                         break;
                 }
                 break;
             default:
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
                 break;
                 
         }
@@ -1716,8 +1723,8 @@ public class DonationManagement {
         list.loadFromFile(filePath);
             
         if(list.isEmpty()){
-            DMUtility.noSuchItem();
-            boolean cont = YN(DMUI.contRemoveQ());
+            DonationManagementUtility.noSuchItem();
+            boolean cont = YN(DonationManagementUI.contRemoveQ());
             if (cont == true){
                 remDonation();
             }else{
@@ -1729,8 +1736,8 @@ public class DonationManagement {
             }else{
                 printSameTable(filePath, true);
             }
-            DMUI.remItemHeader();
-            DMUI.inputItemID();
+            DonationManagementUI.remItemHeader();
+            DonationManagementUI.inputItemID();
             String inputID = null;
             boolean validID = false;
             while (!validID) {
@@ -1754,7 +1761,7 @@ public class DonationManagement {
                     printSameTable(filePath, true);
                 }
             }else{
-                DMUtility.itemNoExist();
+                DonationManagementUtility.itemNoExist();
             }
         }
         
@@ -1763,14 +1770,14 @@ public class DonationManagement {
     public static<T> void deleteById(String id, LinkedListInterface<Item> list) {
         if (list.getHead() == null) {
             
-            DMUtility.noSuchItem();
+            DonationManagementUtility.noSuchItem();
             return;
             
         } else if (list.getHead().data.getId().equals(id)) {
             // First id match
             list.setHead(list.getHead().next);
 
-            DMUtility.itemRemove();
+            DonationManagementUtility.itemRemove();
             
         } else {
             Node<Item> currentNode = list.getHead();
@@ -1779,13 +1786,13 @@ public class DonationManagement {
 
                 if (currentNode.next.data.getId().equals(id)) {
                     currentNode.next = currentNode.next.next;
-                    DMUtility.itemRemove();
+                    DonationManagementUtility.itemRemove();
                     return;
                 } 
                 currentNode = currentNode.next;
             }
              
-            DMUtility.itemRemoveFail();
+            DonationManagementUtility.itemRemoveFail();
         }
     }
     
@@ -1794,11 +1801,11 @@ public class DonationManagement {
     // -------------------------------
     public static void searchDonation() {
         
-        DMUI.searchIDHeader();
+        DonationManagementUI.searchIDHeader();
         boolean contSearch = true;
         while(contSearch){
             
-            DMUI.inputItemID();
+            DonationManagementUI.inputItemID();
             
             String inputID = null;
             boolean validID = false;
@@ -1810,7 +1817,7 @@ public class DonationManagement {
             
             searchingID(inputID);
             
-            contSearch = YN(DMUI.contSearchQ());
+            contSearch = YN(DonationManagementUI.contSearchQ());
             if (contSearch){
                 System.out.println();
             }
@@ -1859,7 +1866,7 @@ public class DonationManagement {
                 filePath = SOCKS_PATH;
                 break;
             default:
-                DMUtility.invalidID();
+                DonationManagementUtility.invalidID();
                 break;
         }
 
@@ -1870,11 +1877,11 @@ public class DonationManagement {
             Item item = findByID(inputID, list);
             if (item != null) {
                 // show that particular item
-                DMUI.printDetailHeader();
+                DonationManagementUI.printDetailHeader();
                 printSpecificItem(item);
                 
             } else {
-                DMUtility.itemNoExist();
+                DonationManagementUtility.itemNoExist();
             }
         }
         
@@ -1887,8 +1894,8 @@ public class DonationManagement {
         
         boolean contAmend = true;
         while(contAmend == true){
-            DMUI.amendDonationHeader();
-            DMUI.inputItemID();
+            DonationManagementUI.amendDonationHeader();
+            DonationManagementUI.inputItemID();
 
             String id = null;
             boolean validID = false;
@@ -1957,7 +1964,7 @@ public class DonationManagement {
                     amendList = cloth;
                     break;
                 default:
-                    DMUtility.invalidMenuSelection();
+                    DonationManagementUtility.invalidMenuSelection();
                     break;
             }
             
@@ -1968,7 +1975,7 @@ public class DonationManagement {
 
                 boolean contItem = true;
                 do{
-                    DMUI.optionAvailable();
+                    DonationManagementUI.optionAvailable();
                     int amendOption = menuIntReturn(amendList);
 
                     if (item instanceof Money){
@@ -1981,10 +1988,10 @@ public class DonationManagement {
 
                     }
 
-                    DMUtility.itemUpdated();
+                    DonationManagementUtility.itemUpdated();
                     printSpecificItem(item);
                     
-                    contItem = YN(DMUI.contAmendSameItemQ());
+                    contItem = YN(DonationManagementUI.contAmendSameItemQ());
                     
                 }while(contItem == true);
 
@@ -1992,7 +1999,7 @@ public class DonationManagement {
 
             list.saveToFile(filePath);
             
-            contAmend = YN(DMUI.contAmendOtherQ());
+            contAmend = YN(DonationManagementUI.contAmendOtherQ());
             
         }
         
@@ -2016,7 +2023,7 @@ public class DonationManagement {
         Scanner scan = new Scanner(System.in);
         
         if(amendOption == 1){
-            DMUI.inputRemark();
+            DonationManagementUI.inputRemark();
             String note = scan.nextLine();
             ((PhysicalItem) item).setNote(note);
         }
@@ -2035,7 +2042,7 @@ public class DonationManagement {
         if (amendOption == 2){
             
             // expiry date
-            DMUI.inputExpDate();
+            DonationManagementUI.inputExpDate();
             Date expiryDate = null;
             boolean validExp = false;
 
@@ -2044,8 +2051,8 @@ public class DonationManagement {
 
                 if (exp.isEmpty()){
 
-                    DMUtility.emptyInputErrorMsg();
-                    DMUI.reEnter();
+                    DonationManagementUtility.emptyInputErrorMsg();
+                    DonationManagementUI.reEnter();
 
                 } else{
 
@@ -2060,16 +2067,16 @@ public class DonationManagement {
 
                         if (expiryDate.before(today)) {
 
-                            DMUtility.foodExpired();
-                            int selection = DMUI.contUpdateDateMenu();
+                            DonationManagementUtility.foodExpired();
+                            int selection = DonationManagementUI.contUpdateDateMenu();
 
                             if(selection == 1){
                                 
-                                DMUI.inputDateAgain();
+                                DonationManagementUI.inputDateAgain();
                                 
                             }else if(selection == 2){
                                 
-                                boolean cont = YN(DMUI.contAmendOtherQ());
+                                boolean cont = YN(DonationManagementUI.contAmendOtherQ());
                                 if (cont == true){
                                     amendDonation();
                                 }else{
@@ -2082,7 +2089,7 @@ public class DonationManagement {
                                 list.loadFromFile(filePath);
                                 if (list.isEmpty()){
                                     
-                                    DMUtility.noSuchItem();
+                                    DonationManagementUtility.noSuchItem();
                                     
                                 }else{
                                     deleteById(item.getId(), list);
@@ -2096,8 +2103,8 @@ public class DonationManagement {
                         }
 
                     } catch (ParseException e) {
-                        DMUtility.invalidDateFormat();
-                        DMUI.reEnter();
+                        DonationManagementUtility.invalidDateFormat();
+                        DonationManagementUI.reEnter();
                     }
 
                 }
@@ -2129,7 +2136,7 @@ public class DonationManagement {
             } else if(item instanceof Essentials){
                 detail = inputEss();
             }else{
-                DMUtility.invalidMenuSelection();
+                DonationManagementUtility.invalidMenuSelection();
             }
             
             if(detail != null){
@@ -2180,43 +2187,43 @@ public class DonationManagement {
     // -----------------------------------------
     public static void trackItemByCategory(){
         
-        DMUI.TIMoneyHeader();
-        DMUI.TIBankHeader();
+        DonationManagementUI.TIMoneyHeader();
+        DonationManagementUI.TIBankHeader();
         printTable(BANK_PATH);
         
-        DMUI.TICashHeader();
+        DonationManagementUI.TICashHeader();
         printTable(CASH_PATH);
         
-        DMUI.TIFoodHeader();
-        DMUI.TIBakedHeader();
+        DonationManagementUI.TIFoodHeader();
+        DonationManagementUI.TIBakedHeader();
         printTable(BAKED_PATH);
         
-        DMUI.TIBoxedHeader();
+        DonationManagementUI.TIBoxedHeader();
         printTable(BOXED_PATH);
         
-        DMUI.TICannedHeader();
+        DonationManagementUI.TICannedHeader();
         printTable(CANNED_PATH);
         
-        DMUI.TIDryHeader();
+        DonationManagementUI.TIDryHeader();
         printTable(DRY_PATH);
         
-        DMUI.TIEssHeader();
+        DonationManagementUI.TIEssHeader();
         printTable(ESS_PATH);
         
-        DMUI.TIAppHeader();
-        DMUI.TIJacketHeader();
+        DonationManagementUI.TIAppHeader();
+        DonationManagementUI.TIJacketHeader();
         printTable(JACKET_PATH);
         
-        DMUI.TIPantHeader();
+        DonationManagementUI.TIPantHeader();
         printTable(PANT_PATH);
         
-        DMUI.TIShirtHeader();
+        DonationManagementUI.TIShirtHeader();
         printTable(SHIRT_PATH);
         
-        DMUI.TIShoesHeader();
+        DonationManagementUI.TIShoesHeader();
         printTable(SHOES_PATH);
         
-        DMUI.TISocksHeader();
+        DonationManagementUI.TISocksHeader();
         printTable(SOCKS_PATH);
         
         // total item donated, total money donated
@@ -2230,37 +2237,37 @@ public class DonationManagement {
         LinkedListInterface<Donor> donorList = new LinkedList<>();
         donorList.loadFromFile(DONOR_PATH);
 
-        LinkedListInterface<Individual> individualList = donorList.filterByCategoryIntoLinkedListInterface(Individual.class);
-        LinkedListInterface<Organization> organizationList = donorList.filterByCategoryIntoLinkedListInterface(Organization.class);
+        LinkedListInterface<IndividualDonor> individualList = donorList.filterByCategoryIntoLinkedListInterface(IndividualDonor.class);
+        LinkedListInterface<OrganizationDonor> organizationList = donorList.filterByCategoryIntoLinkedListInterface(OrganizationDonor.class);
         
         // remove all empty space
         itemList.removeEmptyData();
         individualList.removeEmptyData();
         organizationList.removeEmptyData();
 
-        DMUI.individualHeader();
+        DonationManagementUI.individualHeader();
         filterByDonorInd(itemList, individualList);
 
-        DMUI.organizationHeader();
+        DonationManagementUI.organizationHeader();
         filterByDonorOrg(itemList, organizationList);
     }
     
-    public static void filterByDonorInd(LinkedListInterface<Item> itemList, LinkedListInterface<Individual> idvList){
+    public static void filterByDonorInd(LinkedListInterface<Item> itemList, LinkedListInterface<IndividualDonor> idvList){
         itemList.removeEmptyData();
         idvList.removeEmptyData();
 
         if (idvList.getHead() == null || itemList.getHead() == null) {
-            DMUtility.noDonorOrItem();
+            DonationManagementUtility.noDonorOrItem();
             return;
         }
 
-        Node<Individual> currentDonor = idvList.getHead();
+        Node<IndividualDonor> currentDonor = idvList.getHead();
         String donorID;
         int stop = 0;
         int pageNum = 1;
 
-        DMUI.startOfPage(pageNum);
-        DMUI.donorItemCustomHeader();
+        DonationManagementUI.startOfPage(pageNum);
+        DonationManagementUI.donorItemCustomHeader();
         while (currentDonor != null) {
             int print = 0;
             donorID = currentDonor.data.getId();
@@ -2271,13 +2278,13 @@ public class DonationManagement {
                     
                     if(stop == 50){
                         
-                        DMUI.endOfPage(pageNum);
-                        boolean cont = YN(DMUI.showMorePgQ());
+                        DonationManagementUI.endOfPage(pageNum);
+                        boolean cont = YN(DonationManagementUI.showMorePgQ());
                         if (cont){
                             
                             pageNum++;
-                            DMUI.startOfPage(pageNum);
-                            DMUI.donorItemCustomHeader();
+                            DonationManagementUI.startOfPage(pageNum);
+                            DonationManagementUI.donorItemCustomHeader();
                             stop = 0;
                             
                         }else{
@@ -2288,10 +2295,10 @@ public class DonationManagement {
                     
                     stop++;
                     if (print == 0) {
-                        DMUI.donorItemCustomFull(donorID, currentItem);
+                        DonationManagementUI.donorItemCustomFull(donorID, currentItem);
                         print++;
                     } else {
-                        DMUI.donorItemCustomNor(currentItem);
+                        DonationManagementUI.donorItemCustomNor(currentItem);
                     }
                    
                 }
@@ -2302,25 +2309,25 @@ public class DonationManagement {
             currentDonor = currentDonor.next;
         }
 
-        DMUI.breakLine();
+        DonationManagementUI.breakLine();
     }
     
-    public static void filterByDonorOrg(LinkedListInterface<Item> itemList, LinkedListInterface<Organization> orgList){
+    public static void filterByDonorOrg(LinkedListInterface<Item> itemList, LinkedListInterface<OrganizationDonor> orgList){
         itemList.removeEmptyData();
         orgList.removeEmptyData();
 
         if (orgList.getHead() == null || itemList.getHead() == null) {
-            DMUtility.noDonorOrItem();
+            DonationManagementUtility.noDonorOrItem();
             return;
         }
 
-        Node<Organization> currentDonor = orgList.getHead();
+        Node<OrganizationDonor> currentDonor = orgList.getHead();
         String donorID;
         int stop = 0;
         int pageNum = 1;
 
-        DMUI.startOfPage(pageNum);
-        DMUI.donorItemCustomHeader();
+        DonationManagementUI.startOfPage(pageNum);
+        DonationManagementUI.donorItemCustomHeader();
         while (currentDonor != null) {
             int print = 0;
             donorID = currentDonor.data.getId();
@@ -2331,13 +2338,13 @@ public class DonationManagement {
                     
                     if(stop == 50){
                         
-                        DMUI.endOfPage(pageNum);
-                        boolean cont = YN(DMUI.showMorePgQ());
+                        DonationManagementUI.endOfPage(pageNum);
+                        boolean cont = YN(DonationManagementUI.showMorePgQ());
                         if (cont){
                             
                             pageNum++;
-                            DMUI.startOfPage(pageNum);
-                            DMUI.donorItemCustomHeader();
+                            DonationManagementUI.startOfPage(pageNum);
+                            DonationManagementUI.donorItemCustomHeader();
                             stop = 0;
                             
                         }else{
@@ -2348,10 +2355,10 @@ public class DonationManagement {
                     
                     stop++;
                     if (print == 0) {
-                        DMUI.donorItemCustomFull(donorID, currentItem);
+                        DonationManagementUI.donorItemCustomFull(donorID, currentItem);
                         print++;
                     } else {
-                        DMUI.donorItemCustomNor(currentItem);
+                        DonationManagementUI.donorItemCustomNor(currentItem);
                     }
                    
                 }
@@ -2362,7 +2369,7 @@ public class DonationManagement {
             currentDonor = currentDonor.next;
         }
 
-        DMUI.breakLine();
+        DonationManagementUI.breakLine();
     }
     
     // --------------------------
@@ -2373,7 +2380,7 @@ public class DonationManagement {
         boolean cont = true;
         do{
             
-            int sortSelection = DMUI.listDonationMenu();
+            int sortSelection = DonationManagementUI.listDonationMenu();
 
             LinkedListInterface<Money> bankList = new LinkedList<>();
             bankList.loadFromFile(BANK_PATH);
@@ -2391,43 +2398,43 @@ public class DonationManagement {
 
             switch(sortSelection){
                 case 1: 
-                    DMUI.list1Header();
+                    DonationManagementUI.list1Header();
                     sortMoney(moneyList, 1, 1);
                     break;
                 case 2: 
-                    DMUI.list2Header();
+                    DonationManagementUI.list2Header();
                     sortMoney(moneyList, 0, 1);
                     break;
                 case 3:
-                    DMUI.list3Header();
+                    DonationManagementUI.list3Header();
                     sortMoney(bankList, 1, 1);
                     break;
                 case 4:
-                    DMUI.list4Header();
+                    DonationManagementUI.list4Header();
                     sortMoney(bankList, 0, 1);
                     break;
                 case 5:
-                    DMUI.list5Header();
+                    DonationManagementUI.list5Header();
                     sortMoney(cashList, 1, 2);
                     break;
                 case 6:
-                    DMUI.list6Header();
+                    DonationManagementUI.list6Header();
                     sortMoney(cashList, 0, 2);
                     break;
                 case 7:
-                    DMUI.list7Header();
+                    DonationManagementUI.list7Header();
                     sortFoodExp(foodList);
                     break;
                 case 8:
-                    DMUI.list8Header();
+                    DonationManagementUI.list8Header();
                     printAllIntoTable();
                     break;
                 default:
-                    DMUtility.invalidMenuSelection();
+                    DonationManagementUtility.invalidMenuSelection();
                     break;
             }
             
-            cont = YN(DMUI.contSortQ());
+            cont = YN(DonationManagementUI.contSortQ());
             
         } while(cont == true);
 
@@ -2437,15 +2444,15 @@ public class DonationManagement {
         moneyList.removeEmptyData();
 
         if (moneyList.getHead() == null) {
-            DMUtility.noSuchItem();
+            DonationManagementUtility.noSuchItem();
             return;
         }
         
         if (moneyList.getHead().next == null){
-            DMUI.commonItemHeader();
-            DMUI.commonMoneyHeader();
-            DMUI.breakLine();
-            DMUI.printNode(moneyList.getHead());
+            DonationManagementUI.commonItemHeader();
+            DonationManagementUI.commonMoneyHeader();
+            DonationManagementUI.breakLine();
+            DonationManagementUI.printNode(moneyList.getHead());
             return;
         }
 
@@ -2501,29 +2508,29 @@ public class DonationManagement {
         int stop = 1;
         int pageNum = 1;
         
-        DMUI.startOfPage(pageNum);
+        DonationManagementUI.startOfPage(pageNum);
         
-        DMUI.commonItemHeader();
-        DMUI.commonMoneyHeader();
-        DMUI.breakLine();
+        DonationManagementUI.commonItemHeader();
+        DonationManagementUI.commonMoneyHeader();
+        DonationManagementUI.breakLine();
         if (header == 1){
-            DMUI.bankHeader();
+            DonationManagementUI.bankHeader();
         }
         
-        DMUI.breakLine();
+        DonationManagementUI.breakLine();
         while (node != null) {
-            DMUI.printNode(node);
+            DonationManagementUI.printNode(node);
             
             if(stop == 50){
-                DMUI.endOfPage(pageNum);
-                boolean cont = YN(DMUI.showMorePgQ());
+                DonationManagementUI.endOfPage(pageNum);
+                boolean cont = YN(DonationManagementUI.showMorePgQ());
                 if (cont){
                     pageNum++;
-                    DMUI.startOfPage(pageNum);
-                    DMUI.commonItemHeader();
-                    DMUI.commonMoneyHeader();
+                    DonationManagementUI.startOfPage(pageNum);
+                    DonationManagementUI.commonItemHeader();
+                    DonationManagementUI.commonMoneyHeader();
                     if (header == 1){
-                        DMUI.bankHeader();
+                        DonationManagementUI.bankHeader();
                     }
                     stop = 0;
                 }else{
@@ -2541,14 +2548,14 @@ public class DonationManagement {
         
 
         if (foodList.getHead() == null) {
-            DMUtility.noSuchItem();
+            DonationManagementUtility.noSuchItem();
             return;
         }
         
         if (foodList.getHead().next == null){
-            DMUI.commonItemHeader();
-            DMUI.commonPhyItemHeader();
-            DMUI.commonFoodHeader();
+            DonationManagementUI.commonItemHeader();
+            DonationManagementUI.commonPhyItemHeader();
+            DonationManagementUI.commonFoodHeader();
             System.out.println(foodList.getHead().data.toString());
             return;
         }
@@ -2597,23 +2604,23 @@ public class DonationManagement {
         Node<Food> node = foodList.getHead();
         int stop = 0;
         int pageNum = 1;
-        DMUI.startOfPage(pageNum);
-        DMUI.commonItemHeader();
-        DMUI.commonPhyItemHeader();
-        DMUI.commonFoodHeader();
+        DonationManagementUI.startOfPage(pageNum);
+        DonationManagementUI.commonItemHeader();
+        DonationManagementUI.commonPhyItemHeader();
+        DonationManagementUI.commonFoodHeader();
         while (node != null) {
-            DMUI.printNode(node);
+            DonationManagementUI.printNode(node);
             stop++;
             
             if(stop == 50 && node.next != null){
-                DMUI.endOfPage(pageNum);
-                boolean cont = YN(DMUI.showMorePgQ());
+                DonationManagementUI.endOfPage(pageNum);
+                boolean cont = YN(DonationManagementUI.showMorePgQ());
                 if (cont){
                     pageNum++;
-                    DMUI.startOfPage(pageNum);
-                    DMUI.commonItemHeader();
-                    DMUI.commonPhyItemHeader();
-                    DMUI.commonFoodHeader();
+                    DonationManagementUI.startOfPage(pageNum);
+                    DonationManagementUI.commonItemHeader();
+                    DonationManagementUI.commonPhyItemHeader();
+                    DonationManagementUI.commonFoodHeader();
                     stop = 0;
                 }else{
                     return;
@@ -2633,57 +2640,57 @@ public class DonationManagement {
 
             switch (i){
                 case 0: 
-                    DMUI.TIBankHeader();
+                    DonationManagementUI.TIBankHeader();
                     break;
                     
                 case 1: 
-                    DMUI.TICashHeader();
+                    DonationManagementUI.TICashHeader();
                     break;
                     
                 case 2:
-                    DMUI.breakLine();
-                    DMUI.TIBakedHeader();
+                    DonationManagementUI.breakLine();
+                    DonationManagementUI.TIBakedHeader();
                     break;
                     
                 case 3: 
-                    DMUI.TIBoxedHeader();
+                    DonationManagementUI.TIBoxedHeader();
                     break;
                     
                 case 4:
-                    DMUI.TICannedHeader();
+                    DonationManagementUI.TICannedHeader();
                     break;
                     
                 case 5:
-                    DMUI.TIDryHeader();
+                    DonationManagementUI.TIDryHeader();
                     break;
                     
                 case 6: 
-                    DMUI.TIEssHeader();
+                    DonationManagementUI.TIEssHeader();
                     break;
                 case 7:
-                    DMUI.breakLine();
-                    DMUI.TIJacketHeader();
+                    DonationManagementUI.breakLine();
+                    DonationManagementUI.TIJacketHeader();
                     break;
                     
                 case 8:
-                    DMUI.TIPantHeader();
+                    DonationManagementUI.TIPantHeader();
                     break;
                     
                 case 9:
-                    DMUI.TIShirtHeader();
+                    DonationManagementUI.TIShirtHeader();
                     break;
                     
                 case 10:
-                    DMUI.TIShoesHeader();
+                    DonationManagementUI.TIShoesHeader();
                     break;
                     
                 case 11:
-                    DMUI.TISocksHeader();
+                    DonationManagementUI.TISocksHeader();
                     break;
 
             }
             if (list.isEmpty()) {
-                DMUtility.noSuchItem();
+                DonationManagementUtility.noSuchItem();
                 continue;
             } else {
                 printListToTable(list);
@@ -2698,7 +2705,7 @@ public class DonationManagement {
         
         boolean cont = true;
         do{
-            int filterSelection = DMUI.filterMainMenu();
+            int filterSelection = DonationManagementUI.filterMainMenu();
 
             switch(filterSelection){
                 case 1:
@@ -2709,19 +2716,19 @@ public class DonationManagement {
 
                     break;
                 default:
-                    DMUtility.invalidMenuSelection();
+                    DonationManagementUtility.invalidMenuSelection();
                     break;
             }
             
-            cont = YN(DMUI.contFilterQ());
+            cont = YN(DonationManagementUI.contFilterQ());
             
         }while(cont == true);
     }
     
     public static void filterByItem(){
         String type = filterTypeValidation();
-        DMUI.breakLine();
-        int availabilitySelection = DMUI.inputDisAvailability();
+        DonationManagementUI.breakLine();
+        int availabilitySelection = DonationManagementUI.inputDisAvailability();
         boolean available = false;
         if (availabilitySelection == 1){
             available = true;
@@ -2869,7 +2876,7 @@ public class DonationManagement {
     }
     
     public static String filterTypeValidation(){
-        DMUI.filterTypeMenu();
+        DonationManagementUI.filterTypeMenu();
         String type = null;
         
         boolean validType = false;
@@ -2877,8 +2884,8 @@ public class DonationManagement {
             type = scan.nextLine();
             
             if(type.isEmpty()){
-                DMUtility.emptyInputErrorMsg();
-                DMUI.reEnter();
+                DonationManagementUtility.emptyInputErrorMsg();
+                DonationManagementUI.reEnter();
             }else{
                 type = type.toUpperCase();
                 if (
@@ -2925,8 +2932,8 @@ public class DonationManagement {
                     validType = true;
                     
                 }else{
-                    DMUtility.invalidFilterTypeInput();
-                    DMUI.reEnter();
+                    DonationManagementUtility.invalidFilterTypeInput();
+                    DonationManagementUI.reEnter();
                 }
             }
         }
@@ -2936,7 +2943,7 @@ public class DonationManagement {
     
     public static void filterFoodCategory(LinkedListInterface<Food> list, String type) {
         if (list.getHead() == null) {
-            DMUtility.noItemToFilter();
+            DonationManagementUtility.noItemToFilter();
             return;
         }
 
@@ -2952,7 +2959,7 @@ public class DonationManagement {
         }
 
         if (itemList.getHead() == null) {
-            DMUtility.noSuchItem();
+            DonationManagementUtility.noSuchItem();
         } else {
             printListToTable(itemList);
         }
@@ -2960,7 +2967,7 @@ public class DonationManagement {
     
     public static void filterShoesCategory(LinkedListInterface<Shoes> list, String type) {
         if (list.getHead() == null) {
-            DMUtility.noItemToFilter();
+            DonationManagementUtility.noItemToFilter();
             return;
         }
         
@@ -2976,7 +2983,7 @@ public class DonationManagement {
         }
         
         if (itemList.getHead() == null) {
-            DMUtility.noSuchItem();
+            DonationManagementUtility.noSuchItem();
         } else {
             printListToTable(itemList);
         }
@@ -2987,7 +2994,7 @@ public class DonationManagement {
         int year = validYear();
 
         if (foodList.getHead() == null) {
-            DMUtility.noItemToFilter();
+            DonationManagementUtility.noItemToFilter();
             return;
         }
 
@@ -3005,14 +3012,14 @@ public class DonationManagement {
         }
 
         if (itemList.getHead() == null) {
-            DMUtility.noSuchItem();
+            DonationManagementUtility.noSuchItem();
         } else {
             printListToTable(itemList);
         }
     }
     
     public static int validYear() {
-        DMUI.inputYear();
+        DonationManagementUI.inputYear();
 
         int year = 0;
         boolean validYear = false;
@@ -3023,20 +3030,20 @@ public class DonationManagement {
             String inputYear = scan.nextLine().trim();
 
             if (inputYear.isEmpty()) {
-                DMUtility.emptyInputErrorMsg();
-                DMUI.reEnter();
+                DonationManagementUtility.emptyInputErrorMsg();
+                DonationManagementUI.reEnter();
             } else {
                 try {
                     year = Integer.parseInt(inputYear);
                     if (year < currentYear) {
-                        DMUtility.inputFutureYear();
-                        DMUI.reEnter();
+                        DonationManagementUtility.inputFutureYear();
+                        DonationManagementUI.reEnter();
                     } else {
                         validYear = true;
                     }
                 } catch (NumberFormatException e) {
-                    DMUtility.inputValidYear();
-                    DMUI.reEnter();
+                    DonationManagementUtility.inputValidYear();
+                    DonationManagementUI.reEnter();
                 }
             }
         }
@@ -3051,7 +3058,7 @@ public class DonationManagement {
         
         boolean cont = true;
         do{
-            int reportSelection = DMUI.reportMainMenu();
+            int reportSelection = DonationManagementUI.reportMainMenu();
 
             switch(reportSelection){
                 case 1:
@@ -3064,11 +3071,11 @@ public class DonationManagement {
                     mostFrequentItem();
                     break;
                 default:
-                    DMUtility.invalidMenuSelection();
+                    DonationManagementUtility.invalidMenuSelection();
                     break;
             }
             
-            cont = YN(DMUI.contOtherReportQ());
+            cont = YN(DonationManagementUI.contOtherReportQ());
             
         }while(cont == true);
     }
@@ -3082,21 +3089,21 @@ public class DonationManagement {
         donorList.removeEmptyData();
         
         if (donorList.isEmpty()){
-            DMUtility.noDonorInList();
+            DonationManagementUtility.noDonorInList();
             return;
         }
         
         if (itemList.isEmpty()){
-            DMUtility.noItemInList();
+            DonationManagementUtility.noItemInList();
             return;
         }
         
-        DMUI.report1Header();
+        DonationManagementUI.report1Header();
         Node<Donor> currentDonor = donorList.getHead();
         int max = 0;
         Donor donor = currentDonor.data;
         while(currentDonor != null){
-            DMUI.printString(currentDonor.data.getId());
+            DonationManagementUI.printString(currentDonor.data.getId());
             Node<Item> currentItem = itemList.getHead();
             int sum = 0;
             while (currentItem != null){
@@ -3106,7 +3113,7 @@ public class DonationManagement {
                 currentItem = currentItem.next;
             }
             
-            DMUI.printSum(sum);
+            DonationManagementUI.printSum(sum);
             
             printStar(sum);
             
@@ -3115,11 +3122,11 @@ public class DonationManagement {
                 donor = currentDonor.data;
             }
             
-            DMUI.breakLine();
+            DonationManagementUI.breakLine();
             currentDonor = currentDonor.next;
         }
         
-        DMUI.report1Conclu(donor.getName(), max);
+        DonationManagementUI.report1Conclu(donor.getName(), max);
     }
     
     public static void foodExpiryReport(){
@@ -3127,11 +3134,11 @@ public class DonationManagement {
         itemList.removeEmptyData();
         
         if (itemList.isEmpty()){
-            DMUtility.noFoodItem();
+            DonationManagementUtility.noFoodItem();
             return;
         }
         
-        DMUI.report2Header();
+        DonationManagementUI.report2Header();
         LocalDate currentDate = LocalDate.now();
         int currentYear = currentDate.getYear();
         
@@ -3145,7 +3152,7 @@ public class DonationManagement {
             tempNode = tempNode.next;
         }
         
-        DMUI.report2TableH();
+        DonationManagementUI.report2TableH();
         while(currentYear <= largestYear){
             int sum = 0, fa = 0, fo = 0, fc = 0, fd = 0, fe = 0;
             
@@ -3172,7 +3179,7 @@ public class DonationManagement {
                 currentNode = currentNode.next;
             }
             
-            DMUI.report2TableD(currentYear, sum, fa, fo, fc, fd, fe);
+            DonationManagementUI.report2TableD(currentYear, sum, fa, fo, fc, fd, fe);
             
             currentYear ++;
         }
@@ -3184,37 +3191,37 @@ public class DonationManagement {
         list.removeEmptyData();
         
         if (list.isEmpty()){
-            DMUtility.noItemInList();
+            DonationManagementUtility.noItemInList();
             return;
         }
         
-        DMUI.report3Header();
+        DonationManagementUI.report3Header();
         LinkedListInterface<Money> moneyList = list.filterByCategoryIntoLinkedListInterface(Money.class);
         LinkedListInterface<Food> foodList = list.filterByCategoryIntoLinkedListInterface(Food.class);
         LinkedListInterface<Apparel> appList = list.filterByCategoryIntoLinkedListInterface(Apparel.class);
         
         int sumM = 0;
-        DMUI.r3M();
+        DonationManagementUI.r3M();
         for(int i = 0; i < moneyList.length(); i++){
             sumM ++;
         }
-        DMUI.printSum(sumM);
+        DonationManagementUI.printSum(sumM);
         printStar(sumM);
         
         int sumF = 0;
-        DMUI.r3F();
+        DonationManagementUI.r3F();
         for(int i = 0; i < foodList.length(); i++){
             sumF ++;
         }
-        DMUI.printSum(sumF);
+        DonationManagementUI.printSum(sumF);
         printStar(sumF);
         
         int sumA = 0;
-        DMUI.r3A();
+        DonationManagementUI.r3A();
         for(int i = 0; i < appList.length(); i++){
             sumA ++;
         }
-        DMUI.printSum(sumA);
+        DonationManagementUI.printSum(sumA);
         printStar(sumA);
         
         String category;
@@ -3230,14 +3237,14 @@ public class DonationManagement {
             max = sumA;
         }
         
-        DMUI.report3Conclu(category, max);
+        DonationManagementUI.report3Conclu(category, max);
     }
     
     public static void printStar(int count){
         if (count > 50){
             int left = count/50;
             for (int i = 0; i < left; i ++){
-                DMUI.disStar();
+                DonationManagementUI.disStar();
             }
         }
     }

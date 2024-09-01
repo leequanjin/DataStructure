@@ -1,8 +1,8 @@
 package control;
 
 import adt.Donor.DonorLinkedList;
-import DonationList.Item;
-import static DonationManagementSubsystem.DMControl.loadAllItemIntoList;
+import entity.DonationManagement.Item;
+import static control.DonationManagement.loadAllItemIntoList;
 import adt.LinkedList;
 import adt.LinkedListInterface;
 import adt.Node;
