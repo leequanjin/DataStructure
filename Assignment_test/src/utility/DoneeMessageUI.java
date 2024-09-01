@@ -15,23 +15,23 @@ public class DoneeMessageUI {
     static String Green = "\u001b[32;2m";
     static String Reset = "\u001b[0m";
 
-    public static boolean isEmpty(String string) {
+    public boolean isEmpty(String string) {
         return string == null;
     }
 
-    public static void displayInvalidChoiceMessage() {
+    public void displayInvalidChoiceMessage() {
         System.out.println(Red + "Invalid option, please try again." + Reset);
     }
 
-    public static void displayInvalidDoneeIdMessage() {
+    public void displayInvalidDoneeIdMessage() {
         System.out.println(Red + "Invalid ID. No donee found with the given ID." + Reset);
     }
 
-    public static void displayInvalidDoneeNameMessage(String name) {
+    public void displayInvalidDoneeNameMessage(String name) {
         System.out.println(Red + "\nNo donees found with name containing: " + name + Reset);
     }
 
-    public static void displayExitMessage() {
+    public void displayExitMessage() {
         System.out.println(Green + "Exiting donee menu..." + Reset);
     }
 }

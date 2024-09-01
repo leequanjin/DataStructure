@@ -4,14 +4,16 @@
  */
 package control;
 
+import adt.Donee.DoneeLinkedList;
+import adt.Donee.DoneeLinkedListInterface;
 import adt.LinkedList;
 import adt.LinkedListInterface;
 import adt.Node;
-import entity.Donee;
-import entity.DoneeStateCount;
-import entity.DoneeFamily;
-import entity.DoneeIndividual;
-import entity.DoneeOrganization;
+import entity.Donee.Donee;
+import entity.Donee.DoneeStateCount;
+import entity.Donee.DoneeFamily;
+import entity.Donee.DoneeIndividual;
+import entity.Donee.DoneeOrganization;
 
 import utility.DoneeMessageUI;
 import utility.FilePath;
@@ -30,6 +32,7 @@ public class ManageDonee {
     
     //Imports
     ManageDoneeUI manageDoneeUI = new ManageDoneeUI();
+    DoneeMessageUI doneeMessageUI = new DoneeMessageUI();
     FilePath filePath = new FilePath();
     
     String choice = null;
@@ -39,9 +42,6 @@ public class ManageDonee {
         manageDonee.doneeMenu();
     }
 
-// ------------    
-// Menu Methods
-// ------------ 
     public void doneeMenu() {
 
         boolean running = true;
@@ -75,10 +75,10 @@ public class ManageDonee {
                 case "8" -> {
                     // Exit the program
                     running = false;
-                    DoneeMessageUI.displayExitMessage();
+                    doneeMessageUI.displayExitMessage();
                 }
                 default -> {
-                    DoneeMessageUI.displayInvalidChoiceMessage();
+                    doneeMessageUI.displayInvalidChoiceMessage();
                 }
             }
             System.out.println();
@@ -125,7 +125,7 @@ public class ManageDonee {
                     doneeList.saveToFile(filePath.DONEE_PATH);
                 }
                 default -> {
-                    DoneeMessageUI.displayInvalidChoiceMessage();
+                    doneeMessageUI.displayInvalidChoiceMessage();
                 }
             }
         } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
@@ -144,7 +144,7 @@ public class ManageDonee {
             System.out.println(Green + "Donee (" + doneeToRemove.getName() + ") was removed successfully." + Reset);
             doneeList.saveToFile(filePath.DONEE_PATH);
         } else {
-            DoneeMessageUI.displayInvalidDoneeIdMessage();
+            doneeMessageUI.displayInvalidDoneeIdMessage();
         }
     }
 
@@ -192,7 +192,7 @@ public class ManageDonee {
                             }
 
                             default -> {
-                                DoneeMessageUI.displayInvalidChoiceMessage();
+                                doneeMessageUI.displayInvalidChoiceMessage();
                             }
                         }
                     } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
@@ -233,10 +233,10 @@ public class ManageDonee {
                     }
                 }
                 default ->
-                    DoneeMessageUI.displayInvalidChoiceMessage();
+                    doneeMessageUI.displayInvalidChoiceMessage();
             }
         } else {
-            DoneeMessageUI.displayInvalidDoneeIdMessage();
+            doneeMessageUI.displayInvalidDoneeIdMessage();
         }
     }
 
@@ -256,7 +256,7 @@ public class ManageDonee {
                     if (donee != null) {
                         manageDoneeUI.displayFoundDonee(donee);
                     } else {
-                        DoneeMessageUI.displayInvalidDoneeIdMessage();
+                        doneeMessageUI.displayInvalidDoneeIdMessage();
                     }
                 }
                 case "2" -> {
@@ -276,11 +276,11 @@ public class ManageDonee {
                         System.out.println(Green + "\nMatching donees found: " + Reset);
                         manageDoneeUI.displayDoneeList(matchingDonees);
                     } else {
-                        DoneeMessageUI.displayInvalidDoneeNameMessage(name);
+                        doneeMessageUI.displayInvalidDoneeNameMessage(name);
                     }
                 }
                 default ->
-                    DoneeMessageUI.displayInvalidChoiceMessage();
+                    doneeMessageUI.displayInvalidChoiceMessage();
             }
         } while (!"1".equals(choice) && !"2".equals(choice));
     }
@@ -320,7 +320,7 @@ public class ManageDonee {
                     manageDoneeUI.displayDoneeList(organizationList);
                 }
                 default -> {
-                    DoneeMessageUI.displayInvalidChoiceMessage();
+                    doneeMessageUI.displayInvalidChoiceMessage();
                 }
             }
         } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
@@ -352,7 +352,7 @@ public class ManageDonee {
                 }
 
                 default -> {
-                    DoneeMessageUI.displayInvalidChoiceMessage();
+                    doneeMessageUI.displayInvalidChoiceMessage();
                 }
             }
         } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));

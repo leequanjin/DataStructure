@@ -2,11 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package control;
+package adt.Donee;
 
-import entity.Donee;
-import entity.DoneePeriodCount;
-import entity.DoneeStateCount;
+import entity.Donee.Donee;
+import entity.Donee.DoneePeriodCount;
+import entity.Donee.DoneeStateCount;
 import adt.LinkedList;
 import adt.Node;
 import java.time.format.DateTimeFormatter;

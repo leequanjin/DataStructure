@@ -2,27 +2,29 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package DonationDistributionSubsystem;
+package entity.Distribution;
 
-import adt.LinkedList;
+import adt.Distribution.ItemLinkedList;
+import adt.Distribution.ItemLinkedListInterface;
 import DonationList.Item;
+import adt.LinkedListInterface;
 import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  *
- * @author leeda
+ * @author Lee Quan Jin
  */
-class Distribution implements Serializable {
+public class Distribution implements Serializable {
 
     private String id;
     private String doneeId;
     private String doneeName;
-    private ManageItems<Item> donations;
+    private ItemLinkedListInterface<Item> donations;
     final private LocalDate distibutionDate;
     private String status;
 
-    public Distribution(String id, String doneeId, String doneeName, ManageItems donations) {
+    public Distribution(String id, String doneeId, String doneeName, ItemLinkedListInterface donations) {
         this.id = id;
         this.doneeId = doneeId;
         this.doneeName = doneeName;
@@ -55,11 +57,11 @@ class Distribution implements Serializable {
         this.doneeName = doneeName;
     }
 
-    public LinkedList<Item> getDonations() {
+    public LinkedListInterface<Item> getDonations() {
         return donations;
     }
 
-    public void setDonations(ManageItems<Item> donations) {
+    public void setDonations(ItemLinkedList<Item> donations) {
         this.donations = donations;
     }
 

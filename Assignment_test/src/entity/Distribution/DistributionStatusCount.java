@@ -2,27 +2,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package DonationDistributionSubsystem;
+package entity.Distribution;
 
 /**
  *
- * @author leeda
+ * @author Lee Quan Jin
  */
-public class DistributionPeriodCount {
-    private final String period;
+public class DistributionStatusCount {
     private final int completedCount;
     private final int cancelledCount;
     private final int inProgressCount;
 
-    public DistributionPeriodCount(String period, int completedCount, int cancelledCount, int inProgressCount) {
-        this.period = period;
+    public DistributionStatusCount(int completedCount, int cancelledCount, int inProgressCount) {
         this.completedCount = completedCount;
         this.cancelledCount = cancelledCount;
         this.inProgressCount = inProgressCount;
-    }
-
-    public String getPeriod() {
-        return period;
     }
 
     public int getCompletedCount() {
@@ -39,11 +33,9 @@ public class DistributionPeriodCount {
     
     @Override
     public String toString() {
-        return String.format(
-                "%-15s |%-20s |%-20s |%s",
-                period,
-                completedCount,
-                cancelledCount,
-                inProgressCount);
+        return    "Completed           : " + completedCount
+                + "\nCancelled           : " + cancelledCount
+                + "\nIn Progress         : " + inProgressCount;
     }
+  
 }

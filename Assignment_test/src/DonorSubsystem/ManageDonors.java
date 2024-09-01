@@ -6,7 +6,7 @@ package DonorSubsystem;
 
 import adt.Node;
 import adt.LinkedList;
-import entity.DoneePeriodCount;
+import entity.Donee.DoneePeriodCount;
 import java.time.format.DateTimeFormatter;
 
 /**

@@ -4,8 +4,8 @@
  */
 package boundary;
 
-import entity.Donee;
-import entity.DoneeStateCount;
+import entity.Donee.Donee;
+import entity.Donee.DoneeStateCount;
 import adt.LinkedListInterface;
 import java.util.Scanner;
 import utility.DoneeMessageUI;
@@ -23,6 +23,8 @@ public class ManageDoneeUI {
     
     Scanner scanner = new Scanner(System.in);
     String choice = null;
+    
+    DoneeMessageUI doneeMessageUI = new DoneeMessageUI();
 
 // --------       
 // Boundary
@@ -44,10 +46,10 @@ public class ManageDoneeUI {
 
     public String getName() {
         String name = null;
-        while (DoneeMessageUI.isEmpty(name)) {
+        while (doneeMessageUI.isEmpty(name)) {
             System.out.print("Enter name: ");
             name = scanner.nextLine().trim();
-            if (DoneeMessageUI.isEmpty(name)) {
+            if (doneeMessageUI.isEmpty(name)) {
                 System.out.println(Red + "Name cannot be empty!" + Reset);
             }
         }
@@ -101,7 +103,7 @@ public class ManageDoneeUI {
                     state = "Terengganu";
                 }
                 default -> {
-                    DoneeMessageUI.displayInvalidChoiceMessage();
+                    doneeMessageUI.displayInvalidChoiceMessage();
                 }
             }
         } while (!choice.equals("1")

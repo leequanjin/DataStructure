@@ -2,18 +2,22 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package DonationDistributionSubsystem;
+package adt.Distribution;
+import entity.Distribution.Distribution;
+import entity.Distribution.DistributionPeriodCount;
+import entity.Distribution.DistributionStatusCount;
 import adt.LinkedList;
 import adt.Node;
 import java.time.format.DateTimeFormatter;
 
 /**
  *
- * @author leeda
+ * @author Lee Quan Jin
  * @param <T>
  */
-public class ManageDistribution<T extends Distribution> extends LinkedList<T> {
+public class DistributionLinkedList<T extends Distribution> extends LinkedList<T> implements DistributionLinkedListInterface<T> {
     
+    @Override
     public String generateDistributionId() {
         String prefix = "DIS";
         int maxId = 0;
@@ -32,6 +36,7 @@ public class ManageDistribution<T extends Distribution> extends LinkedList<T> {
         return prefix + String.format("%05d", maxId + 1);
     }
     
+    @Override
     public Distribution findById(String id) {
         Node<T> current = head; // Start from the head of the list
 
@@ -44,6 +49,7 @@ public class ManageDistribution<T extends Distribution> extends LinkedList<T> {
         return null; // Donor not found
     }
     
+    @Override
     public void updateDonee(String id, String doneeId, String doneeName) {
         if (head == null) {
             // Empty list
@@ -67,6 +73,7 @@ public class ManageDistribution<T extends Distribution> extends LinkedList<T> {
         }
     }
     
+    @Override
     public void updateStatus(String id, String status) {
         if (head == null) {
             // Empty list
@@ -88,6 +95,7 @@ public class ManageDistribution<T extends Distribution> extends LinkedList<T> {
         }
     }
     
+    @Override
     public LinkedList<DistributionPeriodCount> generateTotalDistributionByYear() {
         LinkedList<DistributionPeriodCount> distributionsEachYear = new LinkedList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy");
@@ -124,6 +132,7 @@ public class ManageDistribution<T extends Distribution> extends LinkedList<T> {
         return distributionsEachYear;
     }
     
+    @Override
     public LinkedList<DistributionPeriodCount> generateTotalDistributionByMonth() {
         LinkedList<DistributionPeriodCount> distributionsEachMonth = new LinkedList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM");
@@ -160,6 +169,7 @@ public class ManageDistribution<T extends Distribution> extends LinkedList<T> {
         return distributionsEachMonth;
     }
     
+    @Override
     public DistributionStatusCount generateTotalDistributionsByStatus() {
 
         Node<T> current = head;

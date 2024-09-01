@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package DonationDistributionSubsystem;
+package adt.Distribution;
 
 import adt.LinkedList;
 import adt.Node;
@@ -14,8 +14,9 @@ import java.io.Serializable;
  * @author Lee Quan Jin
  * @param <T>
  */
-public class ManageItems<T extends Item> extends LinkedList<T> implements Serializable {
+public class ItemLinkedList<T extends Item> extends LinkedList<T> implements ItemLinkedListInterface<T>, Serializable {
 
+    @Override
     public void changeStatus(String id, String status) {
         if (head == null) {
             // Empty list
@@ -37,6 +38,7 @@ public class ManageItems<T extends Item> extends LinkedList<T> implements Serial
         }
     }
 
+    @Override
     public String toStringDonations() {
         StringBuilder donationsStr = new StringBuilder();
 

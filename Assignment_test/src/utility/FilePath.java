@@ -10,4 +10,5 @@ package utility;
  */
 public class FilePath {
     public final String DONEE_PATH = "donees.txt";
+    public final String DONATION_DISTRIBUTION_PATH = "donation_distribution.txt";
 }
