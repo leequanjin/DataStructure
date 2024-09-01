@@ -21,7 +21,7 @@ public class TotalMoney {
         return ttlBank;
     }
 
-    public void setTtlBank(int ttlBank) {
+    public void setTtlBank(double ttlBank) {
         this.ttlBank = ttlBank;
     }
     
@@ -29,7 +29,7 @@ public class TotalMoney {
         return ttlCash;
     }
 
-    public void setTtlCash(int ttlCash) {
+    public void setTtlCash(double ttlCash) {
         this.ttlCash = ttlCash;
     }
     
