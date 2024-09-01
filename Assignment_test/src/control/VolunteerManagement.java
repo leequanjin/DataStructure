@@ -8,7 +8,7 @@ import adt.LinkedList;
 import adt.LinkedListInterface;
 import adt.Node;
 
-import EventSystem.Event;
+import entity.Event.Event;
 import boundary.DonationManagementUI;
 
 import entity.Volunteer.Volunteer;

@@ -5,6 +5,9 @@
 package EventSystem;
 
 
+import entity.Event.Ticket;
+import entity.Event.Sponsorship;
+import entity.Event.Event;
 import adt.LinkedList;
 import adt.Node;
 import VolunteerSubsystem.EventVolunteer;

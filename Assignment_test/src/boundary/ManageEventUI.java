@@ -2,9 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package EventSystem;
+package boundary;
 
 
+import control.ManageEvent;
+import entity.Event.Event;
+import entity.Event.Sponsorship;
+import entity.Event.Ticket;
 import adt.LinkedListInterface;
 import adt.Node;
 import entity.Volunteer.Volunteer;
@@ -15,7 +19,7 @@ import java.text.SimpleDateFormat;
  *
  * @author Clarist Liew
  */
-public class EBoundary {
+public class ManageEventUI {
 
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
@@ -42,7 +46,7 @@ public class EBoundary {
             "Exit"
         };
 
-        return EControl.menuIntReturn(volMenu);
+        return ManageEvent.menuIntReturn(volMenu);
 
     }
 
@@ -130,7 +134,7 @@ public class EBoundary {
             "Event Date"
         };
 
-        return EControl.menuIntReturn(searchEventMenu);
+        return ManageEvent.menuIntReturn(searchEventMenu);
 
     }
 
@@ -210,7 +214,7 @@ public class EBoundary {
             "Save Changes and Exit"
         };
 
-        return EControl.menuIntReturn(updateMenu);
+        return ManageEvent.menuIntReturn(updateMenu);
     }
 
     public static int displayTicketUpdateMenu() {
@@ -220,7 +224,7 @@ public class EBoundary {
             "Ticket Status"
         };
 
-        return EControl.menuIntReturn(updateMenu);
+        return ManageEvent.menuIntReturn(updateMenu);
     }
 
     public static int displaySponsorshipUpdateMenu() {
@@ -231,7 +235,7 @@ public class EBoundary {
             "Both Name and Amount"
         };
 
-        return EControl.menuIntReturn(updateMenu);
+        return ManageEvent.menuIntReturn(updateMenu);
     }
 
     public static void displayTicketTableHeader() {
@@ -357,7 +361,7 @@ public class EBoundary {
     //remove volunteer
     public static String inputVolunteerID() {
         System.out.print("Enter the Volunteer ID: ");
-        return EControl.scan.nextLine().trim();
+        return ManageEvent.scan.nextLine().trim();
     }
 
     public static void displayVolunteerDetails(Volunteer volunteer) {
@@ -391,7 +395,7 @@ public class EBoundary {
 
     public static String inputEventIDToRemove() {
         System.out.print("Enter the Event ID to remove from this volunteer: ");
-        return EControl.scan.nextLine().trim();
+        return ManageEvent.scan.nextLine().trim();
     }
 
     // report
@@ -403,7 +407,7 @@ public class EBoundary {
             "Top 5 Volunteer Contributions Across Events",
             "Top 5 Events with the Best Ticket Sales Performance"
         };
-        return EControl.menuIntReturn(reportMenu);
+        return ManageEvent.menuIntReturn(reportMenu);
     }
 
     public static void inputStartYear() {

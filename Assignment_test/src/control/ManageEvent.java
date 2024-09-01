@@ -2,8 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package EventSystem;
+package control;
 
+import utility.EventUtility;
+import entity.Event.Event;
+import entity.Event.Sponsorship;
+import entity.Event.Ticket;
+import boundary.ManageEventUI;
 import adt.LinkedList;
 import adt.LinkedListInterface;
 import adt.Node;
@@ -19,7 +24,7 @@ import java.util.Scanner;
  *
  * @author Clarist Liew
  */
-public class EControl {
+public class ManageEvent {
     
     // Common Use File
     private static final String EVENT_FILE = "C:\\Users\\Clarist Liew\\Downloads\\DataStruc\\DataStructure\\Assignment_test\\event.txt";
@@ -40,7 +45,7 @@ public class EControl {
     
     public static int menuIntReturn(String[] selectionList) {
         
-        EBoundary.displayMenu(selectionList);
+        ManageEventUI.displayMenu(selectionList);
         
         int intInput = 0;
         boolean validInput = false;
@@ -102,19 +107,19 @@ public class EControl {
                 int intInput = Integer.parseInt(input);
                 validInput = intSelectionValidation(intInput, initial, end);
                 if (!validInput) {
-                    EUtility.intNotInRange(initial, end);
+                    EventUtility.intNotInRange(initial, end);
                 }
 
             } else {
-                EUtility.invalidIntInput();
+                EventUtility.invalidIntInput();
             }
 
         } else {
-            EUtility.emptyInputErrorMsg();
+            EventUtility.emptyInputErrorMsg();
         }
 
         if (!validInput) {
-            EBoundary.reEnter();
+            ManageEventUI.reEnter();
         }
 
         return validInput;
@@ -135,7 +140,7 @@ public class EControl {
         boolean validInput = false;
         String input = null;
 
-        EBoundary.inputYN(sentence);
+        ManageEventUI.inputYN(sentence);
         while (!validInput) {
 
             input = (scan.nextLine()).toUpperCase().trim();
@@ -146,14 +151,14 @@ public class EControl {
                 String[] inputList = {"Y", "N"};
                 validInput = chkSpecificWord(inputList, input);
                 if (!validInput) {
-                    EUtility.enterYNOnly();
+                    EventUtility.enterYNOnly();
                 }
             } else {
-                EUtility.emptyInputErrorMsg();
+                EventUtility.emptyInputErrorMsg();
             }
 
             if (!validInput) {
-                EBoundary.reEnter();
+                ManageEventUI.reEnter();
             }
 
         }
@@ -236,12 +241,12 @@ private static String generateSponsorshipID(String prefix) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = null;
         while (true) {
-            EBoundary.inputDate(); 
+            ManageEventUI.inputDate(); 
             String dateString = scan.nextLine().trim();
 
             // Check if the format is correct
             if (!dateString.matches("\\d{2}/\\d{2}/\\d{4}")) {
-                EUtility.invalidDateMsg();
+                EventUtility.invalidDateMsg();
                 continue;
             }
 
@@ -252,13 +257,13 @@ private static String generateSponsorshipID(String prefix) {
 
             // Check if the month is valid (1-12)
             if (month < 1 || month > 12) {
-                EUtility.invalidMonth();
+                EventUtility.invalidMonth();
                 continue;
             }
 
             // Check if the day is valid for the given month and year
             if (!isValidDay(day, month, year)) {
-                EUtility.invalidDay();
+                EventUtility.invalidDay();
                 continue;
             }
 
@@ -267,7 +272,7 @@ private static String generateSponsorshipID(String prefix) {
 
                 // Additional validation to ensure the date was parsed correctly
                 if (!dateString.equals(dateFormat.format(date))) {
-                    EUtility.invalidDateMsg();
+                    EventUtility.invalidDateMsg();
                     date = null;
                     continue;
                 }
@@ -275,7 +280,7 @@ private static String generateSponsorshipID(String prefix) {
                 break;
 
             } catch (ParseException e) {
-                EUtility.invalidDateMsg();
+                EventUtility.invalidDateMsg();
             }
         }
         return date;
@@ -305,14 +310,14 @@ private static String generateSponsorshipID(String prefix) {
         String time = "";
 
         while (true) {
-            EBoundary.inputTime();
+            ManageEventUI.inputTime();
             time = scanner.nextLine().trim();
 
             try {
                 timeFormat.parse(time);
                 break;
             } catch (ParseException e) {
-                EUtility.invalidTime();
+                EventUtility.invalidTime();
             }
         }
 
@@ -326,26 +331,26 @@ private static String generateSponsorshipID(String prefix) {
             if (value > 0) {
                 return value;
             } else {
-                EUtility.invalidNegativeValue();
+                EventUtility.invalidNegativeValue();
             }
         } catch (NumberFormatException e) {
-            EUtility.invalidIntInput();
+            EventUtility.invalidIntInput();
         }
     }
 }
     public static int getValidRange(int max) {
     int value;
     while (true) {
-        EBoundary.inputChoice();
+        ManageEventUI.inputChoice();
         try {
             value = Integer.parseInt(scan.nextLine().trim());
             if (value > 0 && value <= max) {
                 return value;
             } else {
-                EUtility.invalidSelection(max);
+                EventUtility.invalidSelection(max);
             }
         } catch (NumberFormatException e) {
-            EUtility.invalidIntInput();
+            EventUtility.invalidIntInput();
         }
     }
 }
@@ -356,7 +361,7 @@ private static String generateSponsorshipID(String prefix) {
         try {
             return Double.parseDouble(scanner.nextLine().trim());
         } catch (NumberFormatException e) {
-           EUtility.invalidIntInput();
+           EventUtility.invalidIntInput();
         }
     }
     }  
@@ -411,7 +416,7 @@ private static String generateSponsorshipID(String prefix) {
         do {
             clearAllFile();
             loadAllFile();
-            int selection = EBoundary.eventMainMenu();
+            int selection = ManageEventUI.eventMainMenu();
             switch (selection) {
                 case 1:
                     addEvent();
@@ -460,40 +465,40 @@ private static String generateSponsorshipID(String prefix) {
 
     private static void addEvent() {
 
-        String eventID = EControl.generateEventID("EV");
+        String eventID = ManageEvent.generateEventID("EV");
 
-        EBoundary.inputEventName();
+        ManageEventUI.inputEventName();
         String eventName = null;
         boolean validName = false;
         while (!validName) {
             eventName = scan.nextLine().trim();
-            validName = EControl.chkEmptyInput(eventName);
+            validName = ManageEvent.chkEmptyInput(eventName);
             if (!validName) {
-                EUtility.emptyInputErrorMsg();
-                EBoundary.inputEventName();
+                EventUtility.emptyInputErrorMsg();
+                ManageEventUI.inputEventName();
             }
         }
 
         Date date = getValidDate(scan);
         String time = getValidTime(scan);
 
-        EBoundary.inputLocation();
+        ManageEventUI.inputLocation();
         String location = null;
         boolean validLocation = false;
         while (!validLocation) {
             location = scan.nextLine().trim();
-            validLocation = EControl.chkEmptyInput(location);
+            validLocation = ManageEvent.chkEmptyInput(location);
             if (!validLocation) {
-                EUtility.emptyInputErrorMsg();
-                EBoundary.inputLocation();
+                EventUtility.emptyInputErrorMsg();
+                ManageEventUI.inputLocation();
             }
         }
 
         Event event = new Event(eventID, eventName, date, time, location);
         eventList.insert(event);
-        EBoundary.displayEventDetails(event);
+        ManageEventUI.displayEventDetails(event);
         eventList.saveToFile(EVENT_FILE);
-        EUtility.eventAddedMsg();
+        EventUtility.eventAddedMsg();
 
     }
 
@@ -501,60 +506,60 @@ private static String generateSponsorshipID(String prefix) {
     private static void addTicket() {
         
         if (eventList.isEmpty()) {
-            EUtility.eventNotExist();
+            EventUtility.eventNotExist();
             return;
         }
         String eventID;
         Event event;
 
         while (true) {
-            EBoundary.inputTicketEventID();
+            ManageEventUI.inputTicketEventID();
             eventID = scan.nextLine().trim();
 
             event = findEventByID(eventID);
             if (event != null) {
                 break;
             } else {
-                EUtility.invalidEventID();
+                EventUtility.invalidEventID();
             }
         }
 
-        EBoundary.inputNumTicketType();
+        ManageEventUI.inputNumTicketType();
         int numberOfTicketTypes = getValidInteger(scan);
 
         for (int i = 1; i <= numberOfTicketTypes; i++) {
             System.out.println("\nTicket Type " + i + ":");
 
-            EBoundary.inputTicketType();
+            ManageEventUI.inputTicketType();
             String ticketType = scan.nextLine().trim();
             while (ticketType.isEmpty()) {
-                EUtility.emptyTicketType();
+                EventUtility.emptyTicketType();
                 ticketType = scan.nextLine().trim();
             }
 
-            EBoundary.inputTicketPrice();
+            ManageEventUI.inputTicketPrice();
             double ticketPrice = getValidDouble(scan);
 
-            EBoundary.inputTicketAmt();
+            ManageEventUI.inputTicketAmt();
             int ticketAmount = getValidInteger(scan);
-            EBoundary.displayTicketTable();
+            ManageEventUI.displayTicketTable();
             for (int j = 0; j < ticketAmount; j++) {
-                String ticketID = EControl.generateTicketID("TK");
+                String ticketID = ManageEvent.generateTicketID("TK");
                 Ticket ticket = new Ticket(eventID, ticketID, ticketType, ticketPrice, "Available");
                 ticketList.insert(ticket);
-                EBoundary.displayTicketDetails(ticket);
+                ManageEventUI.displayTicketDetails(ticket);
             }
             
              
             ticketList.saveToFile(TICKET_FILE);
-            EUtility.ticketAddedMsg();
+            EventUtility.ticketAddedMsg();
         }
     }
     
     private static void addSponsorship() {
         
         if (eventList.isEmpty()) {
-            EUtility.eventNotExist();
+            EventUtility.eventNotExist();
             return;
         }
         
@@ -562,46 +567,46 @@ private static String generateSponsorshipID(String prefix) {
         Event event;
 
         while (true) {
-            EBoundary.inputSponsEventID();
+            ManageEventUI.inputSponsEventID();
             eventID = scan.nextLine().trim();
 
             event = findEventByID(eventID);
             if (event != null) {
                 break;
             } else {
-                EUtility.invalidEventID();
+                EventUtility.invalidEventID();
             }
         }
 
         String sponsorID = generateSponsorshipID("SP");
 
-        EBoundary.inputSponsName();
+        ManageEventUI.inputSponsName();
         String sponsorName = scan.nextLine().trim();
         while (sponsorName.isEmpty()) {
-            EUtility.emptySponsName();
+            EventUtility.emptySponsName();
             sponsorName = scan.nextLine().trim();
         }
 
-        EBoundary.inputSponsAmt();
+        ManageEventUI.inputSponsAmt();
         double sponsorAmount = getValidDouble(scan);
 
         Sponsorship sponsorship = new Sponsorship(eventID, sponsorID, sponsorName, sponsorAmount);
         sponsorshipList.insert(sponsorship);
-        EBoundary.displaySponsorshipDetails(sponsorship);
+        ManageEventUI.displaySponsorshipDetails(sponsorship);
         sponsorshipList.saveToFile(SPONSORSHIP_FILE);
-        EUtility.SponsAddedMsg();
+        EventUtility.SponsAddedMsg();
     }
 
     public static void removeEvent() {
 
         if (eventList.isEmpty()) {
-            EUtility.eventNotExistToRemove();
+            EventUtility.eventNotExistToRemove();
             return;
         }
 
-        EBoundary.displayEvent();
+        ManageEventUI.displayEvent();
         
-        EBoundary.inputRemoveEventID();
+        ManageEventUI.inputRemoveEventID();
         String eventID = scan.nextLine().trim();
 
         // Remove the event with the specified eventID
@@ -614,7 +619,7 @@ private static String generateSponsorshipID(String prefix) {
         ticketList.saveToFile(TICKET_FILE);
         sponsorshipList.saveToFile(SPONSORSHIP_FILE);
         eventList.saveToFile(EVENT_FILE);
-        EUtility.eventRemovedMsg();
+        EventUtility.eventRemovedMsg();
     }
     
     
@@ -622,18 +627,18 @@ private static String generateSponsorshipID(String prefix) {
     public static void searchEvent() {
 
         if (eventList.isEmpty()) {
-            EUtility.eventNotExist();
+            EventUtility.eventNotExist();
             return;
         }
 
-        int searchChoice = EBoundary.searchEventMenu();
+        int searchChoice = ManageEventUI.searchEventMenu();
 
         Event foundEvent = null;
         LinkedListInterface<Event> foundEvents = new LinkedList<>();
 
         switch (searchChoice) {
             case 1:
-                EBoundary.inputEventID();
+                ManageEventUI.inputEventID();
                 String eventID = scan.nextLine().trim(); 
                 foundEvent = findEventByID(eventID);
                 break;
@@ -642,7 +647,7 @@ private static String generateSponsorshipID(String prefix) {
                 foundEvents = searchEventsByDate(searchDate);
                 break;
             default:
-                EUtility.invalidMenuChoice();
+                EventUtility.invalidMenuChoice();
                 return;
         }
 
@@ -651,7 +656,7 @@ private static String generateSponsorshipID(String prefix) {
         } else if (searchChoice == 2 && !foundEvents.isEmpty()) {
             disEventsByDate(foundEvents);
         } else {
-            EUtility.searchEventNotExist();
+            EventUtility.searchEventNotExist();
         }
     }
     
@@ -675,7 +680,7 @@ private static String generateSponsorshipID(String prefix) {
 
     public static void disEventDetails(Event event) {
         
-        EBoundary.displayEventDetails(event);
+        ManageEventUI.displayEventDetails(event);
         disEventTickets(event.getEventID());
         disEventSponsorships(event.getEventID());
     }
@@ -684,7 +689,7 @@ private static String generateSponsorshipID(String prefix) {
         Node<Event> currentEvent = foundEvents.getHead();
         int show = 1;
         while (currentEvent != null) {
-            EBoundary.disEventByDate(show, currentEvent.data);
+            ManageEventUI.disEventByDate(show, currentEvent.data);
             disEventTickets(currentEvent.data.getEventID());
             disEventSponsorships(currentEvent.data.getEventID());
             currentEvent = currentEvent.next;
@@ -696,10 +701,10 @@ private static String generateSponsorshipID(String prefix) {
         Node<Ticket> ticketNode = ticketList.getHead();
         int ticketCount = 1;
         boolean ticketsFound = false;
-        EBoundary.displayTicketTableHeader();
+        ManageEventUI.displayTicketTableHeader();
         while (ticketNode != null) {
             if (ticketNode.data.getEventID().equals(eventID)) {
-                EBoundary.disTicketDetails(ticketCount, ticketNode.data);
+                ManageEventUI.disTicketDetails(ticketCount, ticketNode.data);
                 ticketsFound = true;
                 ticketCount++;
                 
@@ -709,7 +714,7 @@ private static String generateSponsorshipID(String prefix) {
         }
 
         if (!ticketsFound) {
-            EUtility.noTicketsFound();
+            EventUtility.noTicketsFound();
         }
     }
 
@@ -717,10 +722,10 @@ private static String generateSponsorshipID(String prefix) {
         Node<Sponsorship> sponsorshipNode = sponsorshipList.getHead();
         int sponsorshipCount = 1;
         boolean sponsorshipsFound = false;
-        EBoundary.displaySponsorshipTableHeader();
+        ManageEventUI.displaySponsorshipTableHeader();
         while (sponsorshipNode != null) {
             if (sponsorshipNode.data.getEventID().equals(eventID)) {
-                EBoundary.disSponsorshipDetails(sponsorshipCount, sponsorshipNode.data);
+                ManageEventUI.disSponsorshipDetails(sponsorshipCount, sponsorshipNode.data);
                 sponsorshipsFound = true;
                 sponsorshipCount++;
             }
@@ -728,18 +733,18 @@ private static String generateSponsorshipID(String prefix) {
         }
 
         if (!sponsorshipsFound) {
-            EUtility.noSponsorshipsFound();
+            EventUtility.noSponsorshipsFound();
         }
     }
     
     public static void updateEvent() {
 
         if (eventList.isEmpty()) {
-            EUtility.eventNotExistToUpdate();
+            EventUtility.eventNotExistToUpdate();
             return;
         }
 
-        EBoundary.inputUpdateEventID();
+        ManageEventUI.inputUpdateEventID();
         String eventID = scan.nextLine().trim();
 
         Node<Event> current = eventList.getHead();
@@ -750,42 +755,42 @@ private static String generateSponsorshipID(String prefix) {
                 boolean continueUpdating = true;
 
                 while (continueUpdating) {
-                    int updateChoice = EBoundary.displayUpdateMenu();
+                    int updateChoice = ManageEventUI.displayUpdateMenu();
 
                     switch (updateChoice) {
                         case 1:
-                            EBoundary.inputEventName();
+                            ManageEventUI.inputEventName();
                             String newName = scan.nextLine().trim();
                             while (newName.isEmpty()) {
-                                EUtility.emptyInputErrorMsg();
+                                EventUtility.emptyInputErrorMsg();
                                 newName = scan.nextLine().trim();
                             }
                             updatedEvent = new Event(event.getEventID(), newName, event.getDate(), event.getTime(), event.getLocation());
-                            EBoundary.displayEventDetails(updatedEvent);
-                            EUtility.eventNameUpdatedMsg();
+                            ManageEventUI.displayEventDetails(updatedEvent);
+                            EventUtility.eventNameUpdatedMsg();
                             break;
                         case 2:
                             Date newDate = getValidDate(scan);
                             updatedEvent = new Event(event.getEventID(), event.getEventName(), newDate, event.getTime(), event.getLocation());
-                            EBoundary.displayEventDetails(updatedEvent);
-                            EUtility.eventDateUpdatedMsg();
+                            ManageEventUI.displayEventDetails(updatedEvent);
+                            EventUtility.eventDateUpdatedMsg();
                             break;
                         case 3:
                             String newTime = getValidTime(scan);
                             updatedEvent = new Event(event.getEventID(), event.getEventName(), event.getDate(), newTime, event.getLocation());
-                            EBoundary.displayEventDetails(updatedEvent);
-                            EUtility.eventTimeUpdatedMsg();
+                            ManageEventUI.displayEventDetails(updatedEvent);
+                            EventUtility.eventTimeUpdatedMsg();
                             break;
                         case 4:
-                            EBoundary.inputLocation();
+                            ManageEventUI.inputLocation();
                             String newLocation = scan.nextLine().trim();
                             while (newLocation.isEmpty()) {
-                                EUtility.emptyInputErrorMsg();
+                                EventUtility.emptyInputErrorMsg();
                                 newLocation = scan.nextLine().trim();
                             }
                             updatedEvent = new Event(event.getEventID(), event.getEventName(), event.getDate(), event.getTime(), newLocation);
-                            EBoundary.displayEventDetails(updatedEvent);
-                            EUtility.eventLocationUpdatedMsg();
+                            ManageEventUI.displayEventDetails(updatedEvent);
+                            EventUtility.eventLocationUpdatedMsg();
                             break;
                         case 5:
                             updateTickets(eventID, ticketList, scan);
@@ -797,7 +802,7 @@ private static String generateSponsorshipID(String prefix) {
                             continueUpdating = false;
                             break;
                         default:
-                            EUtility.invalidMenuChoice();
+                            EventUtility.invalidMenuChoice();
                     }
 
                     if (updatedEvent != null) {
@@ -809,17 +814,17 @@ private static String generateSponsorshipID(String prefix) {
 
                 eventList.saveToFile(EVENT_FILE);
 
-                EUtility.eventUpdatedMsg();
+                EventUtility.eventUpdatedMsg();
                 return;
             }
             current = current.next;
         }
 
-        EUtility.invalidEventID();
+        EventUtility.invalidEventID();
     }
 
     private static void updateTickets(String eventID, LinkedListInterface<Ticket> ticketList, Scanner scanner) {
-        int updateChoice = EBoundary.displayTicketUpdateMenu();
+        int updateChoice = ManageEventUI.displayTicketUpdateMenu();
 
         switch (updateChoice) {
             case 1:
@@ -831,21 +836,21 @@ private static String generateSponsorshipID(String prefix) {
                 while (currentTicket != null) {
                     if (currentTicket.data.getEventID().equals(eventID) && !ticketTypes.contains(currentTicket.data.getTicketType())) {
                         ticketTypes.insert(currentTicket.data.getTicketType());
-                        EBoundary.displayTicketDetails(ticketIndex, currentTicket.data);
+                        ManageEventUI.displayTicketDetails(ticketIndex, currentTicket.data);
                         ticketIndex++;
                     }
                     currentTicket = currentTicket.next;
                 }
 
                 if (ticketTypes.isEmpty()) {
-                    EUtility.noTicketsFound();
+                    EventUtility.noTicketsFound();
                     return;
                 }
 
                 // select which ticket type to update
-                int selectedTicketIndex = EControl.getValidRange(ticketTypes.length());
+                int selectedTicketIndex = ManageEvent.getValidRange(ticketTypes.length());
                 if (selectedTicketIndex < 1 || selectedTicketIndex > ticketTypes.length()) {
-                    EUtility.invalidSelection(ticketTypes.length());
+                    EventUtility.invalidSelection(ticketTypes.length());
                     return;
                 }
 
@@ -857,14 +862,14 @@ private static String generateSponsorshipID(String prefix) {
                 String selectedTicketType = selectedTicketTypeNode.data;
 
                 // Get new ticket type and price 
-                EBoundary.inputNewTicketType(selectedTicketType);
+                ManageEventUI.inputNewTicketType(selectedTicketType);
                 String newTicketType = scanner.nextLine().trim();
                 if (newTicketType.isEmpty()) {
-                    EUtility.emptyInputErrorMsg();
+                    EventUtility.emptyInputErrorMsg();
                     return;
                 }
 
-                EBoundary.inputNewTicketPrice();
+                ManageEventUI.inputNewTicketPrice();
                 double newTicketPrice = getValidDouble(scanner);
 
                 //  Update all tickets with the selected type
@@ -885,7 +890,7 @@ private static String generateSponsorshipID(String prefix) {
                 // Display updated ticket details
                 Node<Ticket> updatedTicketNode = updatedTickets.getHead();
                 while (updatedTicketNode != null) {
-                    EBoundary.displayTicketUpdatedDetails(updatedTicketNode.data);
+                    ManageEventUI.displayTicketUpdatedDetails(updatedTicketNode.data);
                     updatedTicketNode = updatedTicketNode.next;
                 }
                 break;
@@ -896,25 +901,25 @@ private static String generateSponsorshipID(String prefix) {
                 LinkedListInterface<Ticket> eventTickets = new LinkedList<>();
                 ticketIndex = 1;
 
-                EBoundary.displayTicketTableHeader();
+                ManageEventUI.displayTicketTableHeader();
                 while (currentTicket != null) {
                     if (currentTicket.data.getEventID().equals(eventID)) {
                         eventTickets.insert(currentTicket.data);
-                        EBoundary.displayTicketDetails(ticketIndex, currentTicket.data);
+                        ManageEventUI.displayTicketDetails(ticketIndex, currentTicket.data);
                         ticketIndex++;
                     }
                     currentTicket = currentTicket.next;
                 }
 
                 if (eventTickets.isEmpty()) {
-                    EUtility.noTicketsFound();
+                    EventUtility.noTicketsFound();
                     return;
                 }
 
                 //  Prompt to select which ticket to update the status
-                int selectedStatusIndex = EControl.getValidRange(eventTickets.length());
+                int selectedStatusIndex = ManageEvent.getValidRange(eventTickets.length());
                 if (selectedStatusIndex < 1 || selectedStatusIndex > eventTickets.length()) {
-                    EUtility.invalidSelection(eventTickets.length());
+                    EventUtility.invalidSelection(eventTickets.length());
                     return;
                 }
 
@@ -926,10 +931,10 @@ private static String generateSponsorshipID(String prefix) {
                 Ticket selectedTicket = selectedTicketNode.data;
 
                 // Get new status
-                EBoundary.inputNewTicketStatus();
+                ManageEventUI.inputNewTicketStatus();
                 String newTicketStatus = scanner.nextLine().trim();
                 if (newTicketStatus.isEmpty()) {
-                    EUtility.emptyInputErrorMsg();
+                    EventUtility.emptyInputErrorMsg();
                     return;
                 }
 
@@ -937,11 +942,11 @@ private static String generateSponsorshipID(String prefix) {
                 ticketList.replace(selectedTicket, updatedTicket);
 
                 ticketList.saveToFile(TICKET_FILE);
-                EBoundary.displayTicketUpdatedDetails(updatedTicket);
+                ManageEventUI.displayTicketUpdatedDetails(updatedTicket);
                 break;
 
             default:
-                EUtility.invalidMenuChoice();
+                EventUtility.invalidMenuChoice();
         }
     }
 
@@ -951,11 +956,11 @@ private static String generateSponsorshipID(String prefix) {
         int sponsorshipIndex = 1;
         LinkedListInterface<Sponsorship> eventSponsorships = new LinkedList<>();
 
-        EBoundary.displaySponsorshipTableHeader();
+        ManageEventUI.displaySponsorshipTableHeader();
 
         while (currentSponsorship != null) {
             if (currentSponsorship.data.getEventID().equals(eventID)) {
-                EBoundary.displaySponsorshipDetails(sponsorshipIndex, currentSponsorship.data);
+                ManageEventUI.displaySponsorshipDetails(sponsorshipIndex, currentSponsorship.data);
                 eventSponsorships.insert(currentSponsorship.data);
                 sponsorshipIndex++;
             }
@@ -963,14 +968,14 @@ private static String generateSponsorshipID(String prefix) {
         }
 
         if (eventSponsorships.isEmpty()) {
-            EUtility.noSponsorshipsFound();
+            EventUtility.noSponsorshipsFound();
             return;
         }
 
         //  select which sponsorship to update
-        int selectedSponsorshipIndex = EControl.getValidRange(eventSponsorships.length());
+        int selectedSponsorshipIndex = ManageEvent.getValidRange(eventSponsorships.length());
         if (selectedSponsorshipIndex < 1 || selectedSponsorshipIndex > eventSponsorships.length()) {
-            EUtility.invalidSelection(eventSponsorships.length());
+            EventUtility.invalidSelection(eventSponsorships.length());
             return;
         }
 
@@ -982,14 +987,14 @@ private static String generateSponsorshipID(String prefix) {
         Sponsorship selectedSponsorship = selectedSponsorshipNode.data;
 
         // Prompt to choose what to update
-        int updateChoice = EBoundary.displaySponsorshipUpdateMenu();
+        int updateChoice = ManageEventUI.displaySponsorshipUpdateMenu();
 
         Sponsorship updatedSponsorship = null;
 
         switch (updateChoice) {
             case 1:
                 // Update Sponsor Name
-                EBoundary.inputNewSponsorName();
+                ManageEventUI.inputNewSponsorName();
                 String newSponsorName = scanner.nextLine().trim();
                 if (!newSponsorName.isEmpty()) {
                     updatedSponsorship = new Sponsorship(selectedSponsorship.getEventID(),
@@ -1001,8 +1006,8 @@ private static String generateSponsorshipID(String prefix) {
                 break;
             case 2:
                 // Update Sponsor Amount
-                EBoundary.inputNewSponsorAmount();
-                double newSponsorAmount = EControl.getValidDouble(scanner);
+                ManageEventUI.inputNewSponsorAmount();
+                double newSponsorAmount = ManageEvent.getValidDouble(scanner);
                 updatedSponsorship = new Sponsorship(selectedSponsorship.getEventID(),
                         selectedSponsorship.getSponsorID(),
                         selectedSponsorship.getSponsorName(),
@@ -1012,10 +1017,10 @@ private static String generateSponsorshipID(String prefix) {
             case 3:
                 // Update Both Name and Amount
 
-                EBoundary.inputNewSponsorName();
+                ManageEventUI.inputNewSponsorName();
                 newSponsorName = scanner.nextLine().trim();
-                EBoundary.inputNewSponsorAmount();
-                newSponsorAmount = EControl.getValidDouble(scanner);
+                ManageEventUI.inputNewSponsorAmount();
+                newSponsorAmount = ManageEvent.getValidDouble(scanner);
 
                 if (!newSponsorName.isEmpty()) {
                     updatedSponsorship = new Sponsorship(selectedSponsorship.getEventID(),
@@ -1026,7 +1031,7 @@ private static String generateSponsorshipID(String prefix) {
                 }
                 break;
             default:
-                EUtility.invalidMenuChoice();
+                EventUtility.invalidMenuChoice();
                 return;
         }
 
@@ -1034,9 +1039,9 @@ private static String generateSponsorshipID(String prefix) {
         if (updatedSponsorship != null && sponsorshipList.contains(selectedSponsorship)) {
             sponsorshipList.replace(selectedSponsorship, updatedSponsorship);
             sponsorshipList.saveToFile(SPONSORSHIP_FILE);
-            EBoundary.displaySponsorshipUpdatedDetails(updatedSponsorship);
+            ManageEventUI.displaySponsorshipUpdatedDetails(updatedSponsorship);
         } else {
-            EUtility.updateSponsorError();
+            EventUtility.updateSponsorError();
         }
     
     
@@ -1045,21 +1050,21 @@ private static String generateSponsorshipID(String prefix) {
 
         // Check if there are any events
         if (eventList.isEmpty()) {
-            EUtility.eventNotExist();
+            EventUtility.eventNotExist();
             return;
         }
 
         // Header for the event list
        
 
-        EBoundary.titleListAllEvent();
+        ManageEventUI.titleListAllEvent();
         Node<Event> eventNode = eventList.getHead();
         while (eventNode != null) {
             Event event = eventNode.data;
-            EBoundary.displayEventDetailsInList(event);
+            ManageEventUI.displayEventDetailsInList(event);
 
             // Filter and list tickets associated with the current event
-            EBoundary.displayEventTicketsHeader(event.getEventID());
+            ManageEventUI.displayEventTicketsHeader(event.getEventID());
 
             Node<Ticket> ticketNode = ticketList.getHead();
             boolean ticketsFound = false;
@@ -1067,18 +1072,18 @@ private static String generateSponsorshipID(String prefix) {
             while (ticketNode != null) {
                 Ticket ticket = ticketNode.data;
                 if (ticket.getEventID().equals(event.getEventID())) {
-                    EBoundary.displayTicketDetailsInList(ticketCount, ticket);
+                    ManageEventUI.displayTicketDetailsInList(ticketCount, ticket);
                     ticketsFound = true;
                     ticketCount++;
                 }
                 ticketNode = ticketNode.next;
             }
             if (!ticketsFound) {
-                EUtility.noTicketsFound();
+                EventUtility.noTicketsFound();
             }
 
             // Filter and list sponsorships associated with the current event
-            EBoundary.displayEventSponsorshipsHeader(event.getEventID());
+            ManageEventUI.displayEventSponsorshipsHeader(event.getEventID());
 
             Node<Sponsorship> sponsorshipNode = sponsorshipList.getHead();
             boolean sponsorshipsFound = false;
@@ -1086,14 +1091,14 @@ private static String generateSponsorshipID(String prefix) {
             while (sponsorshipNode != null) {
                 Sponsorship sponsorship = sponsorshipNode.data;
                 if (sponsorship.getEventID().equals(event.getEventID())) {
-                    EBoundary.displaySponsorshipDetailsInList(sponsorshipCount, sponsorship);
+                    ManageEventUI.displaySponsorshipDetailsInList(sponsorshipCount, sponsorship);
                     sponsorshipsFound = true;
                     sponsorshipCount++;
                 }
                 sponsorshipNode = sponsorshipNode.next;
             }
             if (!sponsorshipsFound) {
-                EUtility.noSponsorshipsFound();
+                EventUtility.noSponsorshipsFound();
             }
 
             // Move to the next event in the list
@@ -1105,12 +1110,12 @@ private static String generateSponsorshipID(String prefix) {
 
         // Check if there are no volunteers
         if (volunteerList.isEmpty()) {
-            EUtility.noVolunteersFound();
+            EventUtility.noVolunteersFound();
             return;
         }
 
         // Get the Volunteer ID from user input
-        String volunteerID = EBoundary.inputVolunteerID();
+        String volunteerID = ManageEventUI.inputVolunteerID();
 
         // Find the volunteer by ID
         Node<Volunteer> volunteerNode = volunteerList.getHead();
@@ -1126,7 +1131,7 @@ private static String generateSponsorshipID(String prefix) {
 
         // If the volunteer is not found
         if (foundVolunteer == null) {
-            EUtility.noVolunteerFound(volunteerID);
+            EventUtility.noVolunteerFound(volunteerID);
             return;
         }
 
@@ -1151,16 +1156,16 @@ private static String generateSponsorshipID(String prefix) {
 
         // If no events are associated with the volunteer
         if (assignedEvents.isEmpty()) {
-            EUtility.noEventsAssociatedWithVolunteer(volunteerID);
+            EventUtility.noEventsAssociatedWithVolunteer(volunteerID);
             return;
         }
 
         // Display the volunteer details and their associated events
-        EBoundary.displayVolunteerDetails(foundVolunteer);
-        EBoundary.displayVolunteerEvents(assignedEvents);
+        ManageEventUI.displayVolunteerDetails(foundVolunteer);
+        ManageEventUI.displayVolunteerEvents(assignedEvents);
 
         // Get the Event ID to remove from user input
-        String eventIDToRemove = EBoundary.inputEventIDToRemove();
+        String eventIDToRemove = ManageEventUI.inputEventIDToRemove();
 
         // Remove the association from the volunteer-event list
         volunteerEventList.removeIf(eventVolunteer -> eventVolunteer.getVolunteerID().equals(volunteerID) && eventVolunteer.getEventID().equals(eventIDToRemove));
@@ -1169,19 +1174,19 @@ private static String generateSponsorshipID(String prefix) {
         volunteerEventList.saveToFile(VOLUNTEER_EVENT_FILE);
 
         // Confirm the removal
-        EUtility.eventRemovedFromVolunteer(eventIDToRemove, volunteerID);
+        EventUtility.eventRemovedFromVolunteer(eventIDToRemove, volunteerID);
     }
 
     private static void listAllEventsForAVolunteer() {
 
         // Check if there are no volunteers
         if (volunteerList.isEmpty()) {
-            EUtility.noVolunteersFound();
+            EventUtility.noVolunteersFound();
             return;
         }
 
         // Get the Volunteer ID from user input
-        String volunteerID = EBoundary.inputVolunteerID();
+        String volunteerID = ManageEventUI.inputVolunteerID();
 
         // Find the volunteer by ID
         Node<Volunteer> volunteerNode = volunteerList.getHead();
@@ -1197,7 +1202,7 @@ private static String generateSponsorshipID(String prefix) {
 
         // If the volunteer is not found
         if (foundVolunteer == null) {
-            EUtility.noVolunteerFound(volunteerID);
+            EventUtility.noVolunteerFound(volunteerID);
             return;
         }
 
@@ -1223,20 +1228,20 @@ private static String generateSponsorshipID(String prefix) {
 
         // If no events are associated with the volunteer
         if (assignedEvents.isEmpty()) {
-            EUtility.noEventsAssociatedWithVolunteer(volunteerID);
+            EventUtility.noEventsAssociatedWithVolunteer(volunteerID);
             return;
         }
 
         // Display the volunteer details and their associated events
-        EBoundary.displayVolunteerDetails(foundVolunteer);
-        EBoundary.displayVolunteerEvents(assignedEvents);
+        ManageEventUI.displayVolunteerDetails(foundVolunteer);
+        ManageEventUI.displayVolunteerEvents(assignedEvents);
     }
     
     public static void generateSummaryReports() {
         boolean cont = true;
         do {
 
-            int reportSelection = EBoundary.displayReportMenu();
+            int reportSelection = ManageEventUI.displayReportMenu();
 
             switch (reportSelection) {
                 case 1:
@@ -1252,7 +1257,7 @@ private static String generateSponsorshipID(String prefix) {
                     bestTicketSalesPerformanceReport();
                     break;
                 default:
-                    EUtility.inputInvalidReportChoice();
+                    EventUtility.inputInvalidReportChoice();
                     break;
             }
 
@@ -1264,13 +1269,13 @@ private static String generateSponsorshipID(String prefix) {
     public static void annualFundraisingReport() {
 
         if (eventList.isEmpty() || sponsorshipList.isEmpty()) {
-            EUtility.noEventoOrSponsorshipExist();
+            EventUtility.noEventoOrSponsorshipExist();
             return;
         }
 
-        EBoundary.inputStartYear();
+        ManageEventUI.inputStartYear();
         int startYear = scan.nextInt();
-        EBoundary.inputEndYear();
+        ManageEventUI.inputEndYear();
         int endYear = scan.nextInt();
 
         double[] fundraisingTotals = new double[endYear - startYear + 1];
@@ -1292,13 +1297,13 @@ private static String generateSponsorshipID(String prefix) {
             currentEvent = currentEvent.next;
         }
 
-         EBoundary.displayAnnualFundraisingReport(fundraisingTotals, startYear);
+         ManageEventUI.displayAnnualFundraisingReport(fundraisingTotals, startYear);
     }
 
     public static void topEventsWithMostVolunteersReport() {
 
         if (eventList.isEmpty() || volunteerEventList.isEmpty()) {
-            EUtility.noEventOrVolunteer();
+            EventUtility.noEventOrVolunteer();
             return;
         }
 
@@ -1331,13 +1336,13 @@ private static String generateSponsorshipID(String prefix) {
             currentEvent = currentEvent.next;
         }
 
-        EBoundary.displayTopEventsWithMostVolunteers(topEvents, volunteerCounts);
+        ManageEventUI.displayTopEventsWithMostVolunteers(topEvents, volunteerCounts);
     }
 
     public static void topVolunteerContributionsReport() {
 
         if (volunteerList.isEmpty() || volunteerEventList.isEmpty()) {
-            EUtility.noVolunteerOrEventExist();
+            EventUtility.noVolunteerOrEventExist();
             return;
         }
 
@@ -1370,13 +1375,13 @@ private static String generateSponsorshipID(String prefix) {
             currentVolunteer = currentVolunteer.next;
         }
 
-        EBoundary.displayTopVolunteerContributions(topVolunteers, contributionCounts);
+        ManageEventUI.displayTopVolunteerContributions(topVolunteers, contributionCounts);
     }
 
     public static void bestTicketSalesPerformanceReport() {
 
         if (eventList.isEmpty() || ticketList.isEmpty()) {
-            EUtility.noEventOrTicketExist();
+            EventUtility.noEventOrTicketExist();
             return;
         }
 
@@ -1410,7 +1415,7 @@ private static String generateSponsorshipID(String prefix) {
             currentEvent = currentEvent.next;
         }
 
-        EBoundary.displayBestTicketSalesPerformance(topEvents, soldOutCounts);
+        ManageEventUI.displayBestTicketSalesPerformance(topEvents, soldOutCounts);
     }
   
     

@@ -1,5 +1,5 @@
 
-package EventSystem;
+package entity.Event;
 import java.io.Serializable;
 import java.util.Date;
 import java.text.SimpleDateFormat;

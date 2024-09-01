@@ -2,13 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package EventSystem;
+package utility;
 
 /**
  *
  * @author Clarist Liew
  */
-public class EUtility {
+public class EventUtility {
     
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";

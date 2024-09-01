@@ -6,7 +6,7 @@ package boundary;
 
 import adt.LinkedListInterface;
 import adt.Node;
-import EventSystem.Event;
+import entity.Event.Event;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
