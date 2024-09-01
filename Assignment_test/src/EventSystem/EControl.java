@@ -473,6 +473,11 @@ private static String generateSponsorshipID(String prefix) {
 
     
     private static void addTicket() {
+        
+        if (eventList.isEmpty()) {
+            EUtility.eventNotExist();
+            return;
+        }
         String eventID;
         Event event;
 
@@ -519,6 +524,12 @@ private static String generateSponsorshipID(String prefix) {
     }
     
     private static void addSponsorship() {
+        
+        if (eventList.isEmpty()) {
+            EUtility.eventNotExist();
+            return;
+        }
+        
         String eventID;
         Event event;
 
@@ -595,11 +606,12 @@ private static String generateSponsorshipID(String prefix) {
 
         switch (searchChoice) {
             case 1:
-                String eventID = EBoundary.inputEventID();
+                EBoundary.inputEventID();
+                String eventID = scan.nextLine().trim(); 
                 foundEvent = findEventByID(eventID);
                 break;
             case 2:
-                Date searchDate = EBoundary.inputEventDate();
+                Date searchDate = getValidDate(scan);
                 foundEvents = searchEventsByDate(searchDate);
                 break;
             default:
@@ -689,65 +701,359 @@ private static String generateSponsorshipID(String prefix) {
             EUtility.noSponsorshipsFound();
         }
     }
-
-
-
-//private static void displayEventDetails(Event event, LinkedList<Ticket> ticketList, LinkedList<Sponsorship> sponsorshipList) {
+    
+//    public static void updateEvent() {
+//    LinkedList<Event> eventList = new LinkedList<>();
+//    LinkedList<Ticket> ticketList = new LinkedList<>();
+//    LinkedList<Sponsorship> sponsorshipList = new LinkedList<>();
+//    
+//    
+//    eventList.loadFromFile(EVENT_FILE);
+//    ticketList.loadFromFile(TICKET_FILE);
+//    sponsorshipList.loadFromFile(SPONSORSHIP_FILE);
 //
+//    Scanner scanner = new Scanner(System.in);
 //
-//    System.out.println(ANSI_CYAN + "\nEvent Found: " + ANSI_RESET);
-//    System.out.printf("%-15s : %s\n", "Event ID", event.getEventID());
-//    System.out.printf("%-15s : %s\n", "Event Name", event.getEventName());
-//    System.out.printf("%-15s : %s\n", "Date", dateFormat.format(event.getDate()));
-//    System.out.printf("%-15s : %s\n", "Time", event.getTime());
-//    System.out.printf("%-15s : %s\n", "Location", event.getLocation());
+//    
+//    if (eventList.isEmpty()) {
+//        System.out.println(ANSI_RED + "No events available to update." + ANSI_RESET);
+//        return;
+//    }
 //
-//    // List associated tickets in a table format
-//    System.out.println(ANSI_BLUE + "\nTickets for Event ID " + event.getEventID() + ":" + ANSI_RESET);
-//    System.out.printf("%-5s | %-10s | %-15s | %-10s\n", "No.", "Ticket ID", "Ticket Type", "Amount (RM)");
-//    System.out.println("---------------------------------------------");
-//    Node<Ticket> ticketNode = ticketList.head;
-//    boolean ticketsFound = false;
-//    int ticketCount = 1;
-//    while (ticketNode != null) {
-//        if (ticketNode.data.getEventID().equals(event.getEventID())) {
-//            System.out.printf("%-5d | %-10s | %-15s | %-10.2f\n", 
-//                              ticketCount, 
-//                              ticketNode.data.getTicketID(), 
-//                              ticketNode.data.getTicketType(), 
-//                              ticketNode.data.getTicketPrice());
-//            ticketsFound = true;
-//            ticketCount++;
+//    System.out.print("Enter the Event ID to update: ");
+//    String eventID = scanner.nextLine().trim();
+//
+//    
+//    Node<Event> current = eventList.head;
+//    while (current != null) {
+//        if (current.data.getEventID().equals(eventID)) {
+//            Event event = current.data;
+//            Event updatedEvent = null;
+//            boolean continueUpdating = true;
+//
+//            while (continueUpdating) {
+//                // Show update options
+//                System.out.println("\nWhat would you like to update?");
+//                System.out.println("1. Event Name");
+//                System.out.println("2. Event Date");
+//                System.out.println("3. Event Time");
+//                System.out.println("4. Event Location");
+//                System.out.println("5. Ticket");
+//                System.out.println("6. Sponsorships");
+//                System.out.println("7. Save Changes ");
+//                System.out.print("Enter your choice: ");
+//
+//                String choice = scanner.nextLine().trim();
+//
+//                switch (choice) {
+//                    case "1":
+//                        System.out.print("Enter new Event Name: ");
+//                        String newName = scanner.nextLine().trim();
+//                        while (newName.isEmpty()) {
+//                            System.out.println(ANSI_RED + "Event Name cannot be empty. Please enter a valid name." + ANSI_RESET);
+//                            newName = scanner.nextLine().trim();
+//                        }
+//                        updatedEvent = new Event(event.getEventID(), newName, event.getDate(), event.getTime(), event.getLocation());
+//                        eventList.replace(event, updatedEvent);
+//                        System.out.println(ANSI_GREEN + "Event Name updated successfully!" + ANSI_RESET);
+//                        break;
+//                    case "2":
+//                        Date newDate = getValidDate(scanner);
+//                        updatedEvent = new Event(event.getEventID(), event.getEventName(), newDate, event.getTime(), event.getLocation());
+//                        eventList.replace(event, updatedEvent);
+//                        System.out.println(ANSI_GREEN + "Event Date updated successfully!" + ANSI_RESET);
+//                        break;
+//                    case "3":
+//                        String newTime = getValidTime(scanner);
+//                        updatedEvent = new Event(event.getEventID(), event.getEventName(), event.getDate(), newTime, event.getLocation());
+//                        eventList.replace(event, updatedEvent);
+//                        System.out.println(ANSI_GREEN + "Event Time updated successfully!" + ANSI_RESET);
+//                        break;
+//                    case "4":
+//                        System.out.print("Enter new Location: ");
+//                        String newLocation = scanner.nextLine().trim();
+//                        while (newLocation.isEmpty()) {
+//                            System.out.println(ANSI_RED + "Location cannot be empty. Please enter a valid location." + ANSI_RESET);
+//                            newLocation = scanner.nextLine().trim();
+//                        }
+//                        updatedEvent = new Event(event.getEventID(), event.getEventName(), event.getDate(), event.getTime(), newLocation);
+//                        eventList.replace(event, updatedEvent);
+//                        System.out.println(ANSI_GREEN + "Event Location updated successfully!" + ANSI_RESET);
+//                        break;
+//                    case "5":
+//                        updateTickets(eventID, ticketList, scanner);
+//                        break;
+//                    case "6":
+//                        updateSponsorships(eventID, sponsorshipList, scanner);
+//                        break;
+//                    case "7":
+//                        continueUpdating = false;
+//                        break;
+//                    default:
+//                        System.out.println(ANSI_RED + "Invalid choice. Please try again." + ANSI_RESET);
+//                }
+//
+//                if (updatedEvent != null) {
+//                    event = updatedEvent; // Update the reference to the current event
+//                    updatedEvent = null;
+//                }
+//            }
+//
+//            
+//            eventList.saveToFile(EVENT_FILE);
+//
+//            System.out.println(ANSI_GREEN + "Event with ID " + eventID + " has been updated." + ANSI_RESET);
+//            return;
 //        }
-//        ticketNode = ticketNode.next;
-//    }
-//    if (!ticketsFound) {
-//        System.out.println(ANSI_YELLOW + "No tickets found for this event." + ANSI_RESET);
+//        current = current.next;
 //    }
 //
-//    // List associated sponsorships in a table format
-//    System.out.println(ANSI_PURPLE + "\nSponsorships for Event ID " + event.getEventID() + ":" + ANSI_RESET);
-//    System.out.printf("%-5s | %-10s | %-20s | %-15s\n", "No.", "Sponsor ID", "Sponsor Name", "Amount (RM)");
-//    System.out.println("-----------------------------------------------------------");
-//    Node<Sponsorship> sponsorshipNode = sponsorshipList.head;
-//    boolean sponsorshipsFound = false;
-//    int sponsorshipCount = 1;
-//    while (sponsorshipNode != null) {
-//        if (sponsorshipNode.data.getEventID().equals(event.getEventID())) {
-//            System.out.printf("%-5d | %-10s | %-20s | %-15.2f\n", 
-//                              sponsorshipCount, 
-//                              sponsorshipNode.data.getSponsorID(), 
-//                              sponsorshipNode.data.getSponsorName(), 
-//                              sponsorshipNode.data.getSponsorAmount());
-//            sponsorshipsFound = true;
-//            sponsorshipCount++;
-//        }
-//        sponsorshipNode = sponsorshipNode.next;
+//    System.out.println(ANSI_RED + "Event with ID " + eventID + " not found." + ANSI_RESET);
+//}
+//
+//
+//private static void updateTickets(String eventID, LinkedList<Ticket> ticketList, Scanner scanner) {
+//    // Prompt the user to choose what they want to update
+//    System.out.println("\nWhat would you like to update?");
+//    System.out.println("1. Ticket Type and Price");
+//    System.out.println("2. Ticket Status");
+//    System.out.print("Enter your choice: ");
+//    String updateChoice = scanner.nextLine().trim();
+//
+//    switch (updateChoice) {
+//        case "1":
+//            LinkedList<String> ticketTypes = new LinkedList<>();
+//            Node<Ticket> currentTicket = ticketList.head;
+//            int ticketIndex = 1;
+//
+//            while (currentTicket != null) {
+//                if (currentTicket.data.getEventID().equals(eventID) && !ticketTypes.contains(currentTicket.data.getTicketType())) {
+//                    ticketTypes.insert(currentTicket.data.getTicketType());
+//                    System.out.println(ticketIndex + ". Type: " + currentTicket.data.getTicketType() +
+//                                       ", Price: RM" + String.format("%.2f", currentTicket.data.getTicketPrice()));
+//                    ticketIndex++;
+//                }
+//                currentTicket = currentTicket.next;
+//            }
+//
+//            if (ticketTypes.isEmpty()) {
+//                System.out.println(ANSI_YELLOW + "No tickets found for this event." + ANSI_RESET);
+//                return;
+//            }
+//            
+//             // Prompt the user to select which ticket type to update
+//            System.out.print("Select the ticket type you want to update (1-" + ticketTypes.length() + "): ");
+//            int selectedTicketIndex = getValidInteger(scanner);
+//
+//            if (selectedTicketIndex < 1 || selectedTicketIndex > ticketTypes.length()) {
+//                System.out.println(ANSI_RED + "Invalid selection. Please select between (1-" + ticketTypes.length() + ")" + ANSI_RESET);
+//                return;
+//            }
+//
+//            // Get the selected ticket type
+//            Node<String> selectedTicketTypeNode = ticketTypes.head;
+//            for (int i = 1; i < selectedTicketIndex; i++) {
+//                selectedTicketTypeNode = selectedTicketTypeNode.next;
+//            }
+//            String selectedTicketType = selectedTicketTypeNode.data;
+//
+//            // Update Ticket Type and Price
+//            System.out.print("Enter new Ticket Type (Current: " + selectedTicketType + "): ");
+//            String newTicketType = scanner.nextLine().trim();
+//            if (newTicketType.isEmpty()) {
+//                System.out.println(ANSI_RED + "Ticket type cannot be empty. Please try again." + ANSI_RESET);
+//                return;
+//            }
+//
+//            System.out.print("Enter new Ticket Price: RM");
+//            double newTicketPrice = getValidDouble(scanner);
+//
+//            // Update all tickets with the selected type
+//            currentTicket = ticketList.head;
+//            while (currentTicket != null) {
+//                Ticket ticket = currentTicket.data;
+//                if (ticket.getEventID().equals(eventID) && ticket.getTicketType().equals(selectedTicketType)) {
+//                    Ticket updatedTicket = new Ticket(ticket.getEventID(), ticket.getTicketID(), newTicketType, newTicketPrice, ticket.getTicketStatus());
+//                    ticketList.replace(ticket, updatedTicket);
+//                }
+//                currentTicket = currentTicket.next;
+//            }
+//
+//            System.out.println(ANSI_GREEN + "All tickets of type '" + selectedTicketType + "' have been updated to new type '" + newTicketType + "' and price RM" + String.format("%.2f", newTicketPrice) + ANSI_RESET);
+//            break;
+//
+//        case "2":
+//            // List all tickets for the event and allow individual status update
+//            currentTicket = ticketList.head;
+//            LinkedList<Ticket> eventTickets = new LinkedList<>();
+//            ticketIndex = 1;
+//
+//            // Print table header
+//            System.out.printf("%-5s | %-10s | %-20s | %-10s | %-10s\n", "No.", "Ticket ID", "Ticket Type", "Price (RM)", "Status");
+//            System.out.println("-------------------------------------------------------------------");
+//
+//            while (currentTicket != null) {
+//                if (currentTicket.data.getEventID().equals(eventID)) {
+//                    eventTickets.insert(currentTicket.data);
+//                    // Print each ticket in table row format
+//                    System.out.printf("%-5d | %-10s | %-20s | %-10.2f | %-10s\n",
+//                                      ticketIndex,
+//                                      currentTicket.data.getTicketID(),
+//                                      currentTicket.data.getTicketType(),
+//                                      currentTicket.data.getTicketPrice(),
+//                                      currentTicket.data.getTicketStatus());
+//                    ticketIndex++;
+//                }
+//                currentTicket = currentTicket.next;
+//            }
+//
+//            // Prompt the user to select which ticket to update the status
+//            System.out.print("Select the ticket you want to update (1-" + eventTickets.length() + "): ");
+//            int selectedStatusIndex = getValidInteger(scanner);
+//
+//            if (selectedStatusIndex < 1 || selectedStatusIndex > eventTickets.length()) {
+//                System.out.println(ANSI_RED + "Invalid selection. Please select between (1-" + eventTickets.length() + ")" + ANSI_RESET);
+//                return;
+//            }
+//
+//            // Get the selected ticket
+//            Node<Ticket> selectedTicketNode = eventTickets.head;
+//            for (int i = 1; i < selectedStatusIndex; i++) {
+//                selectedTicketNode = selectedTicketNode.next;
+//            }
+//            Ticket selectedTicket = selectedTicketNode.data;
+//
+//            // Update Ticket Status
+//            System.out.print("Enter new Ticket Status (Current: " + selectedTicket.getTicketStatus() + "): ");
+//            String newTicketStatus = scanner.nextLine().trim();
+//            if (newTicketStatus.isEmpty()) {
+//                System.out.println(ANSI_RED + "Ticket status cannot be empty. Please try again." + ANSI_RESET);
+//                return;
+//            }
+//
+//            Ticket updatedTicket = new Ticket(selectedTicket.getEventID(), selectedTicket.getTicketID(), selectedTicket.getTicketType(), selectedTicket.getTicketPrice(), newTicketStatus);
+//            ticketList.replace(selectedTicket, updatedTicket);
+//
+//            System.out.println(ANSI_GREEN + "Ticket status updated successfully!" + ANSI_RESET);
+//            break;
+//
+//        default:
+//            System.out.println(ANSI_RED + "Invalid choice. No changes made." + ANSI_RESET);
+//            return;
 //    }
-//    if (!sponsorshipsFound) {
+//
+//    
+//    ticketList.saveToFile(TICKET_FILE);
+//}
+//
+//
+//private static void updateSponsorships(String eventID, LinkedList<Sponsorship> sponsorshipList, Scanner scanner) {
+//    // Find and list all sponsorships for the event
+//    Node<Sponsorship> currentSponsorship = sponsorshipList.head;
+//    int sponsorshipIndex = 1;
+//    LinkedList<Sponsorship> eventSponsorships = new LinkedList<>();
+//
+//    System.out.printf("%-5s | %-12s | %-30s | %-10s\n", "No.", "Sponsor ID", "Sponsor Name", "Amount (RM)");
+//    System.out.println("---------------------------------------------------------------");
+//
+//    while (currentSponsorship != null) {
+//        if (currentSponsorship.data.getEventID().equals(eventID)) {
+//            System.out.printf("%-5d | %-12s | %-30s | %-10.2f\n",
+//                    sponsorshipIndex,
+//                    currentSponsorship.data.getSponsorID(),
+//                    currentSponsorship.data.getSponsorName(),
+//                    currentSponsorship.data.getSponsorAmount());
+//            eventSponsorships.insert(currentSponsorship.data);
+//            sponsorshipIndex++;
+//        }
+//        currentSponsorship = currentSponsorship.next;
+//    }
+//
+//    if (eventSponsorships.isEmpty()) {
 //        System.out.println(ANSI_YELLOW + "No sponsorships found for this event." + ANSI_RESET);
+//        return;
+//    }
+//
+//    System.out.print("Select the sponsorship you want to update: ");
+//    int selectedSponsorshipIndex = getValidInteger(scanner);
+//
+//    if (selectedSponsorshipIndex < 1 || selectedSponsorshipIndex > eventSponsorships.length()) {
+//        System.out.println(ANSI_RED + "Invalid selection. Please select a valid sponsorship." + ANSI_RESET);
+//        return;
+//    }
+//
+//    Node<Sponsorship> selectedSponsorshipNode = eventSponsorships.head;
+//    for (int i = 1; i < selectedSponsorshipIndex; i++) {
+//        selectedSponsorshipNode = selectedSponsorshipNode.next;
+//    }
+//
+//    Sponsorship selectedSponsorship = selectedSponsorshipNode.data;
+//
+//    System.out.println("What would you like to update?");
+//    System.out.println("1. Sponsor Name");
+//    System.out.println("2. Sponsor Amount");
+//    System.out.println("3. Both Name and Amount");
+//    System.out.print("Enter your choice: ");
+//
+//    String updateChoice = scanner.nextLine().trim();
+//
+//    Sponsorship updatedSponsorship = null;
+//    String successMessage = "";
+//
+//    switch (updateChoice) {
+//        case "1":
+//            // Update Sponsor Name
+//            System.out.print("Enter new Sponsor Name : ");
+//            String newSponsorName = scanner.nextLine().trim();
+//            if (!newSponsorName.isEmpty()) {
+//                updatedSponsorship = new Sponsorship(selectedSponsorship.getEventID(),
+//                                                     selectedSponsorship.getSponsorID(),
+//                                                     newSponsorName,
+//                                                     selectedSponsorship.getSponsorAmount());
+//                successMessage = "Sponsor Name updated successfully!";
+//            }
+//            break;
+//        case "2":
+//            // Update Sponsor Amount
+//            System.out.print("Enter new Sponsor Amount : RM");
+//            double newSponsorAmount = getValidDouble(scanner);
+//            updatedSponsorship = new Sponsorship(selectedSponsorship.getEventID(),
+//                                                 selectedSponsorship.getSponsorID(),
+//                                                 selectedSponsorship.getSponsorName(),
+//                                                 newSponsorAmount);
+//            successMessage = "Sponsor Amount updated successfully!";
+//            break;
+//        case "3":
+//            // Update Both Name and Amount
+//            System.out.print("Enter new Sponsor Name : ");
+//            newSponsorName = scanner.nextLine().trim();
+//            System.out.print("Enter new Sponsor Amount : RM");
+//            newSponsorAmount = getValidDouble(scanner);
+//
+//            if (!newSponsorName.isEmpty()) {
+//                updatedSponsorship = new Sponsorship(selectedSponsorship.getEventID(),
+//                                                     selectedSponsorship.getSponsorID(),
+//                                                     newSponsorName,
+//                                                     newSponsorAmount);
+//                successMessage = "Sponsor Name and Amount updated successfully!";
+//            }
+//            break;
+//        default:
+//            System.out.println(ANSI_RED + "Invalid choice. No changes made." + ANSI_RESET);
+//            return;
+//    }
+//
+//    if (updatedSponsorship != null && sponsorshipList.contains(selectedSponsorship)) {
+//        sponsorshipList.replace(selectedSponsorship, updatedSponsorship);
+//        sponsorshipList.saveToFile(SPONSORSHIP_FILE);
+//        System.out.println(ANSI_GREEN + successMessage + ANSI_RESET);
+//    } else {
+//        System.out.println(ANSI_RED + "Error updating sponsorship. Please try again." + ANSI_RESET);
 //    }
 //}
+    
+    
+
 
     
     

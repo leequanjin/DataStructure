@@ -129,7 +129,7 @@ public class EBoundary {
         System.out.print("Enter the Event ID to remove: ");
     }
     
-    public static int searchMenu(){
+    public static int searchEventMenu(){
         System.out.println("Search Event by:");
         String[] searchEventMenu = {
             "Event ID",
@@ -143,6 +143,41 @@ public class EBoundary {
     public static void inputEventID(){
         System.out.print("Enter the Event ID: ");
     }
+    
+     public static void disEventDetails(Event event) {
+         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        System.out.println( "\nEvent Found: " );
+        System.out.printf("%-15s : %s\n", "Event ID", event.getEventID());
+        System.out.printf("%-15s : %s\n", "Event Name", event.getEventName());
+        System.out.printf("%-15s : %s\n", "Date", dateFormat.format(event.getDate()));
+        System.out.printf("%-15s : %s\n", "Time", event.getTime());
+        System.out.printf("%-15s : %s\n", "Location", event.getLocation());
+    }
+
+    public static void disEventByDate(int show, Event event) {
+        System.out.printf("%-6s %-3s %-2s %-8s", "Event " , show , ": " , event.getEventID());
+        System.out.printf("%-4s %-50s\n", " -> ", event.getEventName());
+    }
+
+    public static void disTicketDetails(int ticketCount, Ticket ticket) {
+        System.out.printf("%-5d | %-10s | %-15s | %-10.2f\n",
+                ticketCount,
+                ticket.getTicketID(),
+                ticket.getTicketType(),
+                ticket.getTicketPrice());
+    }
+
+    public static void disSponsorshipDetails(int sponsorshipCount, Sponsorship sponsorship) {
+        System.out.printf("%-5d | %-10s | %-20s | %-15.2f\n",
+                sponsorshipCount,
+                sponsorship.getSponsorID(),
+                sponsorship.getSponsorName(),
+                sponsorship.getSponsorAmount());
+    }
+
+    
+
+    
 
     
 

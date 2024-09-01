@@ -12,6 +12,7 @@ public class EUtility {
     
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
+    public static final String YELLOW = "\u001B[33m";
     public static final String RESET = "\u001B[0m";
     
     
@@ -80,8 +81,20 @@ public class EUtility {
     }
     
     public static void searchEventNotExist() {
-       System.out.println(RED + "No event found matching the search criteria." + RESET);
+       System.out.println(YELLOW + "No event found matching the search criteria." + RESET);
     }
+    
+    public static void noTicketsFound() {
+       System.out.println(YELLOW + "No tickets found for this event." + RESET);
+    }
+    
+    public static void noSponsorshipsFound() {
+       System.out.println(YELLOW + "No sponsorships found for this event." + RESET);
+    }
+    
+    
+    
+    
     
     
     
