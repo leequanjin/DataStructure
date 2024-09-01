@@ -4,9 +4,9 @@
  */
 package EventSystem;
 
-import CommonResources.LinkedList;
-import CommonResources.LinkedListInterface;
-import CommonResources.Node;
+import adt.LinkedList;
+import adt.LinkedListInterface;
+import adt.Node;
 import VolunteerSubsystem.EventVolunteer;
 import VolunteerSubsystem.Volunteer;
 
@@ -62,6 +62,10 @@ public class EBoundary {
     
     public static void nextLine(){
         System.out.println();
+    }
+    
+    public static void inputChoice(){
+        System.out.print("Enter your choice: ");
     }
     
     public static void reEnter(){
@@ -174,6 +178,122 @@ public class EBoundary {
                 sponsorship.getSponsorName(),
                 sponsorship.getSponsorAmount());
     }
+    
+    public static void inputUpdateEventID(){
+        System.out.print("Enter the Event ID to update: ");
+    }
+    
+    
+     public static int displayUpdateMenu() {
+        System.out.println("\nWhat would you like to update?");
+        String[] updateMenu = {
+            "Event Name",
+            "Event Date",
+            "Event Time",
+            "Event Location",
+            "Tickets",
+            "Sponsorships",
+            "Save Changes"
+        };
+
+        return EControl.menuIntReturn(updateMenu);
+    }
+
+    public static int displayTicketUpdateMenu() {
+        System.out.println("\nWhat would you like to update?");
+        String[] updateMenu = {
+            "Ticket Type and Price",
+            "Ticket Status"
+        };
+
+        return EControl.menuIntReturn(updateMenu);
+    }
+
+    public static int displaySponsorshipUpdateMenu() {
+        System.out.println("\nWhat would you like to update?");
+        String[] updateMenu = {
+            "Sponsor Name",
+            "Sponsor Amount",
+            "Both Name and Amount"
+        };
+
+        return EControl.menuIntReturn(updateMenu);
+    }
+
+    public static void displayTicketDetails(int ticketCount, Ticket ticket) {
+        System.out.printf("%-5d | %-10s | %-20s | %-10.2f | %-10s\n",
+            ticketCount,
+            ticket.getTicketID(),
+            ticket.getTicketType(),
+            ticket.getTicketPrice(),
+            ticket.getTicketStatus());
+    }
+
+    public static void displaySponsorshipDetails(int sponsorshipIndex, Sponsorship sponsorship) {
+        System.out.printf("%-5d | %-12s | %-30s | %-10.2f\n",
+            sponsorshipIndex,
+            sponsorship.getSponsorID(),
+            sponsorship.getSponsorName(),
+            sponsorship.getSponsorAmount());
+    }
+
+    
+
+    public static void inputNewTicketType(String selectedTicketType) {
+        System.out.print("Enter new Ticket Type (Current: " + selectedTicketType + "): ");
+    }
+
+    public static void inputNewTicketPrice() {
+        System.out.print("Enter new Ticket Price: RM");
+    }
+
+    public static void inputNewTicketStatus(String currentStatus) {
+        System.out.print("Enter new Ticket Status (Current: " + currentStatus + "): ");
+    }
+
+    public static void inputNewSponsorName(String currentSponsorName) {
+        System.out.print("Enter new Sponsor Name (Current: " + currentSponsorName + "): ");
+    }
+
+    public static void inputNewSponsorAmount() {
+        System.out.print("Enter new Sponsor Amount: RM");
+    }
+
+    public static void displayEventUpdatedDetails(Event event) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        System.out.printf("%-15s : %s\n", "Event ID", event.getEventID());
+        System.out.printf("%-15s : %s\n", "Event Name", event.getEventName());
+        System.out.printf("%-15s : %s\n", "Date", dateFormat.format(event.getDate()));
+        System.out.printf("%-15s : %s\n", "Time", event.getTime());
+        System.out.printf("%-15s : %s\n", "Location", event.getLocation());
+    }
+
+    public static void displayTicketUpdatedDetails(Ticket updatedTicket) {
+        
+        System.out.printf("%-15s : %s\n", "Ticket ID", updatedTicket.getTicketID());
+        System.out.printf("%-15s : %s\n", "Ticket Type", updatedTicket.getTicketType());
+        System.out.printf("%-15s : %.2f\n", "Ticket Price", updatedTicket.getTicketPrice());
+        System.out.printf("%-15s : %s\n", "Ticket Status", updatedTicket.getTicketStatus());
+    }
+
+    public static void displaySponsorshipUpdatedDetails(Sponsorship updatedSponsorship) {
+        
+        System.out.printf("%-15s : %s\n", "Sponsor ID", updatedSponsorship.getSponsorID());
+        System.out.printf("%-15s : %s\n", "Sponsor Name", updatedSponsorship.getSponsorName());
+        System.out.printf("%-15s : %.2f\n", "Sponsor Amount", updatedSponsorship.getSponsorAmount());
+    }
+
+    
+
+    
+
+
+
+ 
+
+    
+
+    
 
     
 

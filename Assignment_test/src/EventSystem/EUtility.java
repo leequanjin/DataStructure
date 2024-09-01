@@ -81,17 +81,24 @@ public class EUtility {
     }
     
     public static void searchEventNotExist() {
-       System.out.println(YELLOW + "No event found matching the search criteria." + RESET);
+       System.out.println( "No event found matching the search criteria." );
     }
     
     public static void noTicketsFound() {
-       System.out.println(YELLOW + "No tickets found for this event." + RESET);
+       System.out.println( "No tickets found for this event." + RESET);
     }
     
     public static void noSponsorshipsFound() {
-       System.out.println(YELLOW + "No sponsorships found for this event." + RESET);
+       System.out.println( "No sponsorships found for this event." + RESET);
     }
     
+    public static void eventNotExistToUpdate() {
+       System.out.println( "No events available to update." );
+    }
+    
+    public static void invalidSelection(int max) {
+        System.out.println(RED + "Invalid selection. Please enter a number between 1 and " + max + "." + RESET);
+    }
     
     
     
@@ -113,6 +120,10 @@ public class EUtility {
     
     public static void eventRemovedMsg(){
         System.out.println(GREEN + "Event selected and all associated tickets and sponsorships have been removed successfully. "+ RESET);
+    }
+    
+    public static void eventUpdatedMsg(){
+        System.out.println(GREEN + "Event updated successfully!" + RESET);
     }
     
     
