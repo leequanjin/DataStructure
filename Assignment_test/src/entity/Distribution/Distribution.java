@@ -6,7 +6,7 @@ package entity.Distribution;
 
 import adt.Distribution.ItemLinkedList;
 import adt.Distribution.ItemLinkedListInterface;
-import DonationList.Item;
+import entity.DonationManagement.Item;
 import adt.LinkedListInterface;
 import java.io.Serializable;
 import java.time.LocalDate;
