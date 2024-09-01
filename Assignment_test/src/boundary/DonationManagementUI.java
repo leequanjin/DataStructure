@@ -95,6 +95,10 @@ public class DonationManagementUI {
     public static String showMorePgQ(){
         return "50 records of current table had been shown. Do you want to continue shown more?";
     }
+    
+    public static String contManage(){
+        return "Do you want to continue manage donation? (Back to Donation Management main menu)";
+    }
 
     // menu display
     public static void displayMenu(String[] selectionList) {

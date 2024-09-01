@@ -119,6 +119,18 @@ public class VolunteerUI {
         return VolunteerManagement.menuIntReturn(volMenu);
         
     }
+    
+    public static String contVolQ(){
+        return "Do you want to continue manage volunteer?";
+    }
+    
+    public static String remOtherVolQ(){
+        return "Do you want to remove other volunteer?";
+    }
+    
+    public static String contSearchOtherVolQ(){
+        return "Do you want to search other volunteer?";
+    }
 
     // -----------------
     // Add new Volunteer
