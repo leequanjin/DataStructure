@@ -432,19 +432,19 @@ private static String generateSponsorshipID(String prefix) {
                     updateEvent();
                     break;
                 case 7:
-                    //listAllEvents();
+                    listAllEvents();
                     break;
                 case 8:
-                    //removeEventFromAVolunteer();
+                    removeEventFromAVolunteer();
                     break;
                 case 9:
-                    //listAllEventsForAVolunteer();
+                    listAllEventsForAVolunteer();
                     break;
                 case 10:
-                    //generateSummaryReports();
+                    generateSummaryReports();
                     break;
                 case 11:
-                    System.out.println("Exiting..."); // change later
+                    System.out.println("Exiting..."); 
                     break;
                 
             }
@@ -628,7 +628,7 @@ private static String generateSponsorshipID(String prefix) {
         int searchChoice = EBoundary.searchEventMenu();
 
         Event foundEvent = null;
-        LinkedList<Event> foundEvents = new LinkedList<>();
+        LinkedListInterface<Event> foundEvents = new LinkedList<>();
 
         switch (searchChoice) {
             case 1:
@@ -655,8 +655,8 @@ private static String generateSponsorshipID(String prefix) {
     }
     
     // Sequential Search
-    private static LinkedList<Event> searchEventsByDate(Date searchDate) {
-        LinkedList<Event> foundEvents = new LinkedList<>();
+    private static LinkedListInterface<Event> searchEventsByDate(Date searchDate) {
+        LinkedListInterface<Event> foundEvents = new LinkedList<>();
         Node<Event> currentNode = eventList.getHead();
 
         while (currentNode != null) {
@@ -678,7 +678,7 @@ private static String generateSponsorshipID(String prefix) {
         disEventSponsorships(event.getEventID());
     }
 
-    public static void disEventsByDate(LinkedList<Event> foundEvents) {
+    public static void disEventsByDate(LinkedListInterface<Event> foundEvents) {
         Node<Event> currentEvent = foundEvents.getHead();
         int show = 1;
         while (currentEvent != null) {
@@ -728,7 +728,7 @@ private static String generateSponsorshipID(String prefix) {
         }
     }
     
- public static void updateEvent() {
+    public static void updateEvent() {
 
         if (eventList.isEmpty()) {
             EUtility.eventNotExistToUpdate();
@@ -757,14 +757,17 @@ private static String generateSponsorshipID(String prefix) {
                                 newName = scan.nextLine().trim();
                             }
                             updatedEvent = new Event(event.getEventID(), newName, event.getDate(), event.getTime(), event.getLocation());
+                            EUtility.eventNameUpdatedMsg();
                             break;
                         case 2:
                             Date newDate = getValidDate(scan);
                             updatedEvent = new Event(event.getEventID(), event.getEventName(), newDate, event.getTime(), event.getLocation());
+                            EUtility.eventDateUpdatedMsg();
                             break;
                         case 3:
                             String newTime = getValidTime(scan);
                             updatedEvent = new Event(event.getEventID(), event.getEventName(), event.getDate(), newTime, event.getLocation());
+                            EUtility.eventTimeUpdatedMsg();
                             break;
                         case 4:
                             EBoundary.inputLocation();
@@ -774,6 +777,7 @@ private static String generateSponsorshipID(String prefix) {
                                 newLocation = scan.nextLine().trim();
                             }
                             updatedEvent = new Event(event.getEventID(), event.getEventName(), event.getDate(), event.getTime(), newLocation);
+                            EUtility.eventLocationUpdatedMsg();
                             break;
                         case 5:
                             updateTickets(eventID, ticketList, scan);
@@ -811,7 +815,8 @@ private static String generateSponsorshipID(String prefix) {
 
         switch (updateChoice) {
             case 1:
-                LinkedList<String> ticketTypes = new LinkedList<>();
+                //  Display all ticket types and prices for selection
+                LinkedListInterface<String> ticketTypes = new LinkedList<>();
                 Node<Ticket> currentTicket = ticketList.getHead();
                 int ticketIndex = 1;
 
@@ -829,18 +834,21 @@ private static String generateSponsorshipID(String prefix) {
                     return;
                 }
 
+                // select which ticket type to update
                 int selectedTicketIndex = EControl.getValidRange(ticketTypes.length());
                 if (selectedTicketIndex < 1 || selectedTicketIndex > ticketTypes.length()) {
                     EUtility.invalidSelection(ticketTypes.length());
                     return;
                 }
 
-                Node<String> selectedTicketTypeNode = ticketTypes.head;
+                // Get the selected ticket type
+                Node<String> selectedTicketTypeNode = ticketTypes.getHead();
                 for (int i = 1; i < selectedTicketIndex; i++) {
                     selectedTicketTypeNode = selectedTicketTypeNode.next;
                 }
                 String selectedTicketType = selectedTicketTypeNode.data;
 
+                // Get new ticket type and price 
                 EBoundary.inputNewTicketType(selectedTicketType);
                 String newTicketType = scanner.nextLine().trim();
                 if (newTicketType.isEmpty()) {
@@ -851,25 +859,36 @@ private static String generateSponsorshipID(String prefix) {
                 EBoundary.inputNewTicketPrice();
                 double newTicketPrice = getValidDouble(scanner);
 
+                //  Update all tickets with the selected type
+                LinkedListInterface<Ticket> updatedTickets = new LinkedList<>();
                 currentTicket = ticketList.getHead();
                 while (currentTicket != null) {
                     Ticket ticket = currentTicket.data;
                     if (ticket.getEventID().equals(eventID) && ticket.getTicketType().equals(selectedTicketType)) {
                         Ticket updatedTicket = new Ticket(ticket.getEventID(), ticket.getTicketID(), newTicketType, newTicketPrice, ticket.getTicketStatus());
                         ticketList.replace(ticket, updatedTicket);
+                        updatedTickets.insert(updatedTicket);
                     }
                     currentTicket = currentTicket.next;
                 }
 
                 ticketList.saveToFile(TICKET_FILE);
-                EBoundary.displayTicketUpdatedDetails(new Ticket(eventID, "", newTicketType, newTicketPrice, ""));
+
+                // Display updated ticket details
+                Node<Ticket> updatedTicketNode = updatedTickets.getHead();
+                while (updatedTicketNode != null) {
+                    EBoundary.displayTicketUpdatedDetails(updatedTicketNode.data);
+                    updatedTicketNode = updatedTicketNode.next;
+                }
                 break;
 
             case 2:
+                //  Display all tickets for the event and their current status
                 currentTicket = ticketList.getHead();
-                LinkedList<Ticket> eventTickets = new LinkedList<>();
+                LinkedListInterface<Ticket> eventTickets = new LinkedList<>();
                 ticketIndex = 1;
 
+                EBoundary.displayTicketTableHeader();
                 while (currentTicket != null) {
                     if (currentTicket.data.getEventID().equals(eventID)) {
                         eventTickets.insert(currentTicket.data);
@@ -884,19 +903,22 @@ private static String generateSponsorshipID(String prefix) {
                     return;
                 }
 
+                //  Prompt to select which ticket to update the status
                 int selectedStatusIndex = EControl.getValidRange(eventTickets.length());
                 if (selectedStatusIndex < 1 || selectedStatusIndex > eventTickets.length()) {
                     EUtility.invalidSelection(eventTickets.length());
                     return;
                 }
 
-                Node<Ticket> selectedTicketNode = eventTickets.head;
+                // Get the selected ticket
+                Node<Ticket> selectedTicketNode = eventTickets.getHead();
                 for (int i = 1; i < selectedStatusIndex; i++) {
                     selectedTicketNode = selectedTicketNode.next;
                 }
                 Ticket selectedTicket = selectedTicketNode.data;
 
-                EBoundary.inputNewTicketStatus(selectedTicket.getTicketStatus());
+                // Get new status
+                EBoundary.inputNewTicketStatus();
                 String newTicketStatus = scanner.nextLine().trim();
                 if (newTicketStatus.isEmpty()) {
                     EUtility.emptyInputErrorMsg();
@@ -916,148 +938,491 @@ private static String generateSponsorshipID(String prefix) {
     }
 
     private static void updateSponsorships(String eventID, LinkedListInterface<Sponsorship> sponsorshipList, Scanner scanner) {
-    int updateChoice = EBoundary.displaySponsorshipUpdateMenu();
+        // list all sponsorships for the event
+        Node<Sponsorship> currentSponsorship = sponsorshipList.getHead();
+        int sponsorshipIndex = 1;
+        LinkedListInterface<Sponsorship> eventSponsorships = new LinkedList<>();
 
-    switch (updateChoice) {
-        case 1:
-            Node<Sponsorship> currentSponsorship = sponsorshipList.getHead();
-            LinkedList<Sponsorship> eventSponsorships = new LinkedList<>();
-            int sponsorshipIndex = 1;
+        EBoundary.displaySponsorshipTableHeader();
 
-            while (currentSponsorship != null) {
-                if (currentSponsorship.data.getEventID().equals(eventID)) {
-                    eventSponsorships.insert(currentSponsorship.data);
-                    EBoundary.displaySponsorshipDetails(sponsorshipIndex, currentSponsorship.data);
-                    sponsorshipIndex++;
+        while (currentSponsorship != null) {
+            if (currentSponsorship.data.getEventID().equals(eventID)) {
+                EBoundary.displaySponsorshipDetails(sponsorshipIndex, currentSponsorship.data);
+                eventSponsorships.insert(currentSponsorship.data);
+                sponsorshipIndex++;
+            }
+            currentSponsorship = currentSponsorship.next;
+        }
+
+        if (eventSponsorships.isEmpty()) {
+            EUtility.noSponsorshipsFound();
+            return;
+        }
+
+        //  select which sponsorship to update
+        int selectedSponsorshipIndex = EControl.getValidRange(eventSponsorships.length());
+        if (selectedSponsorshipIndex < 1 || selectedSponsorshipIndex > eventSponsorships.length()) {
+            EUtility.invalidSelection(eventSponsorships.length());
+            return;
+        }
+
+        Node<Sponsorship> selectedSponsorshipNode = eventSponsorships.getHead();
+        for (int i = 1; i < selectedSponsorshipIndex; i++) {
+            selectedSponsorshipNode = selectedSponsorshipNode.next;
+        }
+
+        Sponsorship selectedSponsorship = selectedSponsorshipNode.data;
+
+        // Prompt to choose what to update
+        int updateChoice = EBoundary.displaySponsorshipUpdateMenu();
+
+        Sponsorship updatedSponsorship = null;
+
+        switch (updateChoice) {
+            case 1:
+                // Update Sponsor Name
+                EBoundary.inputNewSponsorName();
+                String newSponsorName = scanner.nextLine().trim();
+                if (!newSponsorName.isEmpty()) {
+                    updatedSponsorship = new Sponsorship(selectedSponsorship.getEventID(),
+                            selectedSponsorship.getSponsorID(),
+                            newSponsorName,
+                            selectedSponsorship.getSponsorAmount());
+
                 }
-                currentSponsorship = currentSponsorship.next;
-            }
+                break;
+            case 2:
+                // Update Sponsor Amount
+                EBoundary.inputNewSponsorAmount();
+                double newSponsorAmount = EControl.getValidDouble(scanner);
+                updatedSponsorship = new Sponsorship(selectedSponsorship.getEventID(),
+                        selectedSponsorship.getSponsorID(),
+                        selectedSponsorship.getSponsorName(),
+                        newSponsorAmount);
 
-            if (eventSponsorships.isEmpty()) {
-                EUtility.noSponsorshipsFound();
+                break;
+            case 3:
+                // Update Both Name and Amount
+
+                EBoundary.inputNewSponsorName();
+                newSponsorName = scanner.nextLine().trim();
+                EBoundary.inputNewSponsorAmount();
+                newSponsorAmount = EControl.getValidDouble(scanner);
+
+                if (!newSponsorName.isEmpty()) {
+                    updatedSponsorship = new Sponsorship(selectedSponsorship.getEventID(),
+                            selectedSponsorship.getSponsorID(),
+                            newSponsorName,
+                            newSponsorAmount);
+
+                }
+                break;
+            default:
+                EUtility.invalidMenuChoice();
                 return;
-            }
+        }
 
-            int selectedSponsorshipIndex = EControl.getValidRange(eventSponsorships.length());
-            if (selectedSponsorshipIndex < 1 || selectedSponsorshipIndex > eventSponsorships.length()) {
-                EUtility.invalidSelection(eventSponsorships.length());
-                return;
-            }
-
-            Node<Sponsorship> selectedSponsorshipNode = eventSponsorships.head;
-            for (int i = 1; i < selectedSponsorshipIndex; i++) {
-                selectedSponsorshipNode = selectedSponsorshipNode.next;
-            }
-            Sponsorship selectedSponsorship = selectedSponsorshipNode.data;
-
-            EBoundary.inputNewSponsorName(selectedSponsorship.getSponsorName());
-            String newSponsorName = scanner.nextLine().trim();
-            if (newSponsorName.isEmpty()) {
-                EUtility.emptyInputErrorMsg();
-                return;
-            }
-
-            Sponsorship updatedSponsorship = new Sponsorship(selectedSponsorship.getEventID(), selectedSponsorship.getSponsorID(), newSponsorName, selectedSponsorship.getSponsorAmount());
+        //  Update the sponsorship and save changes
+        if (updatedSponsorship != null && sponsorshipList.contains(selectedSponsorship)) {
             sponsorshipList.replace(selectedSponsorship, updatedSponsorship);
-
             sponsorshipList.saveToFile(SPONSORSHIP_FILE);
             EBoundary.displaySponsorshipUpdatedDetails(updatedSponsorship);
-            break;
+        } else {
+            EUtility.updateSponsorError();
+        }
+    
+    
+}
+    private static void listAllEvents() {
 
-        case 2:
-            currentSponsorship = sponsorshipList.getHead();
-            eventSponsorships = new LinkedList<>();
-            sponsorshipIndex = 1;
+        // Check if there are any events
+        if (eventList.isEmpty()) {
+            EUtility.eventNotExist();
+            return;
+        }
 
-            while (currentSponsorship != null) {
-                if (currentSponsorship.data.getEventID().equals(eventID)) {
-                    eventSponsorships.insert(currentSponsorship.data);
-                    EBoundary.displaySponsorshipDetails(sponsorshipIndex, currentSponsorship.data);
-                    sponsorshipIndex++;
+        // Header for the event list
+        EBoundary.displayEventListHeader();
+
+        // Iterate through all events
+        Node<Event> eventNode = eventList.getHead();
+        while (eventNode != null) {
+            Event event = eventNode.data;
+            EBoundary.displayEventDetailsInList(event);
+
+            // Filter and list tickets associated with the current event
+            EBoundary.displayEventTicketsHeader(event.getEventID());
+
+            Node<Ticket> ticketNode = ticketList.getHead();
+            boolean ticketsFound = false;
+            int ticketCount = 1;
+            while (ticketNode != null) {
+                Ticket ticket = ticketNode.data;
+                if (ticket.getEventID().equals(event.getEventID())) {
+                    EBoundary.displayTicketDetailsInList(ticketCount, ticket);
+                    ticketsFound = true;
+                    ticketCount++;
                 }
-                currentSponsorship = currentSponsorship.next;
+                ticketNode = ticketNode.next;
+            }
+            if (!ticketsFound) {
+                EUtility.noTicketsFound();
             }
 
-            if (eventSponsorships.isEmpty()) {
-                EUtility.noSponsorshipsFound();
-                return;
-            }
+            // Filter and list sponsorships associated with the current event
+            EBoundary.displayEventSponsorshipsHeader(event.getEventID());
 
-            selectedSponsorshipIndex = EControl.getValidRange(eventSponsorships.length());
-            if (selectedSponsorshipIndex < 1 || selectedSponsorshipIndex > eventSponsorships.length()) {
-                EUtility.invalidSelection(eventSponsorships.length());
-                return;
-            }
-
-            selectedSponsorshipNode = eventSponsorships.getHead();
-            for (int i = 1; i < selectedSponsorshipIndex; i++) {
-                selectedSponsorshipNode = selectedSponsorshipNode.next;
-            }
-            selectedSponsorship = selectedSponsorshipNode.data;
-
-            EBoundary.inputNewSponsorAmount();
-            double newSponsorAmount = getValidDouble(scanner);
-
-            updatedSponsorship = new Sponsorship(selectedSponsorship.getEventID(), selectedSponsorship.getSponsorID(), selectedSponsorship.getSponsorName(), newSponsorAmount);
-            sponsorshipList.replace(selectedSponsorship, updatedSponsorship);
-
-            sponsorshipList.saveToFile(SPONSORSHIP_FILE);
-            EBoundary.displaySponsorshipUpdatedDetails(updatedSponsorship);
-            break;
-
-
-        case 3:
-            currentSponsorship = sponsorshipList.getHead();
-            eventSponsorships = new LinkedList<>();
-            sponsorshipIndex = 1;
-
-            while (currentSponsorship != null) {
-                if (currentSponsorship.data.getEventID().equals(eventID)) {
-                    eventSponsorships.insert(currentSponsorship.data);
-                    EBoundary.displaySponsorshipDetails(sponsorshipIndex, currentSponsorship.data);
-                    sponsorshipIndex++;
+            Node<Sponsorship> sponsorshipNode = sponsorshipList.getHead();
+            boolean sponsorshipsFound = false;
+            int sponsorshipCount = 1;
+            while (sponsorshipNode != null) {
+                Sponsorship sponsorship = sponsorshipNode.data;
+                if (sponsorship.getEventID().equals(event.getEventID())) {
+                    EBoundary.displaySponsorshipDetailsInList(sponsorshipCount, sponsorship);
+                    sponsorshipsFound = true;
+                    sponsorshipCount++;
                 }
-                currentSponsorship = currentSponsorship.next;
+                sponsorshipNode = sponsorshipNode.next;
             }
-
-            if (eventSponsorships.isEmpty()) {
+            if (!sponsorshipsFound) {
                 EUtility.noSponsorshipsFound();
-                return;
             }
 
-            selectedSponsorshipIndex = EControl.getValidRange(eventSponsorships.length());
-            if (selectedSponsorshipIndex < 1 || selectedSponsorshipIndex > eventSponsorships.length()) {
-                EUtility.invalidSelection(eventSponsorships.length());
-                return;
+            // Move to the next event in the list
+            eventNode = eventNode.next;
+            EBoundary.displayEventSeparator();
+        }
+    }
+
+    private static void removeEventFromAVolunteer() {
+
+        // Check if there are no volunteers
+        if (volunteerList.isEmpty()) {
+            EUtility.noVolunteersFound();
+            return;
+        }
+
+        // Get the Volunteer ID from user input
+        String volunteerID = EBoundary.inputVolunteerID();
+
+        // Find the volunteer by ID
+        Node<Volunteer> volunteerNode = volunteerList.getHead();
+        Volunteer foundVolunteer = null;
+
+        while (volunteerNode != null) {
+            if (volunteerNode.data.getVolunteerID().equals(volunteerID)) {
+                foundVolunteer = volunteerNode.data;
+                break;
             }
+            volunteerNode = volunteerNode.next;
+        }
 
-            selectedSponsorshipNode = eventSponsorships.getHead();
-            for (int i = 1; i < selectedSponsorshipIndex; i++) {
-                selectedSponsorshipNode = selectedSponsorshipNode.next;
+        // If the volunteer is not found
+        if (foundVolunteer == null) {
+            EUtility.noVolunteerFound(volunteerID);
+            return;
+        }
+
+        // List all events associated with the volunteer
+        LinkedListInterface<Event> assignedEvents = new LinkedList<>();
+        Node<EventVolunteer> volunteerEventNode = volunteerEventList.getHead();
+
+        while (volunteerEventNode != null) {
+            EventVolunteer eventVolunteer = volunteerEventNode.data;
+            if (eventVolunteer.getVolunteerID().equals(volunteerID)) {
+                Node<Event> eventNode = eventList.getHead();
+                while (eventNode != null) {
+                    if (eventNode.data.getEventID().equals(eventVolunteer.getEventID())) {
+                        assignedEvents.insert(eventNode.data);
+                        break;
+                    }
+                    eventNode = eventNode.next;
+                }
             }
-            selectedSponsorship = selectedSponsorshipNode.data;
+            volunteerEventNode = volunteerEventNode.next;
+        }
 
-            EBoundary.inputNewSponsorName(selectedSponsorship.getSponsorName());
-            newSponsorName = scanner.nextLine().trim();
-            if (newSponsorName.isEmpty()) {
-                EUtility.emptyInputErrorMsg();
-                return;
+        // If no events are associated with the volunteer
+        if (assignedEvents.isEmpty()) {
+            EUtility.noEventsAssociatedWithVolunteer(volunteerID);
+            return;
+        }
+
+        // Display the volunteer details and their associated events
+        EBoundary.displayVolunteerDetails(foundVolunteer);
+        EBoundary.displayVolunteerEvents(assignedEvents);
+
+        // Get the Event ID to remove from user input
+        String eventIDToRemove = EBoundary.inputEventIDToRemove();
+
+        // Remove the association from the volunteer-event list
+        volunteerEventList.removeIf(eventVolunteer -> eventVolunteer.getVolunteerID().equals(volunteerID) && eventVolunteer.getEventID().equals(eventIDToRemove));
+
+        // Save the updated list to the file
+        volunteerEventList.saveToFile(VOLUNTEER_EVENT_FILE);
+
+        // Confirm the removal
+        EUtility.eventRemovedFromVolunteer(eventIDToRemove, volunteerID);
+    }
+
+    private static void listAllEventsForAVolunteer() {
+
+        // Check if there are no volunteers
+        if (volunteerList.isEmpty()) {
+            EUtility.noVolunteersFound();
+            return;
+        }
+
+        // Get the Volunteer ID from user input
+        String volunteerID = EBoundary.inputVolunteerID();
+
+        // Find the volunteer by ID
+        Node<Volunteer> volunteerNode = volunteerList.getHead();
+        Volunteer foundVolunteer = null;
+
+        while (volunteerNode != null) {
+            if (volunteerNode.data.getVolunteerID().equals(volunteerID)) {
+                foundVolunteer = volunteerNode.data;
+                break;
             }
+            volunteerNode = volunteerNode.next;
+        }
 
-            EBoundary.inputNewSponsorAmount();
-            newSponsorAmount = getValidDouble(scanner);
+        // If the volunteer is not found
+        if (foundVolunteer == null) {
+            EUtility.noVolunteerFound(volunteerID);
+            return;
+        }
 
-            updatedSponsorship = new Sponsorship(selectedSponsorship.getEventID(), selectedSponsorship.getSponsorID(), newSponsorName, newSponsorAmount);
-            sponsorshipList.replace(selectedSponsorship, updatedSponsorship);
+        // List all events associated with the volunteer
+        LinkedListInterface<Event> assignedEvents = new LinkedList<>();
+        Node<EventVolunteer> volunteerEventNode = volunteerEventList.getHead();
 
-            sponsorshipList.saveToFile(SPONSORSHIP_FILE);
-            EBoundary.displaySponsorshipUpdatedDetails(updatedSponsorship);
-            break;
+        while (volunteerEventNode != null) {
+            EventVolunteer eventVolunteer = volunteerEventNode.data;
 
-        default:
-            EUtility.invalidMenuChoice();
+            if (eventVolunteer.getVolunteerID().equals(volunteerID)) {
+                Node<Event> eventNode = eventList.getHead();
+                while (eventNode != null) {
+                    if (eventNode.data.getEventID().equals(eventVolunteer.getEventID())) {
+                        assignedEvents.insert(eventNode.data);
+                        break;
+                    }
+                    eventNode = eventNode.next;
+                }
+            }
+            volunteerEventNode = volunteerEventNode.next;
+        }
+
+        // If no events are associated with the volunteer
+        if (assignedEvents.isEmpty()) {
+            EUtility.noEventsAssociatedWithVolunteer(volunteerID);
+            return;
+        }
+
+        // Display the volunteer details and their associated events
+        EBoundary.displayVolunteerDetails(foundVolunteer);
+        EBoundary.displayVolunteerEvents(assignedEvents);
     }
     
+    public static void generateSummaryReports() {
+        boolean cont = true;
+        do {
+
+            int reportSelection = EBoundary.displayReportMenu();
+
+            switch (reportSelection) {
+                case 1:
+                    annualFundraisingReport();
+                    break;
+                case 2:
+                    topEventsWithMostVolunteersReport();
+                    break;
+                case 3:
+                    topVolunteerContributionsReport();
+                    break;
+                case 4:
+                    bestTicketSalesPerformanceReport();
+                    break;
+                default:
+                    EUtility.inputInvalidReportChoice();
+                    break;
+            }
+
+            cont = YN("Do you want to view another report?");
+
+        } while (cont);
+    }
+
+    public static void annualFundraisingReport() {
+
+        if (eventList.isEmpty() || sponsorshipList.isEmpty()) {
+            EUtility.noEventoOrSponsorshipExist();
+            return;
+        }
+
+        EBoundary.inputStartYear();
+        int startYear = scan.nextInt();
+        EBoundary.inputEndYear();
+        int endYear = scan.nextInt();
+
+        double[] fundraisingTotals = new double[endYear - startYear + 1];
+
+        Node<Event> currentEvent = eventList.getHead();
+        while (currentEvent != null) {
+            int eventYear = currentEvent.data.getDate().getYear() + 1900;
+            if (eventYear >= startYear && eventYear <= endYear) {
+                double totalSponsorship = 0;
+                Node<Sponsorship> currentSponsorship = sponsorshipList.getHead();
+                while (currentSponsorship != null) {
+                    if (currentSponsorship.data.getEventID().equals(currentEvent.data.getEventID())) {
+                        totalSponsorship += currentSponsorship.data.getSponsorAmount();
+                    }
+                    currentSponsorship = currentSponsorship.next;
+                }
+                fundraisingTotals[eventYear - startYear] += totalSponsorship;
+            }
+            currentEvent = currentEvent.next;
+        }
+
+         EBoundary.displayAnnualFundraisingReport(fundraisingTotals, startYear);
+    }
+
+    public static void topEventsWithMostVolunteersReport() {
+
+        if (eventList.isEmpty() || volunteerEventList.isEmpty()) {
+            EUtility.noEventOrVolunteer();
+            return;
+        }
+
+        Event[] topEvents = new Event[5];
+        int[] volunteerCounts = new int[5];
+
+        Node<Event> currentEvent = eventList.getHead();
+        while (currentEvent != null) {
+            int volunteerCount = 0;
+            Node<EventVolunteer> currentVolunteerEvent = volunteerEventList.getHead();
+            while (currentVolunteerEvent != null) {
+                if (currentVolunteerEvent.data.getEventID().equals(currentEvent.data.getEventID())) {
+                    volunteerCount++;
+                }
+                currentVolunteerEvent = currentVolunteerEvent.next;
+            }
+
+            for (int i = 0; i < 5; i++) {
+                if (volunteerCounts[i] < volunteerCount) {
+                    for (int j = 4; j > i; j--) {
+                        topEvents[j] = topEvents[j - 1];
+                        volunteerCounts[j] = volunteerCounts[j - 1];
+                    }
+                    topEvents[i] = currentEvent.data;
+                    volunteerCounts[i] = volunteerCount;
+                    break;
+                }
+            }
+
+            currentEvent = currentEvent.next;
+        }
+
+        EBoundary.displayTopEventsWithMostVolunteers(topEvents, volunteerCounts);
+    }
+
+    public static void topVolunteerContributionsReport() {
+
+        if (volunteerList.isEmpty() || volunteerEventList.isEmpty()) {
+            EUtility.noVolunteerOrEventExist();
+            return;
+        }
+
+        Volunteer[] topVolunteers = new Volunteer[5];
+        int[] contributionCounts = new int[5];
+
+        Node<Volunteer> currentVolunteer = volunteerList.getHead();
+        while (currentVolunteer != null) {
+            int contributionCount = 0;
+            Node<EventVolunteer> currentVolunteerEvent = volunteerEventList.getHead();
+            while (currentVolunteerEvent != null) {
+                if (currentVolunteerEvent.data.getVolunteerID().equals(currentVolunteer.data.getVolunteerID())) {
+                    contributionCount++;
+                }
+                currentVolunteerEvent = currentVolunteerEvent.next;
+            }
+
+            for (int i = 0; i < 5; i++) {
+                if (contributionCounts[i] < contributionCount) {
+                    for (int j = 4; j > i; j--) {
+                        topVolunteers[j] = topVolunteers[j - 1];
+                        contributionCounts[j] = contributionCounts[j - 1];
+                    }
+                    topVolunteers[i] = currentVolunteer.data;
+                    contributionCounts[i] = contributionCount;
+                    break;
+                }
+            }
+
+            currentVolunteer = currentVolunteer.next;
+        }
+
+        EBoundary.displayTopVolunteerContributions(topVolunteers, contributionCounts);
+    }
+
+    public static void bestTicketSalesPerformanceReport() {
+
+        if (eventList.isEmpty() || ticketList.isEmpty()) {
+            EUtility.noEventOrTicketExist();
+            return;
+        }
+
+        Event[] topEvents = new Event[5];
+        int[] soldOutCounts = new int[5];
+
+        Node<Event> currentEvent = eventList.getHead();
+        while (currentEvent != null) {
+            int soldOutCount = 0;
+            Node<Ticket> currentTicket = ticketList.getHead();
+            while (currentTicket != null) {
+                if (currentTicket.data.getEventID().equals(currentEvent.data.getEventID())
+                        && currentTicket.data.getTicketStatus().equalsIgnoreCase("Sold Out")) {
+                    soldOutCount++;
+                }
+                currentTicket = currentTicket.next;
+            }
+
+            for (int i = 0; i < 5; i++) {
+                if (soldOutCounts[i] < soldOutCount) {
+                    for (int j = 4; j > i; j--) {
+                        topEvents[j] = topEvents[j - 1];
+                        soldOutCounts[j] = soldOutCounts[j - 1];
+                    }
+                    topEvents[i] = currentEvent.data;
+                    soldOutCounts[i] = soldOutCount;
+                    break;
+                }
+            }
+
+            currentEvent = currentEvent.next;
+        }
+
+        EBoundary.displayBestTicketSalesPerformance(topEvents, soldOutCounts);
+    }
+
+
+
+    
+    
+    
+
+    
+
+
+    
+
+    
+    
+
+    
+    
+    
     
     
     
@@ -1075,4 +1440,4 @@ private static String generateSponsorshipID(String prefix) {
     
     
     
-}
+
