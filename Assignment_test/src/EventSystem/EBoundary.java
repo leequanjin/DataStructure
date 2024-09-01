@@ -57,7 +57,11 @@ public class EBoundary {
             System.out.println((i + 1) + ". " + selectionList[i]);
         }
         
-        System.out.print("Enter your selection: ");
+        System.out.print("Enter your choice: ");
+    }
+    
+    public static void nextLine(){
+        System.out.println();
     }
     
     public static void reEnter(){
@@ -75,15 +79,81 @@ public class EBoundary {
     public static void inputDate(){
         System.out.print("Date (dd/MM/yyyy): ");
     }
+    
     public static void inputTime(){
         System.out.print("Time (HH:mm) in 24-hour format: ");
     }
     
-    
-    
     public static void inputLocation(){
         System.out.print("Location: ");
     }
+    
+    public static void inputTicketEventID(){
+        System.out.print("Enter Event ID for the Ticket: ");
+    }
+    
+    public static void inputNumTicketType(){
+        System.out.print("How many ticket types would you like to add?: ");
+    }
+    
+    public static void inputTicketType(){
+        System.out.print("Ticket Type: ");
+    }
+    
+    
+    public static void inputTicketPrice(){
+        System.out.print("Ticket Price: RM");
+    }
+    
+    public static void inputTicketAmt(){
+        System.out.print("Amount of Tickets: ");
+    }
+    
+    public static void inputSponsEventID(){
+        System.out.print("Enter Event ID for the Sponsorship: ");
+    }
+    
+    public static void inputSponsName(){
+        System.out.print("Sponsor Name: ");
+    }
+    
+    public static void inputSponsAmt(){
+        System.out.print("Sponsor Amount: RM");
+    }
+    
+    public static void displayEvent(){
+        System.out.println("Available events:");
+    }
+    
+    public static void inputRemoveEventID(){
+        System.out.print("Enter the Event ID to remove: ");
+    }
+    
+    public static int searchMenu(){
+        System.out.println("Search Event by:");
+        String[] searchEventMenu = {
+            "Event ID",
+            "Event Date"
+        };
+
+        return EControl.menuIntReturn(searchEventMenu);
+        
+    }
+    
+    public static void inputEventID(){
+        System.out.print("Enter the Event ID: ");
+    }
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
 
     
 
