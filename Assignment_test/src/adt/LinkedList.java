@@ -266,8 +266,8 @@ public class LinkedList<T> implements LinkedListInterface<T>, Serializable {
     }
     
     @Override
-    public LinkedListInterface<T> filterByCategoryIntoLinkedListInterface(Class<T> categoryClass) {
-        LinkedListInterface<T> filteredList = new LinkedList<>();
+    public LinkedListInterface filterByCategoryIntoLinkedListInterface(Class categoryClass) {
+        LinkedListInterface filteredList = new LinkedList<>();
         Node current = head;
 
         while (current != null) {
