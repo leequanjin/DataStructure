@@ -20,7 +20,7 @@ import java.util.Scanner;
  * @author Clarist Liew
  */
 public class EBoundary {
-    
+
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
     public static final String YELLOW = "\u001B[33m";
@@ -28,8 +28,7 @@ public class EBoundary {
     public static final String PURPLE = "\u001B[35m";
     public static final String CYAN = "\u001B[36m";
     public static final String RESET = "\u001B[0m";
-    
-    
+
     public static int eventMainMenu() {
 
         System.out.println("Event Management Subsystem:");
@@ -48,92 +47,87 @@ public class EBoundary {
         };
 
         return EControl.menuIntReturn(volMenu);
-        
+
     }
-    
-    public static void displayMenu(String[] selectionList){
+
+    public static void displayMenu(String[] selectionList) {
 
         for (int i = 0; i < selectionList.length; i++) {
             System.out.println((i + 1) + ". " + selectionList[i]);
         }
-        
+
         System.out.print("Enter your choice: ");
     }
-    
-    public static void nextLine(){
-        System.out.println();
-    }
-    
-    public static void inputChoice(){
+
+    public static void inputChoice() {
         System.out.print("Enter your choice: ");
     }
-    
-    public static void reEnter(){
+
+    public static void reEnter() {
         System.out.print("Enter again: ");
     }
-    
-    public static void inputYN(String sentence){
+
+    public static void inputYN(String sentence) {
         System.out.print("\n" + sentence + "\nPlease enter Y / N: ");
     }
-    
-    public static void inputEventName(){
+
+    public static void inputEventName() {
         System.out.print("Event Name: ");
     }
-    
-    public static void inputDate(){
+
+    public static void inputDate() {
         System.out.print("Date (dd/MM/yyyy): ");
     }
-    
-    public static void inputTime(){
+
+    public static void inputTime() {
         System.out.print("Time (HH:mm) in 24-hour format: ");
     }
-    
-    public static void inputLocation(){
+
+    public static void inputLocation() {
         System.out.print("Location: ");
     }
-    
-    public static void inputTicketEventID(){
+
+    public static void inputTicketEventID() {
         System.out.print("Enter Event ID for the Ticket: ");
     }
-    
-    public static void inputNumTicketType(){
+
+    public static void inputNumTicketType() {
         System.out.print("How many ticket types would you like to add?: ");
     }
-    
-    public static void inputTicketType(){
+
+    public static void inputTicketType() {
         System.out.print("Ticket Type: ");
     }
-    
-    
-    public static void inputTicketPrice(){
+
+    public static void inputTicketPrice() {
         System.out.print("Ticket Price: RM");
     }
-    
-    public static void inputTicketAmt(){
+
+    public static void inputTicketAmt() {
         System.out.print("Amount of Tickets: ");
     }
-    
-    public static void inputSponsEventID(){
+
+    public static void inputSponsEventID() {
         System.out.print("Enter Event ID for the Sponsorship: ");
     }
-    
-    public static void inputSponsName(){
+
+    public static void inputSponsName() {
         System.out.print("Sponsor Name: ");
     }
-    
-    public static void inputSponsAmt(){
+
+    public static void inputSponsAmt() {
         System.out.print("Sponsor Amount: RM");
     }
-    
-    public static void displayEvent(){
+
+    public static void displayEvent() {
         System.out.println("Available events:");
     }
-    
-    public static void inputRemoveEventID(){
+
+    public static void inputRemoveEventID() {
         System.out.print("Enter the Event ID to remove: ");
     }
-    
-    public static int searchEventMenu(){
+
+    public static int searchEventMenu() {
         System.out.println("Search Event by:");
         String[] searchEventMenu = {
             "Event ID",
@@ -141,16 +135,16 @@ public class EBoundary {
         };
 
         return EControl.menuIntReturn(searchEventMenu);
-        
+
     }
-    
-    public static void inputEventID(){
+
+    public static void inputEventID() {
         System.out.print("Enter the Event ID: ");
     }
-    
-     public static void disEventDetails(Event event) {
-         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        System.out.println( "\nEvent Found: " );
+
+    public static void disEventDetails(Event event) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        System.out.println("\nEvent Found: ");
         System.out.printf("%-15s : %s\n", "Event ID", event.getEventID());
         System.out.printf("%-15s : %s\n", "Event Name", event.getEventName());
         System.out.printf("%-15s : %s\n", "Date", dateFormat.format(event.getDate()));
@@ -159,7 +153,7 @@ public class EBoundary {
     }
 
     public static void disEventByDate(int show, Event event) {
-        System.out.printf("%-6s %-3s %-2s %-8s", "Event " , show , ": " , event.getEventID());
+        System.out.printf("%-6s %-3s %-2s %-8s", "Event ", show, ": ", event.getEventID());
         System.out.printf("%-4s %-50s\n", " -> ", event.getEventName());
     }
 
@@ -178,13 +172,12 @@ public class EBoundary {
                 sponsorship.getSponsorName(),
                 sponsorship.getSponsorAmount());
     }
-    
-    public static void inputUpdateEventID(){
+
+    public static void inputUpdateEventID() {
         System.out.print("Enter the Event ID to update: ");
     }
-    
-    
-     public static int displayUpdateMenu() {
+
+    public static int displayUpdateMenu() {
         System.out.println("\nWhat would you like to update?");
         String[] updateMenu = {
             "Event Name",
@@ -193,7 +186,7 @@ public class EBoundary {
             "Event Location",
             "Tickets",
             "Sponsorships",
-            "Save Changes"
+            "Save Changes and Exit"
         };
 
         return EControl.menuIntReturn(updateMenu);
@@ -220,24 +213,28 @@ public class EBoundary {
         return EControl.menuIntReturn(updateMenu);
     }
 
-    public static void displayTicketDetails(int ticketCount, Ticket ticket) {
-        System.out.printf("%-5d | %-10s | %-20s | %-10.2f | %-10s\n",
-            ticketCount,
-            ticket.getTicketID(),
-            ticket.getTicketType(),
-            ticket.getTicketPrice(),
-            ticket.getTicketStatus());
+    public static void displayTicketTableHeader() {
+        System.out.printf("%-5s | %-10s | %-20s | %-10s | %-10s\n", "No.", "Ticket ID", "Ticket Type", "Price (RM)", "Status");
+        System.out.println("-------------------------------------------------------------------");
+    }
+
+    public static void displaySponsorshipTableHeader() {
+        System.out.printf("%-5s | %-12s | %-30s | %-10s\n", "No.", "Sponsor ID", "Sponsor Name", "Amount (RM)");
+        System.out.println("---------------------------------------------------------------");
+    }
+
+    public static void displayTicketDetails(int ticketIndex, Ticket currentTicket) {
+        System.out.println(ticketIndex + ". Type: " + currentTicket.getTicketType()
+                + ", Price: RM" + String.format("%.2f", currentTicket.getTicketPrice()));
     }
 
     public static void displaySponsorshipDetails(int sponsorshipIndex, Sponsorship sponsorship) {
         System.out.printf("%-5d | %-12s | %-30s | %-10.2f\n",
-            sponsorshipIndex,
-            sponsorship.getSponsorID(),
-            sponsorship.getSponsorName(),
-            sponsorship.getSponsorAmount());
+                sponsorshipIndex,
+                sponsorship.getSponsorID(),
+                sponsorship.getSponsorName(),
+                sponsorship.getSponsorAmount());
     }
-
-    
 
     public static void inputNewTicketType(String selectedTicketType) {
         System.out.print("Enter new Ticket Type (Current: " + selectedTicketType + "): ");
@@ -247,12 +244,12 @@ public class EBoundary {
         System.out.print("Enter new Ticket Price: RM");
     }
 
-    public static void inputNewTicketStatus(String currentStatus) {
-        System.out.print("Enter new Ticket Status (Current: " + currentStatus + "): ");
+    public static void inputNewTicketStatus() {
+        System.out.print("Enter new Ticket Status: ");
     }
 
-    public static void inputNewSponsorName(String currentSponsorName) {
-        System.out.print("Enter new Sponsor Name (Current: " + currentSponsorName + "): ");
+    public static void inputNewSponsorName() {
+        System.out.print("Enter new Sponsor Name: ");
     }
 
     public static void inputNewSponsorAmount() {
@@ -269,7 +266,7 @@ public class EBoundary {
     }
 
     public static void displayTicketUpdatedDetails(Ticket updatedTicket) {
-        
+
         System.out.printf("%-15s : %s\n", "Ticket ID", updatedTicket.getTicketID());
         System.out.printf("%-15s : %s\n", "Ticket Type", updatedTicket.getTicketType());
         System.out.printf("%-15s : %.2f\n", "Ticket Price", updatedTicket.getTicketPrice());
@@ -277,48 +274,190 @@ public class EBoundary {
     }
 
     public static void displaySponsorshipUpdatedDetails(Sponsorship updatedSponsorship) {
-        
+
         System.out.printf("%-15s : %s\n", "Sponsor ID", updatedSponsorship.getSponsorID());
         System.out.printf("%-15s : %s\n", "Sponsor Name", updatedSponsorship.getSponsorName());
         System.out.printf("%-15s : %.2f\n", "Sponsor Amount", updatedSponsorship.getSponsorAmount());
     }
 
-    
+//list all
+    public static void displayEventListHeader() {
+        System.out.println("\nList of All Events:");
+        System.out.printf("%-10s | %-30s | %-12s | %-8s | %-20s\n", "Event ID", "Event Name", "Date", "Time", "Location");
+        System.out.println("---------------------------------------------------------------------------------------------");
+    }
 
-    
+    public static void displayEventDetailsInList(Event event) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        System.out.printf("%-10s | %-30s | %-12s | %-8s | %-20s\n",
+                event.getEventID(),
+                event.getEventName(),
+                dateFormat.format(event.getDate()),
+                event.getTime(),
+                event.getLocation());
+    }
 
+    public static void displayEventTicketsHeader(String eventID) {
+        System.out.println("\nTickets for Event ID " + eventID + ":");
+        System.out.printf("%-5s | %-10s | %-15s | %-10s\n", "No.", "Ticket ID", "Ticket Type", "Amount (RM)");
+        System.out.println("--------------------------------------------------------------");
+    }
 
+    public static void displayTicketDetailsInList(int ticketCount, Ticket ticket) {
+        System.out.printf("%-5d | %-10s | %-15s | %-10.2f\n",
+                ticketCount,
+                ticket.getTicketID(),
+                ticket.getTicketType(),
+                ticket.getTicketPrice());
+    }
 
- 
+    public static void displayEventSponsorshipsHeader(String eventID) {
+        System.out.println("\nSponsorships for Event ID " + eventID + ":");
+        System.out.printf("%-5s | %-12s | %-25s | %-10s\n", "No.", "Sponsor ID", "Sponsor Name", "Amount (RM)");
+        System.out.println("---------------------------------------------------------------");
+    }
 
-    
+    public static void displaySponsorshipDetailsInList(int sponsorshipCount, Sponsorship sponsorship) {
+        System.out.printf("%-5d | %-12s | %-25s | %-10.2f\n",
+                sponsorshipCount,
+                sponsorship.getSponsorID(),
+                sponsorship.getSponsorName(),
+                sponsorship.getSponsorAmount());
+    }
 
-    
+    public static void displayEventSeparator() {
+        System.out.println("\n------------------------------------------------------------------------------------------------------------------------\n");
+    }
 
-    
+    //remove volunteer
+    public static String inputVolunteerID() {
+        System.out.print("Enter the Volunteer ID: ");
+        return EControl.scan.nextLine().trim();
+    }
 
-    
+    public static void displayVolunteerDetails(Volunteer volunteer) {
+        System.out.println("Volunteer ID: " + volunteer.getVolunteerID());
+        System.out.println("Volunteer Name: " + volunteer.getName());
+    }
 
-    
+    public static void displayVolunteerEvents(LinkedListInterface<Event> events) {
+        System.out.println("\nEvents Participated:");
+        System.out.printf("%-5s | %-10s | %-30s | %-12s | %-8s | %-20s\n", "No.", "Event ID", "Event Name", "Date", "Time", "Location");
+        System.out.println("---------------------------------------------------------------------------------------------");
 
-    
-    
-    
-    
-    
-    
-    
-    
+        Node<Event> eventNode = events.getHead();
+        int eventIndex = 1;
 
-    
+        while (eventNode != null) {
+            Event event = eventNode.data;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            System.out.printf("%-5d | %-10s | %-30s | %-12s | %-8s | %-20s\n",
+                    eventIndex,
+                    event.getEventID(),
+                    event.getEventName(),
+                    dateFormat.format(event.getDate()),
+                    event.getTime(),
+                    event.getLocation());
 
-    
+            eventNode = eventNode.next;
+            eventIndex++;
+        }
+    }
 
-    
-    
+    public static String inputEventIDToRemove() {
+        System.out.print("Enter the Event ID to remove from this volunteer: ");
+        return EControl.scan.nextLine().trim();
+    }
 
-    
+    // report
+    public static int displayReportMenu() {
+        System.out.println("Summary Report");
+        String[] reportMenu = {
+            "Annual Fundraising Report for All Events",
+            "Top 5 Events with Peak Volunteer Participation",
+            "Top 5 Volunteer Contributions Across Events",
+            "Top 5 Events with the Best Ticket Sales Performance"
+        };
+        return EControl.menuIntReturn(reportMenu);
+    }
 
-    
-    
+    public static void inputStartYear() {
+        System.out.print("Enter the start year (YYYY): ");
+    }
+
+    public static void inputEndYear() {
+        System.out.print("Enter the end year (YYYY): ");
+    }
+
+    public static void displayAnnualFundraisingReport(double[] fundraisingTotals, int startYear) {
+        System.out.println("\nAnnual Fundraising Report:");
+        for (int i = 0; i < fundraisingTotals.length; i++) {
+            System.out.print((startYear + i) + ": ");
+            printStar((int) fundraisingTotals[i]);
+            System.out.println(" (RM" + String.format("%.2f", fundraisingTotals[i]) + ")");
+        }
+        displayStarRemark();
+    }
+
+    public static void displayTopEventsWithMostVolunteers(Event[] topEvents, int[] volunteerCounts) {
+        System.out.println("\nTop 5 Events with Peak Volunteer Participation:");
+        for (int i = 0; i < 5; i++) {
+            if (topEvents[i] != null) {
+                System.out.print(topEvents[i].getEventID() + " (" + topEvents[i].getEventName() + ") ");
+                printStar(volunteerCounts[i]);
+                System.out.println(" (" + volunteerCounts[i] + ")");
+            }
+        }
+        displayStarRemark();
+    }
+
+    public static void displayTopVolunteerContributions(Volunteer[] topVolunteers, int[] contributionCounts) {
+        System.out.println("\nTop 5 Volunteer Contributions Across Events:");
+        for (int i = 0; i < 5; i++) {
+            if (topVolunteers[i] != null) {
+                System.out.print(topVolunteers[i].getName() + " (" + topVolunteers[i].getVolunteerID() + ") ");
+                printStar(contributionCounts[i]);
+                System.out.println(" (" + contributionCounts[i] + ")");
+            }
+        }
+        displayStarRemark();
+    }
+
+    public static void displayBestTicketSalesPerformance(Event[] topEvents, int[] soldOutCounts) {
+        System.out.println("\nTop 5 Events with the Best Ticket Sales Performance:");
+        for (int i = 0; i < 5; i++) {
+            if (topEvents[i] != null) {
+                System.out.print(topEvents[i].getEventID() + " (" + topEvents[i].getEventName() + ") ");
+                printStar(soldOutCounts[i]);
+                System.out.println(" (" + soldOutCounts[i] + " sold out tickets)");
+            }
+        }
+        displayStarRemark();
+    }
+
+    public static void displayStarRemark() {
+        System.out.println("\nNote: \n" + PURPLE + "*" + RESET + " represents 100" + "\n" + BLUE + "*" + RESET + " represents 10");
+    }
+
+    public static void printStar(int count) {
+        int blueStarCount = count / 100;
+        int purpleStarCount = (count % 100) / 10;
+        int normalStarCount = count % 10;
+
+        // Print blue stars
+        for (int i = 0; i < blueStarCount; i++) {
+            System.out.print(BLUE + "*" + RESET);
+        }
+
+        // Print purple stars
+        for (int i = 0; i < purpleStarCount; i++) {
+            System.out.print(PURPLE + "*" + RESET);
+        }
+
+        // Print normal stars
+        for (int i = 0; i < normalStarCount; i++) {
+            System.out.print("*");
+        }
+    }
+
 }

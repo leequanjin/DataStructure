@@ -2,11 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package DonorSubsystem;
+package entity.Donor;
 
 /**
  *
- * @author leeda
+ * @author kee ke shen
  */
 public class DonorPeriodCount {
 
