@@ -58,9 +58,8 @@ public class ManageDistribution {
     public void distributionMenu() {
         boolean running = true;
 
-        manageDistributionUI.displayDistributionMenu();
-
         while (running) {
+            manageDistributionUI.displayDistributionMenu();
             choice = manageDistributionUI.getChoice();
 
             switch (choice) {

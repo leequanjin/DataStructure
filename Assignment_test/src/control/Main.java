@@ -4,21 +4,16 @@
  */
 package control;
 
-import java.util.Scanner;
+import static boundary.MainUI.displayMainMenu;
+import utility.MainMessageUI;
 
 /**
  *
  * @author Lee Quan Jin
  */
 public class Main {
-    
-    //Colours
-    static String Red = "\u001b[31m";
-    static String Green = "\u001b[32;2m";
-    static String Reset = "\u001b[0m";
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         boolean exit = false;
         
         ManageDonor manageDonor = new ManageDonor();
@@ -26,17 +21,9 @@ public class Main {
         ManageDistribution manageDistribution = new ManageDistribution();
         
         while (!exit) {
-            System.out.println("==== Donation Management System ====");
-            System.out.println("1. Donor Management Subsystem");
-            System.out.println("2. Donee Management Subsystem");
-            System.out.println("3. Donation Management Subsystem");
-            System.out.println("4. Donation Distribution Subsystem");
-            System.out.println("5. Volunteer Management Subsystem");
-            System.out.println("6. Event Management Subsystem");
-            System.out.println("7. Exit\n");
-            System.out.print("Select an option (1-7): ");
-
-            String choice = scanner.nextLine();
+            displayMainMenu();
+            
+            String choice = MainMessageUI.getChoice();
 
             switch (choice) {
                 case "1" -> {
@@ -59,12 +46,10 @@ public class Main {
                 }
                 case "7" -> {
                     exit = true;
-                    System.out.println(Green + "Exiting the system. Goodbye!" + Reset);
+                    MainMessageUI.displayExitMessage();
                 }
-                default -> System.out.println(Red + "Invalid choice. Please select a valid option.\n" + Reset);
+                default -> MainMessageUI.displayInvalidChoiceMessage();
             }
         }
-
-        scanner.close();
     }
 }

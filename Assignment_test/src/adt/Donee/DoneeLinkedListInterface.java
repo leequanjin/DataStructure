@@ -12,7 +12,7 @@ import entity.Donee.DoneeStateCount;
 
 /**
  *
- * @author leeda
+ * @author Christopher Yap Jian Xing
  * @param <T>
  */
 public interface DoneeLinkedListInterface<T extends Donee> extends LinkedListInterface<T> {
