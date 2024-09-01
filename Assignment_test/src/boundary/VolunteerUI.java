@@ -4,16 +4,15 @@
  */
 package boundary;
 
-import VolunteerSubsystem.*;
-import adt.LinkedList;
 import adt.LinkedListInterface;
 import adt.Node;
 import EventSystem.Event;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import java.util.Scanner;
+import entity.Volunteer.Volunteer;
+import entity.Volunteer.EventVolunteer;
+import control.VolunteerManagement;
 
 /**
  *
@@ -117,7 +116,7 @@ public class VolunteerUI {
             "Exit"
         };
 
-        return VControl.menuIntReturn(volMenu);
+        return VolunteerManagement.menuIntReturn(volMenu);
         
     }
 
@@ -136,7 +135,7 @@ public class VolunteerUI {
         System.out.println("\nGender");
         String[] genderMenu = {"Male", "Female"};
         
-        return VControl.menuIntReturn(genderMenu);
+        return VolunteerManagement.menuIntReturn(genderMenu);
     }
     
     public static void inputAge(){
@@ -158,7 +157,7 @@ public class VolunteerUI {
     
     public static String inputVolID(){
         System.out.print("Enter volunteer ID: ");
-        return VControl.idValidation("VL");
+        return VolunteerManagement.idValidation("VL");
     }
 
     // -----------------
@@ -177,7 +176,7 @@ public class VolunteerUI {
 
     public static String inputEventID(){
         System.out.print("Enter event ID: ");
-        return VControl.idValidation("EV");
+        return VolunteerManagement.idValidation("EV");
     }
 
     // ----------------------
@@ -208,13 +207,13 @@ public class VolunteerUI {
     
     public static int filterMainMenu(){
         String[] filterMenu = {"Gender", "Before Age (e.g. 20)"};
-        return VControl.menuIntReturn(filterMenu);
+        return VolunteerManagement.menuIntReturn(filterMenu);
     }
     
     public static int disFilterGenderSelection(){
         System.out.println("\nFilter by:");
         String[] filterMenu = {"Male", "Female"};
-        return VControl.menuIntReturn(filterMenu);
+        return VolunteerManagement.menuIntReturn(filterMenu);
     }
     
     public static void maleHeading(){
@@ -246,7 +245,7 @@ public class VolunteerUI {
         String[] reportMenu = {"Gender Distribution in Volunteer Involvement", 
             "Volunteer Participation Frequency by Age Group",
             "Duplicate Volunteer Report"};
-        return VControl.menuIntReturn(reportMenu);
+        return VolunteerManagement.menuIntReturn(reportMenu);
     }
     
     public static void disGenderDistribution(int sumM, int sumF){
@@ -276,13 +275,13 @@ public class VolunteerUI {
         
         System.out.println("\n- Volunteer Participation Frequency by Age Group -");
         System.out.printf("%-20s %-10s %-3s %-5d", "Young Adults", "(18 - 30)", "-> ", sumY);
-        VControl.printStar(sumY);
+        VolunteerManagement.printStar(sumY);
         
         System.out.printf("\n%-20s %-10s %-3s %-5d", "Midle-aged Adults", "(31 - 45)", "-> ", sumM);
-        VControl.printStar(sumM);
+        VolunteerManagement.printStar(sumM);
         
         System.out.printf("\n%-20s %-10s %-3s %-5d", "Old-aged Adults", "(46 - 60)", "-> ", sumO);
-        VControl.printStar(sumO);
+        VolunteerManagement.printStar(sumO);
         
     }
     

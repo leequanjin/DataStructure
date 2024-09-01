@@ -4,13 +4,13 @@
  */
 package boundary;
 
-import DonationManagementSubsystem.*;
 import adt.Node;
 import adt.LinkedListInterface;
 
-import DonorSubsystem.Donor;
-
 import entity.DonationManagement.Item;
+import control.DonationManagement;
+import utility.DonationManagementUtility;
+import entity.Donor.Donor;
 
 /**
  *
@@ -117,7 +117,7 @@ public class DonationManagementUI {
             "Filter donation base on criteria",
             "Generate sumary report",
             "Exit"};
-        return DMControl.menuIntReturn(donationManagementMenu);
+        return DonationManagement.menuIntReturn(donationManagementMenu);
     }
 
     // -------------------------
@@ -142,7 +142,7 @@ public class DonationManagementUI {
 
     public static int donorNoExistSelection() {
         String[] contMenu = {"Enter Other Donor", "Exit"};
-        return DMControl.menuIntReturn(contMenu);
+        return DonationManagement.menuIntReturn(contMenu);
     }
 
     public static void numOfItemToAdd() {
@@ -157,7 +157,7 @@ public class DonationManagementUI {
     
     public static int inputItemCat(){
         String[] itemRemoveMenu = {"Bank", "Cash", "Food", "Apparel"};
-        return DMControl.menuIntReturn(itemRemoveMenu);
+        return DonationManagement.menuIntReturn(itemRemoveMenu);
     }
 
     public static void disAddedItemHeader() {
@@ -183,7 +183,7 @@ public class DonationManagementUI {
             "May Bank",
             "Public Bank",
             "RHB Bank"};
-        return DMControl.menuIntReturn(bankTypeMenu);
+        return DonationManagement.menuIntReturn(bankTypeMenu);
     }
 
     public static int inputFoodCat() {
@@ -194,7 +194,7 @@ public class DonationManagementUI {
             "Canned Food",
             "Dry Goods",
             "Essentials"};
-        return DMControl.menuIntReturn(foodCatMenu);
+        return DonationManagement.menuIntReturn(foodCatMenu);
     }
 
     public static void inputBAHeader() {
@@ -225,7 +225,7 @@ public class DonationManagementUI {
             "Shirt",
             "Shoes",
             "Socks"};
-        return DMControl.menuIntReturn(appCatMenu);
+        return DonationManagement.menuIntReturn(appCatMenu);
     }
 
     public static void inputJHeader() {
@@ -265,9 +265,9 @@ public class DonationManagementUI {
     }
     
     public static int inputExpAction(){
-        DMUtility.foodExpired();
+        DonationManagementUtility.foodExpired();
         String[] menu = {"Enter again", "Discard"};
-        return DMControl.menuIntReturn(menu);
+        return DonationManagement.menuIntReturn(menu);
     }
     
     public static void inputWeight(){
@@ -277,19 +277,19 @@ public class DonationManagementUI {
     public static int inputFoodStatus(){
         System.out.println("\nFood Status");
         String[] foodStatusMenu = {"New (made within 1 weeks)", "Good"};
-        return DMControl.menuIntReturn(foodStatusMenu);
+        return DonationManagement.menuIntReturn(foodStatusMenu);
     }
     
     public static int inputBakedT(){
         System.out.println("\nBaked Food Type");
         String[] bakedFoodMenu = {"Cookies", "Crackers"};
-        return DMControl.menuIntReturn(bakedFoodMenu);
+        return DonationManagement.menuIntReturn(bakedFoodMenu);
     }
     
     public static int inputBoxedT(){
         System.out.println("\nBoxed Food Type");
         String[] boxedFoodMenu = {"Cereals", "Snacks"};
-        return DMControl.menuIntReturn(boxedFoodMenu);
+        return DonationManagement.menuIntReturn(boxedFoodMenu);
     }
     
     public static int inputCannedT(){
@@ -304,25 +304,25 @@ public class DonationManagementUI {
                 "Pineapple", 
                 "Tomatoes", 
                 "Tuna"};
-        return DMControl.menuIntReturn(cannedFoodMenu);
+        return DonationManagement.menuIntReturn(cannedFoodMenu);
     }
     
     public static int inputDryT(){
         System.out.println("\nDry Food Type");
         String[] dryFoodMenu = {"Instant noodles", "Oats", "Pasta", "Rice"};
-        return DMControl.menuIntReturn(dryFoodMenu);
+        return DonationManagement.menuIntReturn(dryFoodMenu);
     }
     
     public static int inputEssT(){
         System.out.println("\nEssentials Type");
         String[] essMenu = {"Oil", "Pepper", "Salt", "Sugar"};
-        return DMControl.menuIntReturn(essMenu);
+        return DonationManagement.menuIntReturn(essMenu);
     }
     
     public static int inputAppSize(){
         System.out.println("\nApparel size");
         String[] sizeMenu = {"XS", "S", "M", "L", "XL", "Free Size"};
-        return DMControl.menuIntReturn(sizeMenu);
+        return DonationManagement.menuIntReturn(sizeMenu);
     }
     
     public static void inputShoeSize(){
@@ -332,25 +332,25 @@ public class DonationManagementUI {
     public static int inputColor(){
         System.out.println("\nApparel Color");
         String[] appColorMenu = {"Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Silver", "White", "Black"};
-        return DMControl.menuIntReturn(appColorMenu);
+        return DonationManagement.menuIntReturn(appColorMenu);
     }
     
     public static int inputAppCon(){
         System.out.println("\nApparel Condition");
         String[] appConMenu = {"New", "Good", "Fair", "Poor"};
-        return DMControl.menuIntReturn(appConMenu);
+        return DonationManagement.menuIntReturn(appConMenu);
     }
     
     public static int inputAppBrand(){
         System.out.println("\nApparel Brand");
         String[] appBrandMenu = {"Adidas", "H & M", "Nike", "Puma", "Uniclo", "Others"};
-        return DMControl.menuIntReturn(appBrandMenu);
+        return DonationManagement.menuIntReturn(appBrandMenu);
     }
     
     public static int inputShoesT(){
         System.out.println("\nShoes Category");
         String[] shoesMenu = {"Slipper", "Sport shoes"};
-        return DMControl.menuIntReturn(shoesMenu);
+        return DonationManagement.menuIntReturn(shoesMenu);
     }
 
     public static String contAddItemForSameDonor() {
@@ -417,7 +417,7 @@ public class DonationManagementUI {
     
     public static int contUpdateDateMenu(){
         String[] menu = {"Enter Again", "Remain Unchange", "Delete Item"};
-        return DMControl.menuIntReturn(menu);
+        return DonationManagement.menuIntReturn(menu);
     }
     
     public static void inputDateAgain(){
@@ -525,7 +525,7 @@ public class DonationManagementUI {
                 "Sort and List All Food according Expiry Date",
                 "Display All"
             };
-        return DMControl.menuIntReturn(sortMenu);
+        return DonationManagement.menuIntReturn(sortMenu);
     }
     
     public static void list1Header(){
@@ -570,7 +570,7 @@ public class DonationManagementUI {
     public static int filterMainMenu(){
         System.out.println(BLUE + "\n- - - Filter Selection - - -" + RESET);
         String[] filterMenu = {"Filter by Item Type (e.g. Sport Shoes)", "Filter Food before and within Expiry's Year (e.g. 2025)"};
-        return DMControl.menuIntReturn(filterMenu);
+        return DonationManagement.menuIntReturn(filterMenu);
     }
     
     public static String contFilterQ(){
@@ -581,7 +581,7 @@ public class DonationManagementUI {
         System.out.println("Item availability");
         System.out.println("Remarks: all money availability is \" Unavailable \".");
         String[] filterMenu = {"Available Item only", "Unavailable Item only"};
-        return DMControl.menuIntReturn(filterMenu);
+        return DonationManagement.menuIntReturn(filterMenu);
     }
     
     public static void filterTypeMenu(){
@@ -620,7 +620,7 @@ public class DonationManagementUI {
             "Analysis of Food Items with Future Expiry Year",
             "Most Frequently Donated Item Category (Money, Food, Apparel)"
         };
-        return DMControl.menuIntReturn(reportMenu);
+        return DonationManagement.menuIntReturn(reportMenu);
     }
     
     public static String contOtherReportQ(){
