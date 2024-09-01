@@ -10,19 +10,15 @@ import adt.Node;
 import VolunteerSubsystem.EventVolunteer;
 import VolunteerSubsystem.Volunteer;
 
-
-/**
- *
- * @author Clarist Liew
- */
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
-
-
+/**
+ *
+ * @author Clarist Liew
+ */
 
 
 public class Test {
