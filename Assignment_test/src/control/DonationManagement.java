@@ -68,7 +68,8 @@ public class DonationManagement {
         
         chkAllFileExist();
         donationManagementMainMenu();
-        
+        DonationManagementUI.breakLine();
+        DonationManagementUI.breakLine();
     }
     
     public static void donationManagementMainMenu(){
@@ -113,11 +114,11 @@ public class DonationManagement {
                     DonationManagementUI.breakLine();
                     return;
                 default:
-                    System.out.println("Invalid choice.");
+                    DonationManagementUtility.invalidMenuSelection();
                     break;
             }
             
-            contDM = YN("Do you want to continue manage donation? (Back to Donation Management main menu)");
+            contDM = YN(DonationManagementUI.contManage());
             if (contDM == true){
                 DonationManagementUI.breakLine();
             }
@@ -1256,7 +1257,7 @@ public class DonationManagement {
                         DonationManagementUtility.invalidWZ();
 
                     } else if(w  < 0){
-                        System.out.print("Enter again: ");
+                        DonationManagementUI.reEnter();
                     }else {
                         validW = true;
                     }
@@ -1888,7 +1889,7 @@ public class DonationManagement {
             
             contSearch = YN(DonationManagementUI.contSearchQ());
             if (contSearch){
-                System.out.println();
+                DonationManagementUI.breakLine();
             }
         }
     }
@@ -2644,7 +2645,7 @@ public class DonationManagement {
             DonationManagementUI.commonItemHeader();
             DonationManagementUI.commonPhyItemHeader();
             DonationManagementUI.commonFoodHeader();
-            System.out.println(foodList.getHead().data.toString());
+            DonationManagementUI.printNode(foodList.getHead());
             return;
         }
 

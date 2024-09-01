@@ -9,6 +9,7 @@ import adt.LinkedListInterface;
 import adt.Node;
 
 import EventSystem.Event;
+import boundary.DonationManagementUI;
 
 import entity.Volunteer.Volunteer;
 import entity.Volunteer.EventVolunteer;
@@ -327,6 +328,8 @@ public class VolunteerManagement {
         String[] fileList = {VOLUNTEER_PATH, EVENT_PATH, EV_PATH};
         chkFileExist(fileList);
         volunteerMainMenu();
+        DonationManagementUI.breakLine();
+        DonationManagementUI.breakLine();
     }
     
     public static void volunteerMainMenu(){
@@ -372,9 +375,9 @@ public class VolunteerManagement {
                     break;
             }
 
-            cont = YN("Do you want to continue manage volunteer?");
+            cont = YN(VolunteerUI.contVolQ());
             if (cont) {
-                System.out.println();
+                DonationManagementUI.breakLine();
             }
         } while (cont);
 
@@ -495,7 +498,7 @@ public class VolunteerManagement {
             Volunteer foundVolunteer = findVolById(id);
             if (foundVolunteer == null) {
                 VolunteerUtility.volNoExist();
-                cont = YN("Do you want to remove other volunteer?");
+                cont = YN(VolunteerUI.remOtherVolQ());
                 VolunteerUI.breakLine();
             } else {
                 boolean remove = VolunteerManagement.deleteVolById(id);
@@ -530,7 +533,7 @@ public class VolunteerManagement {
             Volunteer foundVolunteer = findVolById(id);
             if (foundVolunteer == null) {
                 VolunteerUtility.volNoExist();
-                cont = YN("Do you want to remove other volunteer?");
+                cont = YN(VolunteerUI.contSearchOtherVolQ());
                 VolunteerUI.breakLine();
             } else {
                 cont = false;
