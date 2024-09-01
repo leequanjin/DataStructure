@@ -11,7 +11,7 @@ package boundary;
 public class MainUI {
 
     public static void displayMainMenu() {
-        System.out.println("==== Donation Management System ====");
+        System.out.println("==== Charity Centre Management System ====");
         System.out.println("1. Donor Management Subsystem");
         System.out.println("2. Donee Management Subsystem");
         System.out.println("3. Donation Management Subsystem");
