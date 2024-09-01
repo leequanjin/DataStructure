@@ -46,13 +46,13 @@ public class ManageDoneeUI {
 
     public String getName() {
         String name = null;
-        while (doneeMessageUI.isEmpty(name)) {
+        do {            
             System.out.print("Enter name: ");
             name = scanner.nextLine().trim();
-            if (doneeMessageUI.isEmpty(name)) {
+            if (name.isBlank()) {
                 System.out.println(Red + "Name cannot be empty!" + Reset);
             }
-        }
+        } while (name.isBlank());
         return name;
     }
 
@@ -129,7 +129,7 @@ public class ManageDoneeUI {
         System.out.println("3. Update donee details");
         System.out.println("4. Search donee details");
         System.out.println("5. List donees");
-        System.out.println("6. Filter donee based on category");
+        System.out.println("6. Filter donee based on type");
         System.out.println("7. Generate Summary Report");
         System.out.println("8. Exit \n");
     }
@@ -172,7 +172,7 @@ public class ManageDoneeUI {
     public void displayUpdateDoneeChoice() {
         System.out.println("What would you like to update?");
         System.out.println("1. Name");
-        System.out.println("2. Category");
+        System.out.println("2. Type");
         System.out.println("3. Location");
         System.out.println("4. Status \n");
     }

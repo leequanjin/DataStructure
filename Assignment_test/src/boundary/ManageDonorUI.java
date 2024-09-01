@@ -99,7 +99,7 @@ public class ManageDonorUI {
         System.out.println("3. Update donor details");
         System.out.println("4. Search donor details");
         System.out.println("5. List donors");
-        System.out.println("6. Filter donors based on category");
+        System.out.println("6. Filter donors");
         System.out.println("7. Generate Summary Report");
         System.out.println("8. Exit\n");
     }
