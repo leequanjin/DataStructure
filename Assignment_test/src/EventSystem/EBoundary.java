@@ -4,16 +4,12 @@
  */
 package EventSystem;
 
-import adt.LinkedList;
+
 import adt.LinkedListInterface;
 import adt.Node;
-import VolunteerSubsystem.EventVolunteer;
-import VolunteerSubsystem.Volunteer;
-
-import java.text.ParseException;
+import entity.Volunteer.Volunteer;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Scanner;
+
 
 /**
  *
@@ -142,14 +138,28 @@ public class EBoundary {
         System.out.print("Enter the Event ID: ");
     }
 
-    public static void disEventDetails(Event event) {
+    public static void displayEventDetails(Event event) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         System.out.println("\nEvent Found: ");
         System.out.printf("%-15s : %s\n", "Event ID", event.getEventID());
         System.out.printf("%-15s : %s\n", "Event Name", event.getEventName());
         System.out.printf("%-15s : %s\n", "Date", dateFormat.format(event.getDate()));
         System.out.printf("%-15s : %s\n", "Time", event.getTime());
-        System.out.printf("%-15s : %s\n", "Location", event.getLocation());
+        System.out.printf("%-15s : %s\n", "Location", event.getLocation() );
+    }
+    public static void displayTicketTable() {
+        System.out.printf(" %-10s | %-20s | %-10s | %-10s\n",  "Ticket ID", "Ticket Type", "Price (RM)", "Status");
+        System.out.println("-------------------------------------------------------------------");
+    }
+    
+    public static void displayTicketDetails(Ticket ticket) {
+        
+        System.out.printf(" %-10s | %-20s | %-10.2f | %-10s\n" ,
+                ticket.getTicketID(),
+                ticket.getTicketType(),
+                ticket.getTicketPrice(),
+                ticket.getTicketStatus());
+        
     }
 
     public static void disEventByDate(int show, Event event) {
@@ -158,19 +168,30 @@ public class EBoundary {
     }
 
     public static void disTicketDetails(int ticketCount, Ticket ticket) {
-        System.out.printf("%-5d | %-10s | %-15s | %-10.2f\n",
+        
+        System.out.printf("%-5d | %-10s | %-20s | %-10.2f | %-10s\n" ,
                 ticketCount,
                 ticket.getTicketID(),
                 ticket.getTicketType(),
-                ticket.getTicketPrice());
+                ticket.getTicketPrice(),
+                ticket.getTicketStatus());
     }
-
+    
     public static void disSponsorshipDetails(int sponsorshipCount, Sponsorship sponsorship) {
-        System.out.printf("%-5d | %-10s | %-20s | %-15.2f\n",
+        
+        System.out.printf("%-5d | %-12s | %-30s | %-12.2f\n",
                 sponsorshipCount,
                 sponsorship.getSponsorID(),
                 sponsorship.getSponsorName(),
                 sponsorship.getSponsorAmount());
+    }
+    
+    
+    public static void displaySponsorshipDetails(Sponsorship sponsorship) {
+        System.out.printf("%-20s : %s\n","Sponsorship ID", sponsorship.getSponsorID());
+        System.out.printf("%-20s : %s\n", "Sponsorship Name", sponsorship.getSponsorName());
+        System.out.printf("%-20s :RM %.2f\n", "Sponsorship Amount ", sponsorship.getSponsorAmount() );
+        
     }
 
     public static void inputUpdateEventID() {
@@ -219,8 +240,8 @@ public class EBoundary {
     }
 
     public static void displaySponsorshipTableHeader() {
-        System.out.printf("%-5s | %-12s | %-30s | %-10s\n", "No.", "Sponsor ID", "Sponsor Name", "Amount (RM)");
-        System.out.println("---------------------------------------------------------------");
+        System.out.printf("%-5s | %-12s | %-30s | %-12s\n", "No.", "Sponsor ID", "Sponsor Name", "Amount (RM)");
+        System.out.println("-------------------------------------------------------------------");
     }
 
     public static void displayTicketDetails(int ticketIndex, Ticket currentTicket) {
@@ -281,13 +302,19 @@ public class EBoundary {
     }
 
 //list all
-    public static void displayEventListHeader() {
+    
+    public static void titleListAllEvent() {
         System.out.println("\nList of All Events:");
+    }
+    
+    public static void displayEventListHeader() {
+        
         System.out.printf("%-10s | %-30s | %-12s | %-8s | %-20s\n", "Event ID", "Event Name", "Date", "Time", "Location");
         System.out.println("---------------------------------------------------------------------------------------------");
     }
 
     public static void displayEventDetailsInList(Event event) {
+        displayEventListHeader() ;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         System.out.printf("%-10s | %-30s | %-12s | %-8s | %-20s\n",
                 event.getEventID(),
@@ -325,9 +352,7 @@ public class EBoundary {
                 sponsorship.getSponsorAmount());
     }
 
-    public static void displayEventSeparator() {
-        System.out.println("\n------------------------------------------------------------------------------------------------------------------------\n");
-    }
+    
 
     //remove volunteer
     public static String inputVolunteerID() {

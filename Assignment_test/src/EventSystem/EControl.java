@@ -7,8 +7,8 @@ package EventSystem;
 import adt.LinkedList;
 import adt.LinkedListInterface;
 import adt.Node;
-import VolunteerSubsystem.EventVolunteer;
-import VolunteerSubsystem.Volunteer;
+import entity.Volunteer.EventVolunteer;
+import entity.Volunteer.Volunteer;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -491,7 +491,7 @@ private static String generateSponsorshipID(String prefix) {
 
         Event event = new Event(eventID, eventName, date, time, location);
         eventList.insert(event);
-        //display +format
+        EBoundary.displayEventDetails(event);
         eventList.saveToFile(EVENT_FILE);
         EUtility.eventAddedMsg();
 
@@ -537,13 +537,15 @@ private static String generateSponsorshipID(String prefix) {
 
             EBoundary.inputTicketAmt();
             int ticketAmount = getValidInteger(scan);
-
+            EBoundary.displayTicketTable();
             for (int j = 0; j < ticketAmount; j++) {
                 String ticketID = EControl.generateTicketID("TK");
                 Ticket ticket = new Ticket(eventID, ticketID, ticketType, ticketPrice, "Available");
                 ticketList.insert(ticket);
+                EBoundary.displayTicketDetails(ticket);
             }
-            //display +format
+            
+             
             ticketList.saveToFile(TICKET_FILE);
             EUtility.ticketAddedMsg();
         }
@@ -585,7 +587,7 @@ private static String generateSponsorshipID(String prefix) {
 
         Sponsorship sponsorship = new Sponsorship(eventID, sponsorID, sponsorName, sponsorAmount);
         sponsorshipList.insert(sponsorship);
-        //display
+        EBoundary.displaySponsorshipDetails(sponsorship);
         sponsorshipList.saveToFile(SPONSORSHIP_FILE);
         EUtility.SponsAddedMsg();
     }
@@ -598,8 +600,7 @@ private static String generateSponsorshipID(String prefix) {
         }
 
         EBoundary.displayEvent();
-        //display +format
-
+        
         EBoundary.inputRemoveEventID();
         String eventID = scan.nextLine().trim();
 
@@ -673,7 +674,8 @@ private static String generateSponsorshipID(String prefix) {
     
 
     public static void disEventDetails(Event event) {
-        EBoundary.disEventDetails(event);
+        
+        EBoundary.displayEventDetails(event);
         disEventTickets(event.getEventID());
         disEventSponsorships(event.getEventID());
     }
@@ -694,14 +696,16 @@ private static String generateSponsorshipID(String prefix) {
         Node<Ticket> ticketNode = ticketList.getHead();
         int ticketCount = 1;
         boolean ticketsFound = false;
-
+        EBoundary.displayTicketTableHeader();
         while (ticketNode != null) {
             if (ticketNode.data.getEventID().equals(eventID)) {
                 EBoundary.disTicketDetails(ticketCount, ticketNode.data);
                 ticketsFound = true;
                 ticketCount++;
+                
             }
             ticketNode = ticketNode.next;
+            
         }
 
         if (!ticketsFound) {
@@ -713,7 +717,7 @@ private static String generateSponsorshipID(String prefix) {
         Node<Sponsorship> sponsorshipNode = sponsorshipList.getHead();
         int sponsorshipCount = 1;
         boolean sponsorshipsFound = false;
-
+        EBoundary.displaySponsorshipTableHeader();
         while (sponsorshipNode != null) {
             if (sponsorshipNode.data.getEventID().equals(eventID)) {
                 EBoundary.disSponsorshipDetails(sponsorshipCount, sponsorshipNode.data);
@@ -757,16 +761,19 @@ private static String generateSponsorshipID(String prefix) {
                                 newName = scan.nextLine().trim();
                             }
                             updatedEvent = new Event(event.getEventID(), newName, event.getDate(), event.getTime(), event.getLocation());
+                            EBoundary.displayEventDetails(updatedEvent);
                             EUtility.eventNameUpdatedMsg();
                             break;
                         case 2:
                             Date newDate = getValidDate(scan);
                             updatedEvent = new Event(event.getEventID(), event.getEventName(), newDate, event.getTime(), event.getLocation());
+                            EBoundary.displayEventDetails(updatedEvent);
                             EUtility.eventDateUpdatedMsg();
                             break;
                         case 3:
                             String newTime = getValidTime(scan);
                             updatedEvent = new Event(event.getEventID(), event.getEventName(), event.getDate(), newTime, event.getLocation());
+                            EBoundary.displayEventDetails(updatedEvent);
                             EUtility.eventTimeUpdatedMsg();
                             break;
                         case 4:
@@ -777,6 +784,7 @@ private static String generateSponsorshipID(String prefix) {
                                 newLocation = scan.nextLine().trim();
                             }
                             updatedEvent = new Event(event.getEventID(), event.getEventName(), event.getDate(), event.getTime(), newLocation);
+                            EBoundary.displayEventDetails(updatedEvent);
                             EUtility.eventLocationUpdatedMsg();
                             break;
                         case 5:
@@ -801,7 +809,7 @@ private static String generateSponsorshipID(String prefix) {
 
                 eventList.saveToFile(EVENT_FILE);
 
-                EBoundary.displayEventUpdatedDetails(event);
+                EUtility.eventUpdatedMsg();
                 return;
             }
             current = current.next;
@@ -1042,9 +1050,9 @@ private static String generateSponsorshipID(String prefix) {
         }
 
         // Header for the event list
-        EBoundary.displayEventListHeader();
+       
 
-        // Iterate through all events
+        EBoundary.titleListAllEvent();
         Node<Event> eventNode = eventList.getHead();
         while (eventNode != null) {
             Event event = eventNode.data;
@@ -1090,7 +1098,6 @@ private static String generateSponsorshipID(String prefix) {
 
             // Move to the next event in the list
             eventNode = eventNode.next;
-            EBoundary.displayEventSeparator();
         }
     }
 
@@ -1405,25 +1412,7 @@ private static String generateSponsorshipID(String prefix) {
 
         EBoundary.displayBestTicketSalesPerformance(topEvents, soldOutCounts);
     }
-
-
-
-    
-    
-    
-
-    
-
-
-    
-
-    
-    
-
-    
-    
-    
-    
+  
     
     
 }
