@@ -236,12 +236,16 @@ public class DMControl {
         
         boolean validInput = chkIntInput(input);
 
-        // chk is within the integer range
-        int intInput = Integer.parseInt(input);
-        validInput = intSelectionValidation(intInput, initial, end);
-        if (!validInput) {
-            DMUtility.intNotInRange(initial, end);
-            DMUI.reEnter();
+        if(validInput){
+        
+            // chk is within the integer range
+            int intInput = Integer.parseInt(input);
+            validInput = intSelectionValidation(intInput, initial, end);
+            if (!validInput) {
+                DMUtility.intNotInRange(initial, end);
+                DMUI.reEnter();
+            }
+            
         }
 
         return validInput;
@@ -449,14 +453,57 @@ public class DMControl {
             currentNode = currentNode.next;
             DMUI.breakLine();
         }
-    }    
+    }
     
-    public static void printSameTable(String filePath, boolean availableOnly){
+    public static void printTable(String filePath){
         LinkedListInterface<Item> list = new LinkedList<>();
         list.loadFromFile(filePath);
         
-        if(availableOnly){
+        list.removeEmptyData();
+        
+        if(list.isEmpty()){
+            DMUtility.noSuchItem();
+            return;
+        }
+        
+        printListToTable(list);
+    }
+    
+    public static void printSameTable(String filePath, boolean available){
+        LinkedListInterface<Item> list = new LinkedList<>();
+        list.loadFromFile(filePath);
+        
+        if(available == true){
             list.removeIf(item -> item.getAvailability().equals("Unavailable"));
+        }else{
+            list.removeIf(item -> item.getAvailability().equals("Available"));
+        }
+        
+        list.removeEmptyData();
+        
+        if(list.isEmpty()){
+            DMUtility.noSuchItem();
+            return;
+        }
+        
+        printListToTable(list);
+    }
+    
+    // if want append list
+    public static void printMulSameTable(String[] filePath, boolean available){
+        LinkedListInterface<Item> list = new LinkedList<>();
+        list.loadFromFile(filePath[0]);
+        
+        for(int i = 1; i < filePath.length; i++){
+            LinkedList tempList = new LinkedList();
+            tempList.loadFromFile(filePath[i]);
+            list.appendList(tempList);
+        }
+        
+        if(available == true){
+            list.removeIf(item -> item.getAvailability().equals("Unavailable"));
+        }else{
+            list.removeIf(item -> item.getAvailability().equals("Available"));
         }
         
         list.removeEmptyData();
@@ -721,7 +768,6 @@ public class DMControl {
     public static<T> void inputMoney(LinkedListInterface<Item> newItemList, int itemCat, String dID){
         
         // amount
-        DMUI.inputAmtDonated();
         double amt = amountValidation();
         
         LinkedListInterface<Item> list = new LinkedList<>();
@@ -758,6 +804,7 @@ public class DMControl {
     
     public static double amountValidation(){
         
+        DMUI.inputAmtDonated();
         double amt = 0;
         boolean validAmt = false;
         while(validAmt == false){
@@ -2117,43 +2164,44 @@ public class DMControl {
         
         DMUI.TIMoneyHeader();
         DMUI.TIBankHeader();
-        printSameTable(BANK_PATH, false);
+        printTable(BANK_PATH);
         
         DMUI.TICashHeader();
-        printSameTable(CASH_PATH, false);
+        printTable(CASH_PATH);
         
         DMUI.TIFoodHeader();
         DMUI.TIBakedHeader();
-        printSameTable(BAKED_PATH, false);
+        printTable(BAKED_PATH);
         
         DMUI.TIBoxedHeader();
-        printSameTable(BOXED_PATH, false);
+        printTable(BOXED_PATH);
         
         DMUI.TICannedHeader();
-        printSameTable(CANNED_PATH, false);
+        printTable(CANNED_PATH);
         
         DMUI.TIDryHeader();
-        printSameTable(DRY_PATH, false);
+        printTable(DRY_PATH);
         
         DMUI.TIEssHeader();
-        printSameTable(ESS_PATH, false);
+        printTable(ESS_PATH);
         
         DMUI.TIAppHeader();
         DMUI.TIJacketHeader();
-        printSameTable(JACKET_PATH, false);
+        printTable(JACKET_PATH);
         
         DMUI.TIPantHeader();
-        printSameTable(PANT_PATH, false);
+        printTable(PANT_PATH);
         
         DMUI.TIShirtHeader();
-        printSameTable(SHIRT_PATH, false);
+        printTable(SHIRT_PATH);
         
         DMUI.TIShoesHeader();
-        printSameTable(SHOES_PATH, false);
+        printTable(SHOES_PATH);
         
         DMUI.TISocksHeader();
-        printSameTable(SOCKS_PATH, false);
+        printTable(SOCKS_PATH);
         
+        // total item donated, total money donated
     }
     
     // ----------------------------------------
@@ -2172,63 +2220,131 @@ public class DMControl {
         individualList.removeEmptyData();
         organizationList.removeEmptyData();
 
-        System.out.print(BLUE + "--- INDIVIDUAL ---" + RESET);
-        filterByDonor(itemList, individualList);
+        DMUI.individualHeader();
+        filterByDonorInd(itemList, individualList);
 
-        System.out.print(BLUE + "--- ORGANIZATION ---" + RESET);
-        filterByDonor(itemList, organizationList);
+        DMUI.organizationHeader();
+        filterByDonorOrg(itemList, organizationList);
     }
     
-    public static void filterByDonor(LinkedList<Item> itemList, LinkedList<Donor> donorList){
+    public static void filterByDonorInd(LinkedListInterface<Item> itemList, LinkedListInterface<Individual> idvList){
         itemList.removeEmptyData();
-        donorList.removeEmptyData();
+        idvList.removeEmptyData();
 
-        if (donorList.head == null || itemList.head == null) {
-            System.out.println("No donors or items to process.");
+        if (idvList.getHead() == null || itemList.getHead() == null) {
+            DMUtility.noDonorOrItem();
             return;
         }
 
-        Node<Donor> currentDonor = donorList.head;
+        Node<Individual> currentDonor = idvList.getHead();
         String donorID;
         int stop = 0;
         int pageNum = 1;
 
-        System.out.printf("\n| %-10s | %-10s | %-15s |\n", "Donor ID", "Item ID", "Item Category");
+        DMUI.startOfPage(pageNum);
+        DMUI.donorItemCustomHeader();
         while (currentDonor != null) {
             int print = 0;
             donorID = currentDonor.data.getId();
 
-            Node<Item> currentItem = itemList.head;
+            Node<Item> currentItem = itemList.getHead();
             while (currentItem != null) {
                 if (donorID.equals(currentItem.data.getDonorID())) {
+                    
+                    if(stop == 50){
+                        
+                        DMUI.endOfPage(pageNum);
+                        boolean cont = YN(DMUI.showMorePgQ());
+                        if (cont){
+                            
+                            pageNum++;
+                            DMUI.startOfPage(pageNum);
+                            DMUI.donorItemCustomHeader();
+                            stop = 0;
+                            
+                        }else{
+                            return;
+                        }
+                        
+                    } 
+                    
                     stop++;
                     if (print == 0) {
-                        System.out.printf("| %-10s | %-10s | %-15s |\n", donorID, currentItem.data.getId(), currentItem.data.getType());
+                        DMUI.donorItemCustomFull(donorID, currentItem);
                         print++;
                     } else {
-                        System.out.printf("| %-10s | %-10s | %-15s |\n", "", currentItem.data.getId(), currentItem.data.getType());
+                        DMUI.donorItemCustomNor(currentItem);
                     }
+                   
                 }
 
-                if(stop == 50){
-                    System.out.println(BLUE +"- END OF PAGE " + pageNum + " -" + RESET);
-                    boolean cont = YN("50 records of current table had been shown. Do you want to continue shown more?");
-                    if (cont){
-                        pageNum++;
-                        System.out.println(BLUE +"\n- PAGE " + pageNum + " -" + RESET);
-                        System.out.printf("\n| %-10s | %-10s | %-15s |\n", "Donor ID", "Item ID", "Item Category");
-                        stop = 0;
-                    }else{
-                        return;
-                    }
-                }
-                
                 currentItem = currentItem.next;
             }
+            
             currentDonor = currentDonor.next;
         }
 
-        System.out.println();
+        DMUI.breakLine();
+    }
+    
+    public static void filterByDonorOrg(LinkedListInterface<Item> itemList, LinkedListInterface<Organization> orgList){
+        itemList.removeEmptyData();
+        orgList.removeEmptyData();
+
+        if (orgList.getHead() == null || itemList.getHead() == null) {
+            DMUtility.noDonorOrItem();
+            return;
+        }
+
+        Node<Organization> currentDonor = orgList.getHead();
+        String donorID;
+        int stop = 0;
+        int pageNum = 1;
+
+        DMUI.startOfPage(pageNum);
+        DMUI.donorItemCustomHeader();
+        while (currentDonor != null) {
+            int print = 0;
+            donorID = currentDonor.data.getId();
+
+            Node<Item> currentItem = itemList.getHead();
+            while (currentItem != null) {
+                if (donorID.equals(currentItem.data.getDonorID())) {
+                    
+                    if(stop == 50){
+                        
+                        DMUI.endOfPage(pageNum);
+                        boolean cont = YN(DMUI.showMorePgQ());
+                        if (cont){
+                            
+                            pageNum++;
+                            DMUI.startOfPage(pageNum);
+                            DMUI.donorItemCustomHeader();
+                            stop = 0;
+                            
+                        }else{
+                            return;
+                        }
+                        
+                    } 
+                    
+                    stop++;
+                    if (print == 0) {
+                        DMUI.donorItemCustomFull(donorID, currentItem);
+                        print++;
+                    } else {
+                        DMUI.donorItemCustomNor(currentItem);
+                    }
+                   
+                }
+
+                currentItem = currentItem.next;
+            }
+            
+            currentDonor = currentDonor.next;
+        }
+
+        DMUI.breakLine();
     }
     
     // --------------------------
@@ -2308,6 +2424,9 @@ public class DMControl {
         }
         
         if (moneyList.getHead().next == null){
+            DMUI.commonItemHeader();
+            DMUI.commonMoneyHeader();
+            DMUI.breakLine();
             DMUI.printNode(moneyList.getHead());
             return;
         }
@@ -2368,10 +2487,12 @@ public class DMControl {
         
         DMUI.commonItemHeader();
         DMUI.commonMoneyHeader();
+        DMUI.breakLine();
         if (header == 1){
             DMUI.bankHeader();
         }
         
+        DMUI.breakLine();
         while (node != null) {
             DMUI.printNode(node);
             
@@ -2401,24 +2522,25 @@ public class DMControl {
         foodList.removeEmptyData();
         
 
-        if (foodList.head == null) {
-            System.out.println(RED + "No such donated item." + RESET);
+        if (foodList.getHead() == null) {
+            DMUtility.noSuchItem();
             return;
         }
         
-        System.out.printf("| %-10s | %-10s | %-15s | %-15s | %-20s | %-10s | %-8s | %-8s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Availability", "Remarks", "Expiry Date", "Weight", "Status", "Food Type");
-        
-        if (foodList.head.next == null){
-            System.out.println(foodList.head.data.toString());
+        if (foodList.getHead().next == null){
+            DMUI.commonItemHeader();
+            DMUI.commonPhyItemHeader();
+            DMUI.commonFoodHeader();
+            System.out.println(foodList.getHead().data.toString());
             return;
         }
 
         // Loop through all data in the list
-        Node<Food> currentFood = foodList.head.next; // Start from the second node
+        Node<Food> currentFood = foodList.getHead().next; // Start from the second node
         while (currentFood != null) {
             
             // Get the position data should be inserted
-            Node<Food> newPosition = foodList.head;
+            Node<Food> newPosition = foodList.getHead();
             while (newPosition != currentFood) {
                 if (currentFood.data.getExpiryDate().before(newPosition.data.getExpiryDate())) {
                     break;
@@ -2439,11 +2561,11 @@ public class DMControl {
             }
 
             // Insert currentMoney before newPosition
-            if (newPosition == foodList.head) {
+            if (newPosition == foodList.getHead()) {
                 currentFood.previous = null;
-                currentFood.next = foodList.head;
-                foodList.head.previous = currentFood;
-                foodList.head = currentFood;
+                currentFood.next = foodList.getHead();
+                foodList.getHead().previous = currentFood;
+                foodList.setHead(currentFood);
             } else {
                 currentFood.previous = newPosition.previous;
                 currentFood.next = newPosition;
@@ -2454,20 +2576,26 @@ public class DMControl {
             currentFood = currentFood.next;
         }
 
-        Node<Food> node = foodList.head;
+        Node<Food> node = foodList.getHead();
         int stop = 0;
         int pageNum = 1;
+        DMUI.startOfPage(pageNum);
+        DMUI.commonItemHeader();
+        DMUI.commonPhyItemHeader();
+        DMUI.commonFoodHeader();
         while (node != null) {
-            System.out.println(node.data.toString());
+            DMUI.printNode(node);
             stop++;
             
-            if(stop == 50){
-                System.out.println(BLUE +"- END OF PAGE " + pageNum + " -" + RESET);
-                boolean cont = YN("50 records had shown. Do you want to continue shown more?");
+            if(stop == 50 && node.next != null){
+                DMUI.endOfPage(pageNum);
+                boolean cont = YN(DMUI.showMorePgQ());
                 if (cont){
                     pageNum++;
-                    System.out.println(BLUE +"\n- PAGE " + pageNum + " -" + RESET);
-                    System.out.printf("| %-10s | %-10s | %-15s | %-15s | %-20s | %-10s | %-8s | %-8s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Availability", "Remarks", "Expiry Date", "Weight", "Status", "Food Type");
+                    DMUI.startOfPage(pageNum);
+                    DMUI.commonItemHeader();
+                    DMUI.commonPhyItemHeader();
+                    DMUI.commonFoodHeader();
                     stop = 0;
                 }else{
                     return;
@@ -2485,7 +2613,59 @@ public class DMControl {
             list.loadFromFile(fileList[i]);
             list.removeEmptyData();
 
+            switch (i){
+                case 0: 
+                    DMUI.TIBankHeader();
+                    break;
+                    
+                case 1: 
+                    DMUI.TICashHeader();
+                    break;
+                    
+                case 2:
+                    DMUI.breakLine();
+                    DMUI.TIBakedHeader();
+                    break;
+                    
+                case 3: 
+                    DMUI.TIBoxedHeader();
+                    break;
+                    
+                case 4:
+                    DMUI.TICannedHeader();
+                    break;
+                    
+                case 5:
+                    DMUI.TIDryHeader();
+                    break;
+                    
+                case 6: 
+                    DMUI.TIEssHeader();
+                    break;
+                case 7:
+                    DMUI.breakLine();
+                    DMUI.TIJacketHeader();
+                    break;
+                    
+                case 8:
+                    DMUI.TIPantHeader();
+                    break;
+                    
+                case 9:
+                    DMUI.TIShirtHeader();
+                    break;
+                    
+                case 10:
+                    DMUI.TIShoesHeader();
+                    break;
+                    
+                case 11:
+                    DMUI.TISocksHeader();
+                    break;
+
+            }
             if (list.isEmpty()) {
+                DMUtility.noSuchItem();
                 continue;
             } else {
                 printListToTable(list);
@@ -2500,9 +2680,7 @@ public class DMControl {
         
         boolean cont = true;
         do{
-            System.out.println(BLUE + "\n- - - Filter Selection - - -" + RESET);
-            String[] filterMenu = {"Filter by Item Type (e.g. Sport Shoes)", "Filter Food before and within Expiry's Year (e.g. 2025)"};
-            int filterSelection = menuIntReturn(filterMenu);
+            int filterSelection = DMUI.filterMainMenu();
 
             switch(filterSelection){
                 case 1:
@@ -2513,17 +2691,23 @@ public class DMControl {
 
                     break;
                 default:
-                    System.out.println(RED + "Invalid filter selection." + RESET);
+                    DMUtility.invalidMenuSelection();
                     break;
             }
             
-            cont = YN("Do you want to continue filtering other items?");
+            cont = YN(DMUI.contFilterQ());
             
         }while(cont == true);
     }
     
     public static void filterByItem(){
         String type = filterTypeValidation();
+        DMUI.breakLine();
+        int availabilitySelection = DMUI.inputDisAvailability();
+        boolean available = false;
+        if (availabilitySelection == 1){
+            available = true;
+        }
         
         if (
                 type.equals("MONEY") ||
@@ -2535,57 +2719,85 @@ public class DMControl {
                 type.equals("CANNED FOOD") ||
                 type.equals("DRY GOODS") ||
                 type.equals("ESSENTIALS") ||
+                type.equals("APPAREL") ||
                 type.equals("JACKET") ||
                 type.equals("PANT") ||
                 type.equals("SHIRT") ||
                 type.equals("SHOES") ||
                 type.equals("SOCKS") 
                 ){
-
-            LinkedList<Item> list;
-            list = loadAllItemIntoList();
             
+            String[] filePath;
             if (type.equals("MONEY")){
-                list  = list.filterByCategory(Money.class);
+                
+                filePath = new String[]{BANK_PATH, CASH_PATH};
+                printMulSameTable(filePath, available);
+                
             }else if(type.equals("BANK")){
-                list = list.filterByCategory(Bank.class);
+                
+                printSameTable(BANK_PATH, available);
+                
             }else if(type.equals("CASH")){
-                list = list.filterByCategory(Cash.class);
+                
+                printSameTable(CASH_PATH, available);
+                
             }else if(type.equals("FOOD")){
-                list = list.filterByCategory(Food.class);
+                
+                filePath = new String[]{BAKED_PATH, BOXED_PATH, CANNED_PATH, DRY_PATH, ESS_PATH};
+                printMulSameTable(filePath, available);
+                
             }else if(type.equals("BAKED GOODS")){
-                list = list.filterByCategory(BakedGoods.class);
+                
+                printSameTable(BAKED_PATH, available);
+                
             }else if(type.equals("BOXED GOODS")){
-                list = list.filterByCategory(BoxedGoods.class);
+                
+                printSameTable(BOXED_PATH, available);
+                
             }else if(type.equals("CANNED FOOD")){
-                list = list.filterByCategory(CannedFood.class);
+                
+                printSameTable(CANNED_PATH, available);
+                
             }else if(type.equals("DRY GOODS")){
-                list = list.filterByCategory(DryGoods.class);
+                
+                printSameTable(DRY_PATH, available);
+                
             }else if(type.equals("ESSENTIALS")){
-                list = list.filterByCategory(Essentials.class);
-            }else if(type.equals("JACKET")){
-                list = list.filterByCategory(Jacket.class);
-            }else if(type.equals("PANT")){
-                list = list.filterByCategory(Pant.class);
-            }else if(type.equals("SHIRT")){
-                list = list.filterByCategory(Shirt.class);
-            }else if(type.equals("SHOES")){
-                list = list.filterByCategory(Shoes.class);
-            }else{ // SOCKS
-                list = list.filterByCategory(Socks.class);
-            }
+                
+                printSameTable(ESS_PATH, available);
+                
+            }else if (type.equals("APPAREL")){
             
-            if (list.isEmpty()){
-                System.out.println(RED + "No such item." + RESET);
-            }else{
-                printListToTable(list);
+                filePath = new String[]{JACKET_PATH, PANT_PATH, SHIRT_PATH, SHOES_PATH, SOCKS_PATH};
+                printMulSameTable(filePath, available);
+                
+            }else if(type.equals("JACKET")){
+                
+                printSameTable(JACKET_PATH, available);
+                
+            }else if(type.equals("PANT")){
+                
+                printSameTable(PANT_PATH, available);
+                
+            }else if(type.equals("SHIRT")){
+                
+                printSameTable(SHIRT_PATH, available);
+                
+            }else if(type.equals("SHOES")){
+                
+                printSameTable(SHOES_PATH, available);
+                
+            }else{ // SOCKS
+                
+                printSameTable(SOCKS_PATH, available);
+                
             }
             
         }else{
             
-            LinkedList<Food> foodList = loadAllFoodToList();
+            LinkedListInterface<Food> foodList = loadAllFoodIntoList();
             
-            LinkedList<Shoes> shoeList = new LinkedList<>();
+            LinkedListInterface<Shoes> shoeList = new LinkedList<>();
             shoeList.loadFromFile(SHOES_PATH);
             
             if (type.equals("COOKIES")){
@@ -2639,26 +2851,7 @@ public class DMControl {
     }
     
     public static String filterTypeValidation(){
-        Scanner scan = new Scanner(System.in);
-        System.out.printf("\n%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Money", "Bank", "Cash", "", "", "");
-        System.out.println("-".repeat(108));
-        System.out.printf("%-15s\n", "Food");
-        System.out.printf("%-15s || %-159s |\n", "Subcategory", "Selection");
-        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Baked Goods", "Cookies", "Crackers", "", "", "");
-        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Boxed Goods", "Cereals", "Snacks", "", "", "");
-        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Canned Food", "Baked Beans", "Chicken Soup", "Corn", "Lychee", "Meat");
-        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "", "Mushroom Soup", "Pineapple", "Tomatoes", "Tuna", "");
-        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Dry Goods", "Instant Noodles", "Oats", "Pasta", "Rice", "", "", "", "", "");
-        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Essentials", "Oil", "Pepper", "Salt", "Sugar", "", "", "", "", "");
-        System.out.println("-".repeat(108));
-        System.out.printf("%-15s\n", "Apparel");
-        System.out.printf("%-15s || %-159s |\n", "Subcategory", "Selection");
-        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Jacket", "", "", "", "", "");
-        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Pant", "", "", "", "", "");
-        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Shirt", "", "", "", "", "");
-        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Shoes", "Slipper", "Sport Shoes", "", "", "");
-        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Socks", "", "", "", "", "");
-        System.out.print("\nItem Type: ");
+        DMUI.filterTypeMenu();
         String type = null;
         
         boolean validType = false;
@@ -2666,8 +2859,8 @@ public class DMControl {
             type = scan.nextLine();
             
             if(type.isEmpty()){
-                System.out.println(RED + "Cannot leave blank." + RESET);
-                System.out.print("Enter again: ");
+                DMUtility.emptyInputErrorMsg();
+                DMUI.reEnter();
             }else{
                 type = type.toUpperCase();
                 if (
@@ -2714,8 +2907,8 @@ public class DMControl {
                     validType = true;
                     
                 }else{
-                    System.out.println(RED + "\nInvalid input." + RESET);
-                    System.out.print("Enter again: "); 
+                    DMUtility.invalidFilterTypeInput();
+                    DMUI.reEnter();
                 }
             }
         }
@@ -2723,147 +2916,85 @@ public class DMControl {
         return type;
     }
     
-    public static void filterFoodCategory(LinkedList<Food> list, String type) {
-        if (list.head == null) {
-            System.out.println(RED + "No items to filter." + RESET);
+    public static void filterFoodCategory(LinkedListInterface<Food> list, String type) {
+        if (list.getHead() == null) {
+            DMUtility.noItemToFilter();
             return;
         }
 
-        Node<Food> currentFood = list.head;
+        LinkedListInterface<Item> itemList = new LinkedList<>();
+        Node<Food> currentFood = list.getHead();
         while (currentFood != null) {
 
-            if (!currentFood.data.getDetail().equals(type)) {
-                
-                if (currentFood.previous != null) {
-                    currentFood.previous.next = currentFood.next;
-                } else {
-                    // If current node is the head
-                    list.head = currentFood.next;
-                }
-
-                if (currentFood.next != null) {
-                    currentFood.next.previous = currentFood.previous;
-                } else {
-                    // If current node is the tail
-                    list.tail = currentFood.previous;
-                }
+            if (currentFood.data.getDetail().equals(type)) {
+                itemList.insert(currentFood.data);
             }
 
             currentFood = currentFood.next;
         }
-        
-        LinkedList<Item> itemList = new LinkedList<>();
-        Node<Food> currentNode = list.head;
-        while(currentNode != null){
-            Item item = currentNode.data;
-            itemList.insert(item);
-            currentNode = currentNode.next;
-        }
 
-        if (list.head == null) {
-            System.out.println(RED + "No such item." + RESET);
+        if (itemList.getHead() == null) {
+            DMUtility.noSuchItem();
         } else {
             printListToTable(itemList);
         }
     }
     
-    public static void filterShoesCategory(LinkedList<Shoes> list, String type) {
-        if (list.head == null) {
-            System.out.println(RED + "No items to filter." + RESET);
+    public static void filterShoesCategory(LinkedListInterface<Shoes> list, String type) {
+        if (list.getHead() == null) {
+            DMUtility.noItemToFilter();
             return;
         }
-
-        Node<Shoes> currentShoes = list.head;
+        
+        LinkedList<Item> itemList = new LinkedList<>();
+        Node<Shoes> currentShoes = list.getHead();
         while (currentShoes != null) {
 
-            if (!currentShoes.data.getDetail().equals(type)) {
-                
-                if (currentShoes.previous != null) {
-                    currentShoes.previous.next = currentShoes.next;
-                } else {
-                    // If current node is the head
-                    list.head = currentShoes.next;
-                }
-
-                if (currentShoes.next != null) {
-                    currentShoes.next.previous = currentShoes.previous;
-                } else {
-                    // If current node is the tail
-                    list.tail = currentShoes.previous;
-                }
+            if (currentShoes.data.getDetail().equals(type)) {
+                itemList.insert(currentShoes.data);
             }
 
             currentShoes = currentShoes.next;
         }
         
-        LinkedList<Item> itemList = new LinkedList<>();
-        Node<Shoes> currentNode = list.head;
-        while(currentNode != null){
-            Item item = currentNode.data;
-            itemList.insert(item);
-            currentNode = currentNode.next;
-        }
-        
-        if (list.head == null) {
-            System.out.println(RED + "No such item." + RESET);
+        if (itemList.getHead() == null) {
+            DMUtility.noSuchItem();
         } else {
             printListToTable(itemList);
         }
     }
     
     public static void filterByYear(){
-        LinkedList<Food> foodList = loadAllFoodToList();
+        LinkedListInterface<Food> foodList = loadAllFoodIntoList();
         int year = validYear();
 
-        if (foodList.head == null) {
-            System.out.println(RED + "No items to filter." + RESET);
+        if (foodList.getHead() == null) {
+            DMUtility.noItemToFilter();
             return;
         }
 
-        Node<Food> currentNode = foodList.head;
-
+        LinkedListInterface<Item> itemList = new LinkedList<>();
+        Node<Food> currentNode = foodList.getHead();
         while (currentNode != null) {
             Date dataDate = currentNode.data.getExpiryDate();
             int dataYear = dataDate.getYear() + 1900; // 124 + 1900 = 2024
 
-            if (dataYear > year) {
-                
-                if (currentNode.previous != null) {
-                    currentNode.previous.next = currentNode.next;
-                } else {
-                    // If the node to remove is the head
-                    foodList.head = currentNode.next;
-                }
-
-                if (currentNode.next != null) {
-                    currentNode.next.previous = currentNode.previous;
-                } else {
-                    // If the node to remove is the tail
-                    foodList.tail = currentNode.previous;
-                }
+            if (dataYear < year) {
+                itemList.insert(currentNode.data);
             } 
                 
             currentNode = currentNode.next;
         }
-        
-        LinkedList<Item> itemList = new LinkedList<>();
-        currentNode = foodList.head;
-        while(currentNode != null){
-            Item item = currentNode.data;
-            itemList.insert(item);
-            currentNode = currentNode.next;
-        }
 
-        if (foodList.head == null) {
-            System.out.println(RED + "No such item." + RESET);
+        if (itemList.getHead() == null) {
+            DMUtility.noSuchItem();
         } else {
             printListToTable(itemList);
         }
     }
     
     public static int validYear() {
-        Scanner scan = new Scanner(System.in);
-        System.out.print("Enter the year: ");
+        DMUI.inputYear();
 
         int year = 0;
         boolean validYear = false;
@@ -2874,20 +3005,20 @@ public class DMControl {
             String inputYear = scan.nextLine().trim();
 
             if (inputYear.isEmpty()) {
-                System.out.println(RED + "/nCannot leave blank." + RESET);
-                System.out.print("Enter again: ");
+                DMUtility.emptyInputErrorMsg();
+                DMUI.reEnter();
             } else {
                 try {
                     year = Integer.parseInt(inputYear);
                     if (year < currentYear) {
-                        System.out.println(RED + "/nInvalid year, please enter the current year or a future year." + RESET);
-                        System.out.print("Enter again: ");
+                        DMUtility.inputFutureYear();
+                        DMUI.reEnter();
                     } else {
                         validYear = true;
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println(RED + "/nInvalid input. Please enter a valid year." + RESET);
-                    System.out.print("Enter again: ");
+                    DMUtility.inputValidYear();
+                    DMUI.reEnter();
                 }
             }
         }
@@ -2902,13 +3033,7 @@ public class DMControl {
         
         boolean cont = true;
         do{
-            System.out.println(BLUE + "\n- - - Report - - -" + RESET);
-            String[] reportMenu = {
-                "Donor with the Highest Contribution", 
-                "Analysis of Food Items with Future Expiry Year",
-                "Most Frequently Donated Item Category (Money, Food, Apparel)"
-            };
-            int reportSelection = menuIntReturn(reportMenu);
+            int reportSelection = DMUI.reportMainMenu();
 
             switch(reportSelection){
                 case 1:
@@ -2921,39 +3046,40 @@ public class DMControl {
                     mostFrequentItem();
                     break;
                 default:
-                    System.out.println(RED + "Invalid report selection." + RESET);
+                    DMUtility.invalidMenuSelection();
                     break;
             }
             
-            cont = YN("Do you want to view another report?");
+            cont = YN(DMUI.contOtherReportQ());
             
         }while(cont == true);
     }
     
     public static void donorContributionReport(){
-        LinkedList<Item> itemList = loadAllItemIntoList();
-        ManageDonors<Donor> donorList = new ManageDonors<>();
-        donorList.loadFromFile("donors.txt");
+        LinkedListInterface<Item> itemList = loadAllItemIntoList();
+        LinkedListInterface<Donor> donorList = new LinkedList<>();
+        donorList.loadFromFile(DONOR_PATH);
         
         itemList.removeEmptyData();
         donorList.removeEmptyData();
         
         if (donorList.isEmpty()){
-            System.out.println(RED + "No donor exist." + RESET);
+            DMUtility.noDonorInList();
             return;
         }
         
         if (itemList.isEmpty()){
-            System.out.println(RED + "No item in stock." + RESET);
+            DMUtility.noItemInList();
             return;
         }
-        System.out.println("\nDonor with the Highest Contribution");
-        Node<Donor> currentDonor = donorList.head;
+        
+        DMUI.report1Header();
+        Node<Donor> currentDonor = donorList.getHead();
         int max = 0;
         Donor donor = currentDonor.data;
         while(currentDonor != null){
-            System.out.print(currentDonor.data.getId());
-            Node<Item> currentItem = itemList.head;
+            DMUI.printString(currentDonor.data.getId());
+            Node<Item> currentItem = itemList.getHead();
             int sum = 0;
             while (currentItem != null){
                 if (currentDonor.data.getId().equals(currentItem.data.getDonorID())){
@@ -2962,7 +3088,7 @@ public class DMControl {
                 currentItem = currentItem.next;
             }
             
-            System.out.print(" (" + sum + ") ");
+            DMUI.printSum(sum);
             
             printStar(sum);
             
@@ -2971,29 +3097,28 @@ public class DMControl {
                 donor = currentDonor.data;
             }
             
-            System.out.println();
+            DMUI.breakLine();
             currentDonor = currentDonor.next;
         }
         
-        System.out.println("\nRemarks: Symbol * will be display if item's total exceed 50 and each * represent 50 items");
-        System.out.println("Conclusion: The donor with highest contribution is " + donor.getName() + " with the total of " + max + " donated items.");
+        DMUI.report1Conclu(donor.getName(), max);
     }
     
     public static void foodExpiryReport(){
-        LinkedList<Food> itemList = loadAllFoodToList();
+        LinkedListInterface<Food> itemList = loadAllFoodIntoList();
         itemList.removeEmptyData();
         
         if (itemList.isEmpty()){
-            System.out.println(RED + "No food item in stock." + RESET);
+            DMUtility.noFoodItem();
             return;
         }
         
-        System.out.println("\nAnalysis of Food Item with Future Expiry Year");
+        DMUI.report2Header();
         LocalDate currentDate = LocalDate.now();
         int currentYear = currentDate.getYear();
         
         int largestYear = currentYear;
-        Node<Food> tempNode = itemList.head;
+        Node<Food> tempNode = itemList.getHead();
         while (tempNode != null) {
             int dataYear = tempNode.data.getExpiryDate().getYear() + 1900;
             if (dataYear > largestYear) {
@@ -3002,11 +3127,11 @@ public class DMControl {
             tempNode = tempNode.next;
         }
         
-        System.out.printf("| %-21s | %-10s | %-10s | %-10s | %-10s | %-10s |\n", "Year\\Food Category", "Baked", "Boxed", "Canned", "Dry", "Essential");
+        DMUI.report2TableH();
         while(currentYear <= largestYear){
             int sum = 0, fa = 0, fo = 0, fc = 0, fd = 0, fe = 0;
             
-            Node<Food> currentNode = itemList.head;
+            Node<Food> currentNode = itemList.getHead();
             while(currentNode != null){
                 
                 int dataYear = currentNode.data.getExpiryDate().getYear() + 1900;
@@ -3029,50 +3154,49 @@ public class DMControl {
                 currentNode = currentNode.next;
             }
             
-            System.out.printf("| %-4s %-4s %-4d %-6s | %-10d | %-10d | %-10d | %-10d | %-10d |\n", 
-                    currentYear, " -> ", sum , " items", fa, fo, fc, fd, fe);
+            DMUI.report2TableD(currentYear, sum, fa, fo, fc, fd, fe);
             
             currentYear ++;
         }
     }
     
     public static void mostFrequentItem(){
-        LinkedList<Item> list = loadAllItemIntoList();
+        LinkedListInterface<Item> list = loadAllItemIntoList();
         
         list.removeEmptyData();
         
         if (list.isEmpty()){
-            System.out.println(RED + "No item in stock." + RESET);
+            DMUtility.noItemInList();
             return;
         }
         
-        System.out.println("\nMost Frequent Donation Item Category");
-        LinkedList<Money> moneyList = list.filterByCategory(Money.class);
-        LinkedList<Food> foodList = list.filterByCategory(Food.class);
-        LinkedList<Apparel> appList = list.filterByCategory(Apparel.class);
+        DMUI.report3Header();
+        LinkedListInterface<Money> moneyList = list.filterByCategoryIntoLinkedListInterface(Money.class);
+        LinkedListInterface<Food> foodList = list.filterByCategoryIntoLinkedListInterface(Food.class);
+        LinkedListInterface<Apparel> appList = list.filterByCategoryIntoLinkedListInterface(Apparel.class);
         
         int sumM = 0;
-        System.out.printf("%-10s", "Money");
+        DMUI.r3M();
         for(int i = 0; i < moneyList.length(); i++){
             sumM ++;
         }
-        System.out.print("(" + sumM + ")");
+        DMUI.printSum(sumM);
         printStar(sumM);
         
         int sumF = 0;
-        System.out.printf("\n%-10s", "Food");
+        DMUI.r3F();
         for(int i = 0; i < foodList.length(); i++){
             sumF ++;
         }
-        System.out.print("(" + sumF + ")");
+        DMUI.printSum(sumF);
         printStar(sumF);
         
         int sumA = 0;
-        System.out.printf("\n%-10s", "Apparel");
+        DMUI.r3A();
         for(int i = 0; i < appList.length(); i++){
             sumA ++;
         }
-        System.out.print("(" + sumA + ")");
+        DMUI.printSum(sumA);
         printStar(sumA);
         
         String category;
@@ -3088,15 +3212,14 @@ public class DMControl {
             max = sumA;
         }
         
-        System.out.println("\nRemarks: Symbol * will be display if item's total exceed 50 and each * represent 50 items");
-        System.out.println("The most frequent donated item category is " + category + ", with total amount of " + max );
+        DMUI.report3Conclu(category, max);
     }
     
     public static void printStar(int count){
         if (count > 50){
-            int left = count % 50;
+            int left = count/50;
             for (int i = 0; i < left; i ++){
-                System.out.print(BLUE + " *" + RESET);
+                DMUI.disStar();
             }
         }
     }

@@ -78,7 +78,7 @@ public class DMUI {
     }
 
     public static void commonFoodHeader() {
-        System.out.printf(" %-10s | %-8s | %-8s | %-15s |", "Expiry Date", "Weight", "Status", "Food Type");
+        System.out.printf(" %-10s | %-8s | %-8s | %-20s |", "Expiry Date", "Weight", "Status", "Food Type");
     }
 
     public static void commonAppHeader() {
@@ -95,6 +95,10 @@ public class DMUI {
     
     public static void printItem(Item item){
         System.out.println("\n" + item.toString());
+    }
+    
+    public static void printString(String str){
+        System.out.print(str);
     }
     
     public static void startOfPage(int pageNum){
@@ -447,11 +451,11 @@ public class DMUI {
     }
     
     public static void TIBankHeader(){
-    System.out.print("Bank");
+    System.out.print("- Bank -");
     }
     
     public static void TICashHeader(){
-    System.out.print("\nCash");
+    System.out.print("\n- Cash -");
     }
     
     public static void TIFoodHeader(){
@@ -459,23 +463,23 @@ public class DMUI {
     }
     
     public static void TIBakedHeader(){
-    System.out.print("\nBaked Goods");
+    System.out.print("- Baked Goods -");
     }
     
     public static void TIBoxedHeader(){
-    System.out.print("Boxed Goods");
+    System.out.print("\n- Boxed Goods -");
     }
     
     public static void TICannedHeader(){
-    System.out.print("\nCanned Foods");
+    System.out.print("\n- Canned Foods -");
     }
     
     public static void TIDryHeader(){
-    System.out.print("\nDry Goods");
+    System.out.print("\n- Dry Goods -");
     }
     
     public static void TIEssHeader(){
-    System.out.print("\nEssentials");
+    System.out.print("\n- Essentials -");
     }
     
     public static void TIAppHeader(){
@@ -483,29 +487,47 @@ public class DMUI {
     }
     
     public static void TIJacketHeader(){
-    System.out.print("Jackets");
+    System.out.print("- Jackets -");
     }
     
     public static void TIPantHeader(){
-    System.out.print("\nPant");
+    System.out.print("\n- Pant -");
     }
     
     public static void TIShirtHeader(){
-    System.out.print("\nShirt");
+    System.out.print("\n- Shirt -");
     }
     
     public static void TIShoesHeader(){
-    System.out.print("\nShoes");
+    System.out.print("\n- Shoes -");
     }
     
     public static void TISocksHeader(){
-    System.out.print("\nSocks");
+    System.out.print("\n- Socks -");
     }
     
     // ----------------------------------------
     // Part 6: List donation by different donor
     // ----------------------------------------
+    public static void individualHeader(){
+        System.out.print(BLUE + "--- INDIVIDUAL ---" + RESET);
+    }
     
+    public static void organizationHeader(){
+        System.out.print(BLUE + "--- ORGANIZATION ---" + RESET);
+    }
+    
+    public static void donorItemCustomHeader(){
+        System.out.printf("| %-10s | %-10s | %-15s |\n", "Donor ID", "Item ID", "Item Category");
+    }
+    
+    public static void donorItemCustomFull(String donorID, Node<Item> currentItem){
+        System.out.printf("| %-10s | %-10s | %-15s |\n", donorID, currentItem.data.getId(), currentItem.data.getType());
+    }
+    
+    public static void donorItemCustomNor(Node<Item> currentItem){
+        System.out.printf("| %-10s | %-10s | %-15s |\n", "", currentItem.data.getId(), currentItem.data.getType());
+    }
     
     // --------------------------
     // Part 7: List all donations
@@ -559,6 +581,119 @@ public class DMUI {
     
     public static String contSortQ(){
         return "Do you want to continue sort or view other items?";
+    }
+    
+    // -----------------------------------------
+    // Part 8: Filter donation based on criteria
+    // -----------------------------------------
+    public static int filterMainMenu(){
+        System.out.println(BLUE + "\n- - - Filter Selection - - -" + RESET);
+        String[] filterMenu = {"Filter by Item Type (e.g. Sport Shoes)", "Filter Food before and within Expiry's Year (e.g. 2025)"};
+        return DMControl.menuIntReturn(filterMenu);
+    }
+    
+    public static String contFilterQ(){
+        return "Do you want to continue filtering other items?";
+    }
+        
+    public static int inputDisAvailability(){
+        System.out.println("Item availability");
+        String[] filterMenu = {"Available Item only", "Unavailable Item only"};
+        return DMControl.menuIntReturn(filterMenu);
+    }
+    
+    public static void filterTypeMenu(){
+        System.out.printf("\n%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Money", "Bank", "Cash", "", "", "");
+        System.out.println("-".repeat(108));
+        System.out.printf("%-15s\n", "Food");
+        System.out.printf("%-15s || %-159s |\n", "Subcategory", "Selection");
+        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Baked Goods", "Cookies", "Crackers", "", "", "");
+        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Boxed Goods", "Cereals", "Snacks", "", "", "");
+        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Canned Food", "Baked Beans", "Chicken Soup", "Corn", "Lychee", "Meat");
+        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "", "Mushroom Soup", "Pineapple", "Tomatoes", "Tuna", "");
+        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Dry Goods", "Instant Noodles", "Oats", "Pasta", "Rice", "", "", "", "", "");
+        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Essentials", "Oil", "Pepper", "Salt", "Sugar", "", "", "", "", "");
+        System.out.println("-".repeat(108));
+        System.out.printf("%-15s\n", "Apparel");
+        System.out.printf("%-15s || %-159s |\n", "Subcategory", "Selection");
+        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Jacket", "", "", "", "", "");
+        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Pant", "", "", "", "", "");
+        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Shirt", "", "", "", "", "");
+        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Shoes", "Slipper", "Sport Shoes", "", "", "");
+        System.out.printf("%-15s || %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Socks", "", "", "", "", "");
+        System.out.print("\nItem Type: ");
+    }
+    
+    public static void inputYear(){
+        System.out.print("Enter the year: ");
+    }
+    
+    // --------------------------------
+    // Part 9: Generate summary reports 
+    // --------------------------------
+    public static int reportMainMenu(){
+        System.out.println(BLUE + "\n- - - Report - - -" + RESET);
+        String[] reportMenu = {
+            "Donor with the Highest Contribution", 
+            "Analysis of Food Items with Future Expiry Year",
+            "Most Frequently Donated Item Category (Money, Food, Apparel)"
+        };
+        return DMControl.menuIntReturn(reportMenu);
+    }
+    
+    public static String contOtherReportQ(){
+        return "Do you want to view another report?";
+    }
+    
+    public static void report1Header(){
+        System.out.println("\nDonor with the Highest Contribution");
+    }
+    
+    public static void report1Conclu(String name, int max){
+        System.out.println("\nRemarks: Symbol * will be display if item's total exceed 50 and each * represent 50 items");
+        System.out.println("Conclusion: The donor with highest contribution is " + name + " with the total of " + max + " donated items.");
+    }
+    
+    public static void report2Header(){
+        System.out.println("\nAnalysis of Food Item with Future Expiry Year");
+    }
+    
+    public static void report2TableH(){
+        System.out.printf("| %-21s | %-10s | %-10s | %-10s | %-10s | %-10s |\n", "Year\\Food Category", "Baked", "Boxed", "Canned", "Dry", "Essential");
+    }
+    
+    public static void report2TableD(int currentYear, int sum, int fa, int fo, int fc, int fd, int fe){
+        System.out.printf("| %-4s %-4s %-4d %-6s | %-10d | %-10d | %-10d | %-10d | %-10d |\n", 
+                    currentYear, " -> ", sum , " items", fa, fo, fc, fd, fe);
+    }
+    
+    public static void report3Header(){
+        System.out.println("\nMost Frequent Donation Item Category");
+    }
+    
+    public static void r3M(){
+        System.out.printf("%-10s", "Money");
+    }
+    
+    public static void r3F(){
+        System.out.printf("\n%-10s", "Food");
+    }
+    
+    public static void r3A(){
+        System.out.printf("\n%-10s", "Apparel");
+    }
+    
+    public static void report3Conclu(String category, int max){
+        System.out.println("\nRemarks: Symbol * will be display if item's total exceed 50 and each * represent 50 items");
+        System.out.println("The most frequent donated item category is " + category + ", with total amount of " + max );
+    }
+    
+    public static void printSum(int sum){
+        System.out.print(" (" + sum + ") ");
+    }
+    
+    public static void disStar(){
+        System.out.print(BLUE + " *" + RESET);
     }
     
 }

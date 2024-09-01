@@ -145,6 +145,30 @@ public class DMUtility {
     
     // amend successfully
     public static void itemUpdated(){
-        System.out.println(GREEN + "\nItem updated Successfully.\n" + RESET);
+        System.out.println("\n" + GREEN + "Item updated Successfully.\n" + RESET);
+    }
+    
+    public static void noDonorOrItem(){
+        System.out.println("No donors or items to process.");
+    }
+    
+    public static void invalidFilterTypeInput(){
+        System.out.println("\n" + RED + "Invalid input." + RESET);
+    }
+    
+    public static void noItemToFilter(){
+        System.out.println(RED + "No items to filter." + RESET);
+    }
+    
+    public static void inputValidYear(){
+        System.out.println(RED + "Invalid input. Please enter a valid year.\n" + RESET);
+    }
+    
+    public static void inputFutureYear(){
+        System.out.println(RED + "Invalid year, please enter the current year or a future year.\n" + RESET);
+    }
+     
+    public static void noFoodItem(){
+        System.out.println(RED + "No food item exist." + RESET);
     }
 }
