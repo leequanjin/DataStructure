@@ -6,7 +6,7 @@ package entity.Donor;
 
 /**
  *
- * @author leeda
+ * @author kee ke shen
  */
 public class DonorPeriodCount {
 

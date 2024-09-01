@@ -15,7 +15,7 @@ import boundary.ManageDonorUI;
 
 /**
  *
- * @author [Your Name]
+ * @author Kee Ke Shen
  */
 public class ManageDonor {
 

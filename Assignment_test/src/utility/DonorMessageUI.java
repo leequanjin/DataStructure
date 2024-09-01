@@ -1,5 +1,10 @@
 package utility;
 
+/**
+ *
+ * @author kee ke shen
+ */
+
 public class DonorMessageUI {
 
     // Colours

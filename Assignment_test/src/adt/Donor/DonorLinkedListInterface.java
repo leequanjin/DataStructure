@@ -1,5 +1,10 @@
 package adt.Donor;
 
+/**
+ *
+ * @author kee ke shen
+ */
+
 import adt.LinkedList;
 import adt.LinkedListInterface;
 import entity.Donor.Donor;
