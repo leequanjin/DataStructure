@@ -25,7 +25,7 @@ public class ManageDistributionUI {
     
     // Boundary - ManageDistributionUI //
     public void displayDistributionMenu() {
-        System.out.println(Blue + "\n- - - Donor Menu - - -" + Reset);
+        System.out.println(Blue + "\n- - - Donation Distribution Menu - - -" + Reset);
         System.out.println("Choose an option:");
         System.out.println("1. Add new donation distribution");
         System.out.println("2. Delete donation distribution");
