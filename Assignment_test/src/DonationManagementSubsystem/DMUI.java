@@ -148,11 +148,11 @@ public class DMUI {
         System.out.print("Enter donor's id: ");
     }
 
-    public static <T> void disTempDonorData(LinkedListInterface<Donor> donorList) {
+    public static <T> void disTempDonorData(Donor donor) {
         System.out.println("\n - - - Current Donor - - -");
-        System.out.printf("%-10s %-2s %-50s\n", "ID", ":", donorList.getHead().data.getId());
-        System.out.printf("%-10s %-2s %-50s\n", "Name", ":", donorList.getHead().data.getName());
-        System.out.printf("%-10s %-2s %-50s\n", "Category", ":", donorList.getHead().data.getType());
+        System.out.printf("%-10s %-2s %-50s\n", "ID", ":", donor.getId());
+        System.out.printf("%-10s %-2s %-50s\n", "Name", ":", donor.getName());
+        System.out.printf("%-10s %-2s %-50s\n", "Category", ":", donor.getType());
     }
 
     public static int donorNoExistSelection() {
@@ -550,12 +550,15 @@ public class DMUI {
     }
         
     public static void list7Header(){
-    
+        System.out.println("\n --- Food List --- (According Expiry Date)");
     }
         
     public static void list8Header(){
-    
+        System.out.println("\n --- Donation Item List --- ");
     }
     
+    public static String contSortQ(){
+        return "Do you want to continue sort or view other items?";
+    }
     
 }

@@ -481,7 +481,7 @@ public class DMControl {
         while(currentNode != null){
             DMUI.printNode(currentNode);
             
-            if(stop == 50){
+            if(stop % 50 == 0 && currentNode.next != null){
                 DMUI.endOfPage(pageNum);
                 boolean cont = YN(DMUI.showMorePgQ());
                 if (cont){
@@ -573,12 +573,8 @@ public class DMControl {
             do{
                 dID = donorIdValidation();
                 
-                boolean validDonor = chkDonorExist(dID, donorList);
-                
-                // if exist, show current data 
-                if(validDonor == true){
-                    DMUI.disTempDonorData(donorList);
-                }else{ // if does not exist, enter other
+                Donor donor = chkDonorExist(dID, donorList);
+                if (donor == null){// if does not exist, enter other
                     DMUtility.donorNoExist();
                     int selectionToCont = DMUI.donorNoExistSelection();
                     if (selectionToCont == 1){
@@ -586,6 +582,8 @@ public class DMControl {
                     }else{
                         donationManagementMainMenu();
                     }
+                }else{
+                    DMUI.disTempDonorData(donor);
                 }
                 
             }while(contInputID);
@@ -652,7 +650,7 @@ public class DMControl {
         return id.substring(0, 3).toUpperCase() + id.substring(3, 8);
     }
     
-    public static boolean chkDonorExist(String dID, LinkedListInterface<Donor> donorList){
+    public static Donor chkDonorExist(String dID, LinkedListInterface<Donor> donorList){
         
         if (!donorList.isEmpty()){
             
@@ -662,7 +660,7 @@ public class DMControl {
                 Donor donor = current.data;
                 
                 if (donor.getId().equals(dID)) {
-                    return true;
+                    return donor;
                 }
 
                 current = current.next;
@@ -672,7 +670,7 @@ public class DMControl {
             DMUtility.noDonorInList();
         }
         
-        return false;
+        return null;
     }
     
     public static void addItem(String dID){
@@ -2166,8 +2164,8 @@ public class DMControl {
         LinkedListInterface<Donor> donorList = new LinkedList<>();
         donorList.loadFromFile(DONOR_PATH);
 
-        LinkedListInterface<Donor> individualList = donorList.filterByCategoryIntoLinkedListInterface(Individual.class);
-        LinkedListInterface<Donor> organizationList = donorList.filterByCategoryIntoLinkedListInterface(Organization.class);
+        LinkedListInterface<Individual> individualList = donorList.filterByCategoryIntoLinkedListInterface(Individual.class);
+        LinkedListInterface<Organization> organizationList = donorList.filterByCategoryIntoLinkedListInterface(Organization.class);
         
         // remove all empty space
         itemList.removeEmptyData();
@@ -2259,43 +2257,43 @@ public class DMControl {
 
             switch(sortSelection){
                 case 1: 
-                    System.out.println("\n --- Money List --- (Ascending Order)");
+                    DMUI.list1Header();
                     sortMoney(moneyList, 1, 1);
                     break;
                 case 2: 
-                    System.out.println("\n --- Money List --- (Descending Order)");
+                    DMUI.list2Header();
                     sortMoney(moneyList, 0, 1);
                     break;
                 case 3:
-                    System.out.println("\n --- Bank List --- (Ascending Order)");
+                    DMUI.list3Header();
                     sortMoney(bankList, 1, 1);
                     break;
                 case 4:
-                    System.out.println("\n --- Bank List --- (Descending Order)");
+                    DMUI.list4Header();
                     sortMoney(bankList, 0, 1);
                     break;
                 case 5:
-                    System.out.println("\n --- Cash List --- (Ascending Order)");
+                    DMUI.list5Header();
                     sortMoney(cashList, 1, 2);
                     break;
                 case 6:
-                    System.out.println("\n --- Cash List --- (Descending Order)");
+                    DMUI.list6Header();
                     sortMoney(cashList, 0, 2);
                     break;
                 case 7:
-                    System.out.println("\n --- Food List --- (According Expiry Date)");
+                    DMUI.list7Header();
                     sortFoodExp(foodList);
                     break;
                 case 8:
-                    System.out.println("\n --- Donation Item List --- ");
+                    DMUI.list8Header();
                     printAllIntoTable();
                     break;
                 default:
-                    System.out.println(RED + "Invalid sort selection." + RESET);
+                    DMUtility.invalidMenuSelection();
                     break;
             }
             
-            cont = YN("Do you want to continue sort or view other items?");
+            cont = YN(DMUI.contSortQ());
             
         } while(cont == true);
 
@@ -2304,29 +2302,22 @@ public class DMControl {
     public static void sortMoney(LinkedListInterface<Money> moneyList, int asc, int header) {
         moneyList.removeEmptyData();
 
-        if (moneyList.head == null) {
-            System.out.println(RED + "No such donated item." + RESET);
+        if (moneyList.getHead() == null) {
+            DMUtility.noSuchItem();
             return;
         }
         
-
-        if (header == 1){
-            System.out.printf("| %-10s | %-10s | %-15s | %-15s | %-14s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Availability", "Amount Donated", "Bank Name");
-        }else{
-            System.out.printf("| %-10s | %-10s | %-15s | %-15s | %-14s |\n", "Item ID", "Donor ID", "Item Category", "Availability", "Amount Donated");
-        }
-        
-        if (moneyList.head.next == null){
-            System.out.println(moneyList.head.data.toString());
+        if (moneyList.getHead().next == null){
+            DMUI.printNode(moneyList.getHead());
             return;
         }
 
         // Loop through all data in the list
-        Node<Money> currentMoney = moneyList.head.next; // Start from the second node
+        Node<Money> currentMoney = moneyList.getHead().next; // Start from the second node
         while (currentMoney != null) {
             
             // Get the position data should be inserted
-            Node<Money> newPosition = moneyList.head;
+            Node<Money> newPosition = moneyList.getHead();
             while (newPosition != currentMoney) {
                 
                 if (currentMoney.data.getAmount() < newPosition.data.getAmount() && asc == 1) {
@@ -2353,11 +2344,12 @@ public class DMControl {
             }
 
             // Insert currentMoney before newPosition
-            if (newPosition == moneyList.head) {
+            
+            if (newPosition == moneyList.getHead()) {
                 currentMoney.previous = null;
-                currentMoney.next = moneyList.head;
-                moneyList.head.previous = currentMoney;
-                moneyList.head = currentMoney;
+                currentMoney.next = moneyList.getHead();
+                moneyList.getHead().previous = currentMoney;
+                moneyList.setHead(currentMoney);
             } else {
                 currentMoney.previous = newPosition.previous;
                 currentMoney.next = newPosition;
@@ -2368,25 +2360,38 @@ public class DMControl {
             currentMoney = currentMoney.next;
         }
         
-        Node<Money> node = moneyList.head;
-        int stop = 0;
+        Node<Money> node = moneyList.getHead();
+        int stop = 1;
         int pageNum = 1;
+        
+        DMUI.startOfPage(pageNum);
+        
+        DMUI.commonItemHeader();
+        DMUI.commonMoneyHeader();
+        if (header == 1){
+            DMUI.bankHeader();
+        }
+        
         while (node != null) {
-            System.out.println(node.data.toString());
-            stop++;
+            DMUI.printNode(node);
             
             if(stop == 50){
-                System.out.println(BLUE +"- END OF PAGE " + pageNum + " -" + RESET);
-                boolean cont = YN("50 records had shown. Do you want to continue shown more?");
+                DMUI.endOfPage(pageNum);
+                boolean cont = YN(DMUI.showMorePgQ());
                 if (cont){
                     pageNum++;
-                    System.out.println(BLUE +"\n- PAGE " + pageNum + " -" + RESET);
-                    System.out.printf("| %-10s | %-10s | %-15s | %-15s | %-20s | %-10s | %-8s | %-8s | %-15s |\n", "Item ID", "Donor ID", "Item Category", "Availability", "Remarks", "Expiry Date", "Weight", "Status", "Food Type");
+                    DMUI.startOfPage(pageNum);
+                    DMUI.commonItemHeader();
+                    DMUI.commonMoneyHeader();
+                    if (header == 1){
+                        DMUI.bankHeader();
+                    }
                     stop = 0;
                 }else{
                     return;
                 }
             }
+            stop++;
             node = node.next;
         }
     }
