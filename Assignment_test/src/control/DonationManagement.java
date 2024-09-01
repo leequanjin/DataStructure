@@ -1075,113 +1075,114 @@ public class DonationManagement {
         
         //expiryDate
         Date expiryDate = expiryDateValidation(newItemList, dID);
-        
-        //weight
-        int w = weightValidation();
-        
-        //status
-        String foodStaName = foodStaValidation();
-        
-        LinkedListInterface<Item> list = new LinkedList();
-        String id = null;
-        switch(foodCat){
-            case 1: 
-                
-                list.loadFromFile(BAKED_PATH);
-                
-                String bakedName = inputBaked();
-                
-                for (int i = 0; i < qty; i++){
-                    id = idGenerator("FA", list);
-                    BakedGoods baG = new BakedGoods(id, dID, note, expiryDate, w, foodStaName, bakedName);
-                    
-                    list.insert(baG);
-            
-                    newItemList.insert(baG);
-                }
-                
-                list.saveToFile(BAKED_PATH);
-                break;
-            case 2:
-                
-                list.loadFromFile(BOXED_PATH);
-                
-                String boxedName = inputBoxed();
-                
-                for (int i = 0; i < qty; i++){
-                    id = idGenerator("FO", list);
-                    BoxedGoods boG = new BoxedGoods(id, dID, note, expiryDate, w, foodStaName, boxedName);
+        if(expiryDate != null){
 
-                    list.insert(boG);
-            
-                    newItemList.insert(boG);
-                }
-                
-                list.saveToFile(BOXED_PATH);
-                break;
-            case 3:
-                
-                list.loadFromFile(CANNED_PATH);
-                
-                String cannedName = inputCanned();
-                
-                for(int i = 0; i < qty; i++){
-                    id = idGenerator("FC", list);
-                    CannedFood cF = new CannedFood(id, dID, note, expiryDate, w, foodStaName, cannedName);
+            //weight
+            int w = weightValidation();
 
-                    list.insert(cF);
+            //status
+            String foodStaName = foodStaValidation();
 
-                    newItemList.insert(cF);
-                
-                }
-                
-                list.saveToFile(CANNED_PATH);
-                break;
-            case 4:
-                
-                list.loadFromFile(DRY_PATH);
-                
-                String dryName = inputDry();
-                
-                for(int i = 0; i < qty; i++){
-                    id = idGenerator("FD", list);
-                    DryGoods dG = new DryGoods(id, dID, note, expiryDate, w, foodStaName, dryName);
+            LinkedListInterface<Item> list = new LinkedList();
+            String id = null;
+            switch(foodCat){
+                case 1: 
 
-                    list.insert(dG);
+                    list.loadFromFile(BAKED_PATH);
 
-                    newItemList.insert(dG);
-                    
-                }
-                
-                list.saveToFile(DRY_PATH);
-                break;
-            case 5:
-                
-                list.loadFromFile(ESS_PATH);
-                
-                String essName = inputEss();
-                
-                for(int i = 0;i < qty; i++){
-                    id = idGenerator("FE", list);
-                    Essentials eG = new Essentials(id, dID, note, expiryDate, w, foodStaName, essName);
+                    String bakedName = inputBaked();
 
-                    list.insert(eG);
+                    for (int i = 0; i < qty; i++){
+                        id = idGenerator("FA", list);
+                        BakedGoods baG = new BakedGoods(id, dID, note, expiryDate, w, foodStaName, bakedName);
 
-                    newItemList.insert(eG);
-                    
-                }
-                
-                list.saveToFile(ESS_PATH);
-                break;
-            default:
-                DonationManagementUtility.invalidMenuSelection();
-                break;
+                        list.insert(baG);
+
+                        newItemList.insert(baG);
+                    }
+
+                    list.saveToFile(BAKED_PATH);
+                    break;
+                case 2:
+
+                    list.loadFromFile(BOXED_PATH);
+
+                    String boxedName = inputBoxed();
+
+                    for (int i = 0; i < qty; i++){
+                        id = idGenerator("FO", list);
+                        BoxedGoods boG = new BoxedGoods(id, dID, note, expiryDate, w, foodStaName, boxedName);
+
+                        list.insert(boG);
+
+                        newItemList.insert(boG);
+                    }
+
+                    list.saveToFile(BOXED_PATH);
+                    break;
+                case 3:
+
+                    list.loadFromFile(CANNED_PATH);
+
+                    String cannedName = inputCanned();
+
+                    for(int i = 0; i < qty; i++){
+                        id = idGenerator("FC", list);
+                        CannedFood cF = new CannedFood(id, dID, note, expiryDate, w, foodStaName, cannedName);
+
+                        list.insert(cF);
+
+                        newItemList.insert(cF);
+
+                    }
+
+                    list.saveToFile(CANNED_PATH);
+                    break;
+                case 4:
+
+                    list.loadFromFile(DRY_PATH);
+
+                    String dryName = inputDry();
+
+                    for(int i = 0; i < qty; i++){
+                        id = idGenerator("FD", list);
+                        DryGoods dG = new DryGoods(id, dID, note, expiryDate, w, foodStaName, dryName);
+
+                        list.insert(dG);
+
+                        newItemList.insert(dG);
+
+                    }
+
+                    list.saveToFile(DRY_PATH);
+                    break;
+                case 5:
+
+                    list.loadFromFile(ESS_PATH);
+
+                    String essName = inputEss();
+
+                    for(int i = 0;i < qty; i++){
+                        id = idGenerator("FE", list);
+                        Essentials eG = new Essentials(id, dID, note, expiryDate, w, foodStaName, essName);
+
+                        list.insert(eG);
+
+                        newItemList.insert(eG);
+
+                    }
+
+                    list.saveToFile(ESS_PATH);
+                    break;
+                default:
+                    DonationManagementUtility.invalidMenuSelection();
+                    break;
+            }
         }
         
     }
     
     public static Date expiryDateValidation(LinkedListInterface<Item> newItemList, String dID){
-        
         DonationManagementUI.inputExpDate();
         Date expiryDate = null;
         boolean validExp = false;
@@ -1211,6 +1212,7 @@ public class DonationManagement {
                             expiryDateValidation(newItemList, dID);
                         }else{
                             inputFood(newItemList, dID);
+                            return null;
                         }
                         
                     } else {
