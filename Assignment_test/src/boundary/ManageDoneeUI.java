@@ -6,7 +6,7 @@ package boundary;
 
 import entity.Donee;
 import entity.DoneeStateCount;
-import adt.LinkedList;
+import adt.LinkedListInterface;
 import java.util.Scanner;
 import utility.DoneeMessageUI;
 
@@ -20,9 +20,6 @@ public class ManageDoneeUI {
     static String Red = "\u001b[31m";
     static String Green = "\u001b[32;2m";
     static String Reset = "\u001b[0m";
-
-    //Imports
-    DoneeMessageUI doneeMessageUI = new DoneeMessageUI();
     
     Scanner scanner = new Scanner(System.in);
     String choice = null;
@@ -47,10 +44,10 @@ public class ManageDoneeUI {
 
     public String getName() {
         String name = null;
-        while (doneeMessageUI.isEmpty(name)) {
+        while (DoneeMessageUI.isEmpty(name)) {
             System.out.print("Enter name: ");
             name = scanner.nextLine().trim();
-            if (doneeMessageUI.isEmpty(name)) {
+            if (DoneeMessageUI.isEmpty(name)) {
                 System.out.println(Red + "Name cannot be empty!" + Reset);
             }
         }
@@ -191,7 +188,7 @@ public class ManageDoneeUI {
         System.out.println("2. Donee Name \n");
     }
 
-    public void displayDoneeList(LinkedList doneeList) {
+    public void displayDoneeList(LinkedListInterface doneeList) {
         System.out.printf("%-15s |%-30s |%-15s |%-15s |%-20s |%s\n", "ID", "Name", "Type", "Location", "Registration Date", "Status");
         String line = String.format("-").repeat(125);
         System.out.println(line);
@@ -210,7 +207,7 @@ public class ManageDoneeUI {
         System.out.println("3. Number of donees by state \n");
     }
 
-    public void displayPeriodCountReport(LinkedList doneePeriodCountList) {
+    public void displayPeriodCountReport(LinkedListInterface doneePeriodCountList) {
         System.out.printf("%-15s |%-20s |%-20s |%s\n", "Year", "Individuals", "Families", "Organizations");
         String line = String.format("-").repeat(74);
         System.out.println(line);

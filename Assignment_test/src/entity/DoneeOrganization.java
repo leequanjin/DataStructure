@@ -8,9 +8,9 @@ package entity;
  *
  * @author Christopher Yap Jian Xing
  */
-public class Organization extends Donee {
+public class DoneeOrganization extends Donee {
 
-    public Organization(String id, String name, String location) {
+    public DoneeOrganization(String id, String name, String location) {
         super(id, name, location);
     }
 

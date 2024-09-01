@@ -5,17 +5,17 @@
 package control;
 
 import adt.LinkedList;
+import adt.LinkedListInterface;
 import adt.Node;
 import entity.Donee;
 import entity.DoneeStateCount;
-import entity.Family;
-import entity.Individual;
-import entity.Organization;
+import entity.DoneeFamily;
+import entity.DoneeIndividual;
+import entity.DoneeOrganization;
 
 import utility.DoneeMessageUI;
 import utility.FilePath;
 import boundary.ManageDoneeUI;
-import java.util.Scanner;
 
 /**
  *
@@ -84,13 +84,12 @@ public class ManageDonee {
             System.out.println();
         }
     }
-
 // ------------    
 // Menu Choices
 // ------------     
     // Add a new donee
     public void addDonee() {
-        DoneeLinkedList<Donee> doneeList = new DoneeLinkedList<>();
+        DoneeLinkedListInterface<Donee> doneeList = new DoneeLinkedList<>();
         doneeList.loadFromFile(filePath.DONEE_PATH);
 
         manageDoneeUI.displayDoneeTypeChoice();
@@ -103,7 +102,7 @@ public class ManageDonee {
                     String name = manageDoneeUI.getName();
                     String state = manageDoneeUI.getState();
 
-                    doneeList.insertAtStart(new Individual(id, name, state));
+                    doneeList.insertAtStart(new DoneeIndividual(id, name, state));
                     System.out.println(Green + "Individual added with Donee ID: " + id + Reset);
                     doneeList.saveToFile(filePath.DONEE_PATH);
                 }
@@ -112,7 +111,7 @@ public class ManageDonee {
                     String name = manageDoneeUI.getName();
                     String state = manageDoneeUI.getState();
 
-                    doneeList.insertAtStart(new Family(id, name, state));
+                    doneeList.insertAtStart(new DoneeFamily(id, name, state));
                     System.out.println(Green + "Family added with Donee ID: " + id + Reset);
                     doneeList.saveToFile(filePath.DONEE_PATH);
                 }
@@ -121,7 +120,7 @@ public class ManageDonee {
                     String name = manageDoneeUI.getName();
                     String state = manageDoneeUI.getState();
 
-                    doneeList.insertAtStart(new Organization(id, name, state));
+                    doneeList.insertAtStart(new DoneeOrganization(id, name, state));
                     System.out.println(Green + "Organization added with Donee ID: " + id + Reset);
                     doneeList.saveToFile(filePath.DONEE_PATH);
                 }
@@ -135,7 +134,7 @@ public class ManageDonee {
     // Remove a donee
     public void removeDonee() {
 
-        DoneeLinkedList<Donee> doneeList = new DoneeLinkedList<>();
+        DoneeLinkedListInterface<Donee> doneeList = new DoneeLinkedList<>();
         doneeList.loadFromFile(filePath.DONEE_PATH);
 
         String id = manageDoneeUI.getDoneeID();
@@ -151,7 +150,7 @@ public class ManageDonee {
 
     // Update donee details
     public void updateDonee() {
-        DoneeLinkedList<Donee> doneeList = new DoneeLinkedList<>();
+        DoneeLinkedListInterface<Donee> doneeList = new DoneeLinkedList<>();
         doneeList.loadFromFile(filePath.DONEE_PATH);
 
         String id = manageDoneeUI.getDoneeID();
@@ -243,7 +242,7 @@ public class ManageDonee {
 
     // Search for a specific donee
     public void searchDonee() {
-        DoneeLinkedList<Donee> doneeList = new DoneeLinkedList<>();
+        DoneeLinkedListInterface<Donee> doneeList = new DoneeLinkedList<>();
         doneeList.loadFromFile(filePath.DONEE_PATH);
 
         do {
@@ -263,8 +262,8 @@ public class ManageDonee {
                 case "2" -> {
                     String name = manageDoneeUI.getName().toLowerCase();
 
-                    LinkedList<Donee> matchingDonees = new LinkedList<>();
-                    Node<Donee> current = doneeList.head;
+                    LinkedListInterface<Donee> matchingDonees = new LinkedList<>();
+                    Node<Donee> current = doneeList.getHead();
 
                     while (current != null) {
                         if (current.data.getName().toLowerCase().contains(name)) {
@@ -288,7 +287,7 @@ public class ManageDonee {
 
     // List donees with all donations made
     public void listDonee() {
-        DoneeLinkedList<Donee> doneeList = new DoneeLinkedList<>();
+        DoneeLinkedListInterface<Donee> doneeList = new DoneeLinkedList<>();
         doneeList.loadFromFile(filePath.DONEE_PATH);
 
         System.out.println(Green + "List of all Donees: " + Reset);
@@ -297,7 +296,7 @@ public class ManageDonee {
 
     // Filter donee based on criteria
     public void filterDonee() {
-        DoneeLinkedList<Donee> doneeList = new DoneeLinkedList<>();
+        DoneeLinkedListInterface<Donee> doneeList = new DoneeLinkedList<>();
         doneeList.loadFromFile(filePath.DONEE_PATH);
 
         manageDoneeUI.displayFilterChoice();
@@ -306,17 +305,17 @@ public class ManageDonee {
 
             switch (choice) {
                 case "1" -> {
-                    LinkedList<Individual> individualList = doneeList.filterByCategory(Individual.class);
+                    LinkedListInterface<DoneeIndividual> individualList = doneeList.filterByCategoryIntoLinkedListInterface(DoneeIndividual.class);
                     System.out.println(Green + "\nList of all Individual Donees: " + Reset);
                     manageDoneeUI.displayDoneeList(individualList);
                 }
                 case "2" -> {
-                    LinkedList<Family> familyList = doneeList.filterByCategory(Family.class);
+                    LinkedListInterface<DoneeFamily> familyList = doneeList.filterByCategoryIntoLinkedListInterface(DoneeFamily.class);
                     System.out.println(Green + "\nList of all Family Donees: " + Reset);
                     manageDoneeUI.displayDoneeList(familyList);
                 }
                 case "3" -> {
-                    LinkedList<Organization> organizationList = doneeList.filterByCategory(Organization.class);
+                    LinkedListInterface<DoneeOrganization> organizationList = doneeList.filterByCategoryIntoLinkedListInterface(DoneeOrganization.class);
                     System.out.println(Green + "\nList of all Organization Donees: " + Reset);
                     manageDoneeUI.displayDoneeList(organizationList);
                 }
@@ -329,7 +328,7 @@ public class ManageDonee {
 
     // Generate donee summary report
     public void reportDonee() {
-        DoneeLinkedList<Donee> doneeList = new DoneeLinkedList<>();
+        DoneeLinkedListInterface<Donee> doneeList = new DoneeLinkedList<>();
         doneeList.loadFromFile(filePath.DONEE_PATH);
 
         manageDoneeUI.displayReportChoice();
@@ -338,12 +337,12 @@ public class ManageDonee {
 
             switch (choice) {
                 case "1" -> {
-                    LinkedList doneeYearCountList = doneeList.generateTotalDoneeByYear();
+                    LinkedListInterface doneeYearCountList = doneeList.generateTotalDoneeByYear();
                     System.out.println(Green + "\nNumber of new donees by year report: " + Reset);
                     manageDoneeUI.displayPeriodCountReport(doneeYearCountList);
                 }
                 case "2" -> {
-                    LinkedList doneeMonthCountList = doneeList.generateTotalDoneeByMonth();
+                    LinkedListInterface doneeMonthCountList = doneeList.generateTotalDoneeByMonth();
                     System.out.println(Green + "\nNumber of new donees by month report: " + Reset);
                     manageDoneeUI.displayPeriodCountReport(doneeMonthCountList);
                 }
@@ -359,18 +358,19 @@ public class ManageDonee {
         } while (!"1".equals(choice) && !"2".equals(choice) && !"3".equals(choice));
     }
     
+    // Change Class Methods
     public Donee changeToIndividual(Donee donee) {
-        Individual individualDonee = new Individual(donee.getId(), donee.getName(), donee.getLocation());
+        DoneeIndividual individualDonee = new DoneeIndividual(donee.getId(), donee.getName(), donee.getLocation());
         return individualDonee;
     }
 
     public Donee changeToFamily(Donee donee) {
-        Family familyDonee = new Family(donee.getId(), donee.getName(), donee.getLocation());
+        DoneeFamily familyDonee = new DoneeFamily(donee.getId(), donee.getName(), donee.getLocation());
         return familyDonee;
     }
 
     public Donee changeToOrganization(Donee donee) {
-        Organization organizationDonee = new Organization(donee.getId(), donee.getName(), donee.getLocation());
+        DoneeOrganization organizationDonee = new DoneeOrganization(donee.getId(), donee.getName(), donee.getLocation());
         return organizationDonee;
     }
 }

@@ -8,16 +8,14 @@ package entity;
  *
  * @author Christopher Yap Jian Xing
  */
+public class DoneeIndividual extends Donee {
 
-public class Family extends Donee {
-    
-    public Family(String id, String name, String location) {
+    public DoneeIndividual(String id, String name, String location) {
         super(id, name, location);
     }
 
     @Override
     public String getType() {
-        return "Family";
+        return "Individual";
     }
-    
 }

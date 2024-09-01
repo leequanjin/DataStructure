@@ -16,8 +16,10 @@ import java.time.format.DateTimeFormatter;
  * @author Christopher Yap Jian Xing
  * @param <T>
  */
-public class DoneeLinkedList<T extends Donee> extends LinkedList<T> {
 
+public class DoneeLinkedList<T extends Donee> extends LinkedList<T> implements DoneeLinkedListInterface<T> {
+
+    @Override
     public String generateDoneeId() {
         String prefix = "DNE";
         int maxId = 0;
@@ -36,6 +38,7 @@ public class DoneeLinkedList<T extends Donee> extends LinkedList<T> {
         return prefix + String.format("%05d", maxId + 1);
     }
 
+    @Override
     public void changeStatus(String id, String status) {
         if (head == null) {
             // Empty list
@@ -58,6 +61,7 @@ public class DoneeLinkedList<T extends Donee> extends LinkedList<T> {
     }
 
     // Method to delete data by ID
+    @Override
     public void deleteById(String id) {
         if (head == null) {
             // Empty list
@@ -80,6 +84,7 @@ public class DoneeLinkedList<T extends Donee> extends LinkedList<T> {
     }
 
     // Method to find and return a donee by ID
+    @Override
     public Donee findById(String id) {
         Node<T> current = head; // Start from the head of the list
 
@@ -92,6 +97,7 @@ public class DoneeLinkedList<T extends Donee> extends LinkedList<T> {
         return null; // Donor not found
     }
 
+    @Override
     public LinkedList<DoneePeriodCount> generateTotalDoneeByYear() {
         LinkedList<DoneePeriodCount> doneesEachYear = new LinkedList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy");
@@ -128,6 +134,7 @@ public class DoneeLinkedList<T extends Donee> extends LinkedList<T> {
         return doneesEachYear;
     }
 
+    @Override
     public LinkedList<DoneePeriodCount> generateTotalDoneeByMonth() {
         LinkedList<DoneePeriodCount> doneesEachMonth = new LinkedList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM");
@@ -163,6 +170,7 @@ public class DoneeLinkedList<T extends Donee> extends LinkedList<T> {
         return doneesEachMonth;
     }
 
+    @Override
     public DoneeStateCount generateTotalDoneeByState() {
 
         Node<T> current = head;
