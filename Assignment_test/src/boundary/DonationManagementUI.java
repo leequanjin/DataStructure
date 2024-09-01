@@ -6,31 +6,11 @@ package boundary;
 
 import DonationManagementSubsystem.*;
 import adt.Node;
-import adt.LinkedList;
 import adt.LinkedListInterface;
 
 import DonorSubsystem.Donor;
-import DonorSubsystem.ManageDonors;
-import DonorSubsystem.Individual;
-import DonorSubsystem.Organization;
 
-import DonationList.Item;
-import DonationList.Money;
-import DonationList.Bank;
-import DonationList.Cash;
-import DonationList.PhysicalItem;
-import DonationList.Food;
-import DonationList.BakedGoods;
-import DonationList.BoxedGoods;
-import DonationList.CannedFood;
-import DonationList.DryGoods;
-import DonationList.Essentials;
-import DonationList.Apparel;
-import DonationList.Jacket;
-import DonationList.Pant;
-import DonationList.Shirt;
-import DonationList.Shoes;
-import DonationList.Socks;
+import entity.DonationManagement.Item;
 
 /**
  *
@@ -599,6 +579,7 @@ public class DonationManagementUI {
         
     public static int inputDisAvailability(){
         System.out.println("Item availability");
+        System.out.println("Remarks: all money availability is \" Unavailable \".");
         String[] filterMenu = {"Available Item only", "Unavailable Item only"};
         return DMControl.menuIntReturn(filterMenu);
     }
