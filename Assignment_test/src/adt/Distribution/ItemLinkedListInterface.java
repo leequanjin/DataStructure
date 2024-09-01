@@ -4,7 +4,7 @@
  */
 package adt.Distribution;
 
-import DonationList.Item;
+import entity.DonationManagement.Item;
 import adt.LinkedListInterface;
 
 /**

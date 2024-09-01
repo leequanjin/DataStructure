@@ -6,7 +6,7 @@ package adt.Distribution;
 
 import adt.LinkedList;
 import adt.Node;
-import DonationList.Item;
+import entity.DonationManagement.Item;
 import java.io.Serializable;
 
 /**
