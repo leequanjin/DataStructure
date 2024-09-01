@@ -387,6 +387,8 @@ public class VolunteerManagement {
     // Add new Volunteer
     // -----------------
     public static void addVolunteer() {
+        VolunteerUI.disAddVolunteer();
+        
         // ID
         String id = VolunteerManagement.idGenerator("VL");
 
