@@ -264,6 +264,21 @@ public class LinkedList<T> implements LinkedListInterface<T>, Serializable {
 
         return filteredList;
     }
+    
+    @Override
+    public LinkedListInterface<T> filterByCategoryIntoLinkedListInterface(Class<T> categoryClass) {
+        LinkedListInterface<T> filteredList = new LinkedList<>();
+        Node current = head;
+
+        while (current != null) {
+            if (categoryClass.isInstance(current.data)) {
+                filteredList.insert(categoryClass.cast(current.data));
+            }
+            current = current.next;
+        }
+
+        return filteredList;
+    }
 
     // Method to replace an element
     @Override

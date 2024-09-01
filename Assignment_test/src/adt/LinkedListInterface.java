@@ -53,6 +53,8 @@ public interface LinkedListInterface<T> {
     // Method to return a filtered linked list
     LinkedList<T> filterByCategory(Class<T> categoryClass);
     
+    LinkedListInterface<T> filterByCategoryIntoLinkedListInterface(Class<T> categoryClass);
+    
     // Method to replace an element
     void replace(T oldEntry, T newEntry);
 
