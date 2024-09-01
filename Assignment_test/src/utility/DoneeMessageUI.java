@@ -15,10 +15,6 @@ public class DoneeMessageUI {
     static String Green = "\u001b[32;2m";
     static String Reset = "\u001b[0m";
 
-    public boolean isEmpty(String string) {
-        return string == null;
-    }
-
     public void displayInvalidChoiceMessage() {
         System.out.println(Red + "Invalid option, please try again." + Reset);
     }
