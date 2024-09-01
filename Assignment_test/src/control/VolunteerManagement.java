@@ -299,7 +299,7 @@ public class VolunteerManagement {
                     VUtility.createFileFail(fileList[i]);
                 }
             } else{
-                VUtility.fileExist(fileList[i]);
+                //VUtility.fileExist(fileList[i]);
             }
         }
         

@@ -10,27 +10,27 @@ import adt.LinkedList;
 import adt.LinkedListInterface;
 
 import DonorSubsystem.Donor;
-import DonorSubsystem.ManageDonors;
 import DonorSubsystem.Individual;
 import DonorSubsystem.Organization;
 
-import DonationList.Item;
-import DonationList.Money;
-import DonationList.Bank;
-import DonationList.Cash;
-import DonationList.PhysicalItem;
-import DonationList.Food;
-import DonationList.BakedGoods;
-import DonationList.BoxedGoods;
-import DonationList.CannedFood;
-import DonationList.DryGoods;
-import DonationList.Essentials;
-import DonationList.Apparel;
-import DonationList.Jacket;
-import DonationList.Pant;
-import DonationList.Shirt;
-import DonationList.Shoes;
-import DonationList.Socks;
+import entity.DonationManagement.Item;
+import entity.DonationManagement.Money;
+import entity.DonationManagement.Bank;
+import entity.DonationManagement.Cash;
+import entity.DonationManagement.PhysicalItem;
+import entity.DonationManagement.Food;
+import entity.DonationManagement.BakedGoods;
+import entity.DonationManagement.BoxedGoods;
+import entity.DonationManagement.CannedFood;
+import entity.DonationManagement.DryGoods;
+import entity.DonationManagement.Essentials;
+import entity.DonationManagement.Apparel;
+import entity.DonationManagement.Jacket;
+import entity.DonationManagement.Pant;
+import entity.DonationManagement.Shirt;
+import entity.DonationManagement.Shoes;
+import entity.DonationManagement.Socks;
+import entity.DonationManagement.TotalMoney;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -57,6 +57,7 @@ public class DonationManagement {
     private static final String SHIRT_PATH = "shirt.txt";
     private static final String SHOES_PATH = "shoes.txt";
     private static final String SOCKS_PATH = "socks.txt";
+    private static final String TOTAL_PATH = "totalMoney.txt";
     
     public static Scanner scan = new Scanner(System.in);
     
@@ -123,7 +124,8 @@ public class DonationManagement {
             BANK_PATH, CASH_PATH, BAKED_PATH, 
             BOXED_PATH, CANNED_PATH, DRY_PATH, 
             ESS_PATH, JACKET_PATH, PANT_PATH, 
-            SHIRT_PATH, SHOES_PATH, SOCKS_PATH};
+            SHIRT_PATH, SHOES_PATH, SOCKS_PATH, 
+            TOTAL_PATH};
         chkFileExist(fileList);
     }
     
@@ -141,7 +143,7 @@ public class DonationManagement {
                     DMUtility.createFileFail(fileList[i]);
                 }
             } else{
-                DMUtility.fileExist(fileList[i]);
+                //DMUtility.fileExist(fileList[i]);
             }
         }
         
@@ -783,6 +785,7 @@ public class DonationManagement {
             String id = idGenerator("MB", list);
             
             Bank tempBank = new Bank(id, dID, amt, bankName);
+            tempBank.setAvailability("Unavailable");
             list.insert(tempBank);
             list.saveToFile(BANK_PATH);
             
@@ -795,9 +798,11 @@ public class DonationManagement {
             String id = idGenerator("MC", list);
             
             Cash tempCash = new Cash(id, dID, amt);
+            tempCash.setAvailability("Unavailable");
             list.insert(tempCash);
             list.saveToFile(CASH_PATH);
             
+            addTotalCash(tempCash);
             newItemList.insert(tempCash);
         }
         
@@ -875,6 +880,11 @@ public class DonationManagement {
         }
         
         return bankName;
+    }
+    
+    public static void addTotalCash(Cash cash){
+        LinkedListInterface<TotalMoney> list = new LinkedList<>();
+        list.loadFromFile(TOTAL_PATH);
     }
     
     public static void inputFood(LinkedListInterface<Item> newItemList, String dID){
@@ -1714,8 +1724,11 @@ public class DonationManagement {
                 donationManagementMainMenu();
             }
         }else{
-            
-            printSameTable(filePath, true);
+            if(filePath.equals(CASH_PATH) || filePath.equals(BANK_PATH)){
+                printSameTable(filePath, false);
+            }else{
+                printSameTable(filePath, true);
+            }
             DMUI.remItemHeader();
             DMUI.inputItemID();
             String inputID = null;
@@ -1735,7 +1748,11 @@ public class DonationManagement {
                 deleteById(inputID, list);
 
                 list.saveToFile(filePath);
-                printSameTable(filePath, true);
+                if (filePath.equals(CASH_PATH) || filePath.equals(BANK_PATH)) {
+                    printSameTable(filePath, false);
+                } else {
+                    printSameTable(filePath, true);
+                }
             }else{
                 DMUtility.itemNoExist();
             }
