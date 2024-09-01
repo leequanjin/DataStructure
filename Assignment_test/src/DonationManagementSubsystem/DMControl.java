@@ -57,9 +57,6 @@ public class DMControl {
     private static final String SHOES_PATH = "shoes.txt";
     private static final String SOCKS_PATH = "socks.txt";
     
-    private static final LinkedListInterface<Item> ITEM_LIST = new LinkedList<>();
-    private static final LinkedListInterface<Donor> DONOR_LIST = new LinkedList<>();
-    
     public static Scanner scan = new Scanner(System.in);
     
     public static void main(String[] args) {
@@ -74,8 +71,6 @@ public class DMControl {
         boolean contDM = true;
         
         while(contDM == true){
-            clearAllList();
-            loadAllList();
             int dmChoice = DMUI.donationManagementMainMenu();
             switch (dmChoice) {
                 case 1:
@@ -119,28 +114,6 @@ public class DMControl {
         }
     }
     
-    public static void clearAllList(){
-        DONOR_LIST.clear();
-        ITEM_LIST.clear();
-    }
-    
-    public static void loadAllList(){
-        DONOR_LIST.loadFromFile(DONOR_PATH);
-        loadAllItemIntoList();
-    }
-    
-    public static void loadAllItemIntoList(){
-        String[] appendList = {BANK_PATH, CASH_PATH, JACKET_PATH, PANT_PATH, SHIRT_PATH, SHOES_PATH, SOCKS_PATH, BAKED_PATH, BOXED_PATH, CANNED_PATH, DRY_PATH, ESS_PATH};
-
-        ITEM_LIST.loadFromFile(appendList[0]);
-
-        for (int i = 1; i < appendList.length; i++) {
-            LinkedList<Item> currentList = new LinkedList<>();
-            currentList.loadFromFile(appendList[i]);
-            ITEM_LIST.appendList(currentList);
-        }
-    }
-    
     // ----------------
     // Common Use Part  
     // ----------------
@@ -171,6 +144,35 @@ public class DMControl {
             }
         }
         
+    }
+    
+    public static LinkedListInterface<Item> loadAllItemIntoList(){
+        String[] appendList = {BANK_PATH, CASH_PATH, JACKET_PATH, PANT_PATH, SHIRT_PATH, SHOES_PATH, SOCKS_PATH, BAKED_PATH, BOXED_PATH, CANNED_PATH, DRY_PATH, ESS_PATH};
+
+        LinkedListInterface<Item> list = new LinkedList<>();
+        list.loadFromFile(appendList[0]);
+
+        for (int i = 1; i < appendList.length; i++) {
+            LinkedList<Item> currentList = new LinkedList<>();
+            currentList.loadFromFile(appendList[i]);
+            list.appendList(currentList);
+        }
+        
+        return list;
+    }
+    
+    public static LinkedListInterface<Food> loadAllFoodIntoList(){
+        String[] foodFile = {BAKED_PATH, BOXED_PATH, CANNED_PATH, DRY_PATH, ESS_PATH}; 
+        
+        LinkedListInterface<Food> list = new LinkedList<>();
+        list.loadFromFile(foodFile[0]);
+        for(int i = 1; i < foodFile.length; i++){
+            LinkedList tempFoodList = new LinkedList<>();
+            tempFoodList.loadFromFile(foodFile[i]);
+            list.appendList(tempFoodList);
+        }
+        
+        return list;
     }
 
     // Validation
@@ -340,11 +342,11 @@ public class DMControl {
         }
     }
         
-    public static String idGenerator(String ab){
+    public static<T> String idGenerator(String ab, LinkedListInterface<Item> list){
         
         int maxId = 0;
 
-        Node<Item> current = ITEM_LIST.getHead(); 
+        Node<Item> current = list.getHead(); 
 
         while (current != null) {
             String currentId = current.data.getId().substring(2,7);
@@ -366,34 +368,9 @@ public class DMControl {
         }
     }
     
-    public static void deleteById(String id) {
-        if (ITEM_LIST.getHead() == null) {
-            System.out.println(RED + "\nEmpty list. No such item in stock." + RESET);
-        } else if (list.head.data.getId().equals(id)) {
-            // First id match
-            list.head = list.head.next;
-
-            System.out.println(GREEN + "Item remove successfully." + RESET);
-            return;
-        } else {
-            Node<Item> currentNode = list.head;
-
-            while (currentNode != null) {
-
-                if (currentNode.next.data.getId().equals(id)) {
-                    currentNode.next = currentNode.next.next;
-                    System.out.println(GREEN + "Item remove successfully." + RESET);
-                    return;
-                } 
-                currentNode = currentNode.next;
-            }
-             
-            System.out.println(RED + "\nItem ID does not exist." + RESET);
-        }
-    }
-    
-    public static Item findById(LinkedList<Item> list, String id) {
-        Node<Item> current = list.head;
+    public static Item findByID(String id, LinkedListInterface<Item> list) {
+        id = id.substring(0, 2).toUpperCase() + id.substring(2, 7);
+        Node<Item> current = list.getHead();
 
         while (current != null) {
             if (current.data.getId().equals(id)) {
@@ -404,108 +381,34 @@ public class DMControl {
             return null;
     }
     
-    public static boolean searchingIdValidation(String inputID){
+    public static boolean itemIDValidation(String inputID){
         boolean validID = false;
         
         if (inputID.isEmpty()) {
-            System.out.println(RED + "Cannot leave blank." + RESET);
-            System.out.print("\nEnter again: ");
+            DMUtility.emptyInputErrorMsg();
         } else {
             if (inputID.length() != 7) {
-                System.out.println(RED + "Invalid length. The length should be 7 and format AA00000." + RESET);
-                System.out.print("\nEnter again: ");
+                DMUtility.invalidLength();
             } else {
                 inputID = inputID.substring(0, 2).toUpperCase() + inputID.substring(2, 7);
 
                 String prefix = inputID.substring(0, 2).toUpperCase();
-                boolean validPrefix = false;
                 if(prefix.equals("MB") || prefix.equals("MC") || prefix.equals("FA") ||
                 prefix.equals("FO") || prefix.equals("FC") || prefix.equals("FD") ||
                 prefix.equals("FE") || prefix.equals("AJ") || prefix.equals("AP") ||
                 prefix.equals("AI") || prefix.equals("AO") || prefix.equals("AS") ){
-                    validPrefix = true;
-                }
-
-                if (!validPrefix) {
-                    System.out.println(RED + "Invalid format. The format should be AA00000." + RESET);
-                    System.out.print("\nEnter again: ");
-                } else {
-                    String filePath = null;
-
-                    switch (prefix) {
-                        case "MB":
-                            filePath = BANK_PATH;
-                            break;
-                        case "MC":
-                            filePath = CASH_PATH;
-                            break;
-                        case "FA":
-                            filePath = BAKED_PATH;
-                            break;
-                        case "FO":
-                            filePath = BOXED_PATH;
-                            break;
-                        case "FC":
-                            filePath = CANNED_PATH;
-                            break;
-                        case "FD":
-                            filePath = DRY_PATH;
-                            break;
-                        case "FE":
-                            filePath = ESS_PATH; 
-                            break;
-                        case "AJ":
-                            filePath = JACKET_PATH;
-                            break;
-                        case "AP":
-                            filePath = PANT_PATH;
-                            break;
-                        case "AI":
-                            filePath = SHIRT_PATH;
-                            break;
-                        case "AO":
-                            filePath = SHOES_PATH;
-                            break;
-                        case "AS":
-                            filePath = SOCKS_PATH;
-                            break;
-                        default:
-                            System.out.println(RED + "Invalid ID." + RESET);
-                            break;
-                    }
-
-                    // valid format, check if this id exists, show it if yes
-                    if (filePath != null) {
-                        LinkedList<Item> list = new LinkedList<>();
-                        list.loadFromFile(filePath);
-                        Item item = searchByID(list, inputID);
-                        if (item != null) {
-                            // show that particular item
-                            System.out.println("\nItem Details: ");
-                            printSpecificItem(item);
-                            validID = true; 
-                        } else {
-                            System.out.println(RED + "Item does not exist or had been deleted." + RESET);
-                            System.out.print("\nEnter again: ");
-                        }
-                    }
+                    validID = true;
+                }else{
+                    DMUtility.invalidIDFormat("AA");
                 }
             }
         }
-        return validID;
-    }
-    
-    public static LinkedList<Food> loadAllFoodToList(){
-        String[] foodFile = {BAKED_PATH, BOXED_PATH, CANNED_PATH, DRY_PATH, ESS_PATH}; 
-        LinkedList<Food> foodList = new LinkedList<>();
-        foodList.loadFromFile(foodFile[0]);
-        for(int i = 1; i < foodFile.length; i++){
-            LinkedList tempFoodList = new LinkedList<>();
-            tempFoodList.loadFromFile(foodFile[i]);
-            foodList.appendList(tempFoodList);
+                
+        if(!validID){
+            DMUI.reEnter();
         }
         
-        return foodList;
+        return validID;
     }
     
     public static void printEachTable(LinkedListInterface<Item> list){
@@ -539,6 +442,7 @@ public class DMControl {
                 }
             }
             
+            DMUI.breakLine();
             DMUI.printNode(currentNode);
             
             count++;
@@ -547,64 +451,71 @@ public class DMControl {
         }
     }    
     
-    public static void printSameTable(String filePath){
-        LinkedList<Item> list = new LinkedList<>();
+    public static void printSameTable(String filePath, boolean availableOnly){
+        LinkedListInterface<Item> list = new LinkedList<>();
         list.loadFromFile(filePath);
-    
+        
+        if(availableOnly){
+            list.removeIf(item -> item.getAvailability().equals("Unavailable"));
+        }
+        
         list.removeEmptyData();
         
         if(list.isEmpty()){
-            System.out.println(RED + "\nEmpty list. No such item in stock." + RESET);
+            DMUtility.noSuchItem();
             return;
         }
         
         printListToTable(list);
     }
     
-    public static void printListToTable(LinkedList<Item> list){
-        Node<Item> currentNode = list.head;
+    public static void printListToTable(LinkedListInterface<Item> list){
+        Node<Item> currentNode = list.getHead();
         
-        headerIdentifier(currentNode);
-        
-        System.out.println();
-        int stop = 0;
+        int stop = 1;
         int pageNum = 1;
+        
+        DMUI.startOfPage(pageNum);
+        headerIdentifier(currentNode);
+        DMUI.breakLine();
         while(currentNode != null){
-            System.out.println(currentNode.data.toString());
-            stop++;
+            DMUI.printNode(currentNode);
             
             if(stop == 50){
-                System.out.println(BLUE +"- END OF PAGE " + pageNum + " -" + RESET);
-                boolean cont = YN("50 records of current table had been shown. Do you want to continue shown more?");
+                DMUI.endOfPage(pageNum);
+                boolean cont = YN(DMUI.showMorePgQ());
                 if (cont){
                     pageNum++;
-                    System.out.println(BLUE +"\n- PAGE " + pageNum + " -" + RESET);
+                    DMUI.startOfPage(pageNum);
                     headerIdentifier(currentNode);
+                    DMUI.breakLine();
                     stop = 0;
                 }else{
                     return;
                 }
             }
+            
+            stop++;
             currentNode = currentNode.next;
         }
     }
     
     public static void headerIdentifier(Node<Item> currentNode){
-        System.out.printf("\n| %-10s | %-10s | %-15s | %-15s |", "Item ID", "Donor ID", "Item Category", "Availability");
+        DMUI.commonItemHeader();
         if(currentNode.data instanceof Money){
-            System.out.printf(" %-14s |", "Amount Donated");
+            DMUI.commonMoneyHeader();
             if (currentNode.data instanceof Bank){
-                System.out.printf(" %-15s |", "Bank Name");
+                DMUI.bankHeader();
             }
         }else {
         
-            System.out.printf(" %-20s |", "Remarks");
+            DMUI.commonPhyItemHeader();
             if (currentNode.data instanceof Food){
-                System.out.printf(" %-10s | %-8s | %-8s | %-15s |", "Expiry Date", "Weight", "Status", "Food Type");
+                DMUI.commonFoodHeader();
             }else{ // Apparel
-                System.out.printf(" %-10s | %-10s | %-10s | %-10s |", "Size", "Color", "Condition", "Brand");
+                DMUI.commonAppHeader();
                 if (currentNode.data instanceof Shoes){
-                    System.out.printf(" %-15s |", "Shoes Type");
+                    DMUI.commonShoeHeader();
                 }
             }
         }
@@ -613,55 +524,60 @@ public class DMControl {
     public static void printSpecificItem(Item item){
         
         if (item == null){
-            System.out.println(RED + "Item does not exist." + RESET);
+            DMUtility.noSuchItem();
+            return;
         }
         
-        System.out.printf("| %-10s | %-10s | %-15s | %-15s |", "Item ID", "Donor ID", "Item Category", "Availability");
+        DMUI.commonItemHeader();
         if(item instanceof Money){
-            System.out.printf(" %-14s |", "Amount Donated");
+            DMUI.commonMoneyHeader();
             if (item instanceof Bank){
-                System.out.printf(" %-15s |", "Bank Name");
+                DMUI.bankHeader();
             }
         }else {
-
-            System.out.printf(" %-20s |", "Remarks");
+        
+            DMUI.commonPhyItemHeader();
             if (item instanceof Food){
-                System.out.printf(" %-10s | %-8s | %-8s | %-15s |", "Expiry Date", "Weight", "Status", "Food Type");
+                DMUI.commonFoodHeader();
             }else{ // Apparel
-                System.out.printf(" %-10s | %-10s | %-10s | %-10s |", "Size", "Color", "Condition", "Brand");
+                DMUI.commonAppHeader();
                 if (item instanceof Shoes){
-                    System.out.printf(" %-15s |", "Shoes Type");
+                    DMUI.commonShoeHeader();
                 }
             }
         }
 
-        System.out.println("\n" + item.toString());
+        DMUI.printItem(item);
     }
     
     // -------------------------
     // Part 1: Add new donation
     // -------------------------
     public static void addDonation(){
+        LinkedListInterface<Donor> donorList = new LinkedList<>();
+        donorList.loadFromFile(DONOR_PATH);
         boolean contAddDonation = true;
         while(contAddDonation){
             
-            if(DONOR_LIST.isEmpty()){
+            if(donorList.isEmpty()){
                 DMUtility.noDonorInList();
                 DMUtility.addFunctionDown();
                 return;
             }
+                
+            DMUI.addDonation(donorList);
             
-            DMUI.addDonation();
+            DMUI.inputDonorID();
             String dID;
             boolean contInputID = false;
             do{
-                dID = inputDonorValidation();
+                dID = donorIdValidation();
                 
-                boolean validDonor = chkDonorExist(dID);
+                boolean validDonor = chkDonorExist(dID, donorList);
                 
                 // if exist, show current data 
                 if(validDonor == true){
-                    DMUI.disTempDonorData(DONOR_LIST);
+                    DMUI.disTempDonorData(donorList);
                 }else{ // if does not exist, enter other
                     DMUtility.donorNoExist();
                     int selectionToCont = DMUI.donorNoExistSelection();
@@ -680,13 +596,13 @@ public class DMControl {
 
                 addItem(dID);
 
-                contAddItem = YN("Do you want to continue add item for the same donor?");
+                contAddItem = YN(DMUI.contAddItemForSameDonor());
                 if (contAddItem == false){
                     break;
                 }
             }
 
-            contAddDonation = YN("Do you want to continue adding another donation for other donor?");
+            contAddDonation = YN(DMUI.contAddItemForDissDonor());
             if(contAddDonation == true){
                 DMUI.breakLine();
             } 
@@ -694,15 +610,8 @@ public class DMControl {
         
     }
     
-    public static String inputDonorValidation(){
-        DMUI.inputDonorID();
-        String id = donorIdValidation();
-        
-        return id;
-    }
-    
     public static boolean donorIdFormat(String id){
-        if ( (id.substring(0, 2).toUpperCase().equalsIgnoreCase("DNR")) && (id.length() == 8) ){
+        if ( (id.substring(0, 3).toUpperCase().equalsIgnoreCase("DNR")) && (id.length() == 8) ){
             return true;
         }else{
             return false;
@@ -743,11 +652,11 @@ public class DMControl {
         return id.substring(0, 3).toUpperCase() + id.substring(3, 8);
     }
     
-    public static boolean chkDonorExist(String dID){
+    public static boolean chkDonorExist(String dID, LinkedListInterface<Donor> donorList){
         
-        if (!DONOR_LIST.isEmpty()){
+        if (!donorList.isEmpty()){
             
-            Node<Donor> current = DONOR_LIST.getHead();
+            Node<Donor> current = donorList.getHead();
         
             while (current != null) {
                 Donor donor = current.data;
@@ -793,10 +702,10 @@ public class DMControl {
                     inputMoney(newItemList, itemCat, dID);
                     break;
                 case 3:
-                    //inputFood(newItemList, dID);
+                    inputFood(newItemList, dID);
                     break;
                 case 4:
-                    //inputApparel(newItemList, dID);
+                    inputApparel(newItemList, dID);
                     break;
                 default:
                     DMUtility.invalidMenuSelection();
@@ -817,13 +726,12 @@ public class DMControl {
         DMUI.inputAmtDonated();
         double amt = amountValidation();
         
+        LinkedListInterface<Item> list = new LinkedList<>();
         if (itemCat == 1){
         
             // bank name
             String bankName = bankTypeValidation();
 
-            
-            LinkedList<Item> list = new LinkedList();
             list.loadFromFile(BANK_PATH);
         
             // id
@@ -836,7 +744,6 @@ public class DMControl {
             newItemList.insert(tempBank);
         
         }else{
-            LinkedList<Item> list = new LinkedList();
             list.loadFromFile(CASH_PATH);
             
             // id
@@ -852,15 +759,14 @@ public class DMControl {
     }
     
     public static double amountValidation(){
-        DMUI.inputAmtDonated();
+        
         double amt = 0;
         boolean validAmt = false;
         while(validAmt == false){
             String SAmt = scan.nextLine();
             if(SAmt.isEmpty()){
 
-                System.out.println(RED + "Cannot leave blank.\n" + RESET);
-                System.out.print("Enter again: ");
+                DMUtility.emptyInputErrorMsg();
 
             }else{
                 try {
@@ -868,8 +774,7 @@ public class DMControl {
 
                     if (amt <= 0) {
                         
-                        System.out.println(RED + "Invalid amount. Donated amount could not be 0.\n" + RESET);
-                        System.out.print("Enter again: ");
+                        DMUtility.invalidAmt();
 
                     } else {
                         validAmt = true; 
@@ -877,27 +782,20 @@ public class DMControl {
 
                 } catch (NumberFormatException e) {
 
-                    System.out.println(RED + "Invalid input. Please enter correct amount.\n" + RESET);
-                    System.out.print("Enter again: ");
+                    DMUtility.invalidInputType("amount");
 
                 }
+            }
+            
+            if (!validAmt){
+                DMUI.reEnter();
             }
         }
         return amt;
     }
     
     public static String bankTypeValidation(){
-        System.out.println("\nBank Type");
-        String[] bankTypeMenu = {
-            "Affin Bank", 
-            "Alliance Bank", 
-            "AmBank", 
-            "CIMB", 
-            "Hong Leong Bank", 
-            "May Bank", 
-            "Public Bank", 
-            "RHB Bank"};
-        int bankType = menuIntReturn(bankTypeMenu);
+        int bankType = DMUI.inputBankMenu();
 
         String bankName = null;
         switch(bankType){
@@ -926,36 +824,36 @@ public class DMControl {
                 bankName = "RHB Bank";
                 break;
             default:
-                System.out.println(RED + "Invalid bank name.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
         }
         
         return bankName;
     }
     
-    public static void inputFood(LinkedList<Item> newItemList, String dID){
+    public static void inputFood(LinkedListInterface<Item> newItemList, String dID){
         
         // food category
-        int foodCat = foodCatValidation();
+        int foodCat = DMUI.inputFoodCat();
         
         switch(foodCat){
-            case 1: 
-                System.out.println("\nBaked Goods");
+            case 1:
+                DMUI.inputBAHeader();
                 break;
             case 2:
-                System.out.println("\nBoxed Goods");
+                DMUI.inputBOHeader();
                 break;
             case 3:
-                System.out.println("\nCanned Food");
+                DMUI.inputCHeader();
                 break;
             case 4:
-                System.out.println("\nDry Goods");
+                DMUI.inputDHeader();
                 break;
             case 5:
-                System.out.println("\nEssentials");
+                DMUI.inputEHeader();
                 break;
             default:
-                System.out.println(RED + "Invalid food category.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
         }
         
@@ -963,40 +861,29 @@ public class DMControl {
         
     }
     
-    public static int foodCatValidation(){
-        System.out.println("\nFood Category");
-        String[] foodCatMenu = {
-            "Baked Goods", 
-            "Boxed Goods", 
-            "Canned Food", 
-            "Dry Goods", 
-            "Essentials"};
-        return menuIntReturn(foodCatMenu);
-    }
-    
-    public static void inputApparel(LinkedList<Item> newItemList, String dID){
+    public static void inputApparel(LinkedListInterface<Item> newItemList, String dID){
         
         // apparel category
-        int appCat = appCatValidation();
+        int appCat = DMUI.inputAppCat();
         
         switch(appCat){
             case 1: 
-                System.out.println("\nJacket");
+                DMUI.inputJHeader();
                 break;
             case 2:
-                System.out.println("\nPant");
+                DMUI.inputPHeader();
                 break;
             case 3:
-                System.out.println("\nShirt");
+                DMUI.inputShirtHeader();
                 break;
             case 4:
-                System.out.println("\nShoes");
+                DMUI.inputShoesHeader();
                 break;
             case 5:
-                System.out.println("\nSocks");
+                DMUI.inputSockHeader();
                 break;
             default:
-                System.out.println(RED + "Invalid food category.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1004,30 +891,17 @@ public class DMControl {
         
     }
     
-    public static int appCatValidation(){
-        System.out.println("\nApparel Category");
-        String[] appCatMenu = {
-            "Jacket", 
-            "Pant", 
-            "Shirt", 
-            "Shoes", 
-            "Socks"};
-        return menuIntReturn(appCatMenu);
-    }
-    
-    public static void commonItemInput(LinkedList<Item> newItemList, int detailCat, int itemCat, String dID){
+    public static void commonItemInput(LinkedListInterface<Item> newItemList, int detailCat, int itemCat, String dID){
         
-        Scanner scan = new Scanner(System.in);
-        
-        System.out.println("Item with '*' is compulsary to be enter.");
+        DMUI.mustEnterMsg();
         
         // quantity
         int qty = qtyValidation();
         
         //note
-        System.out.print("\nRemarks: ");
-        String note = scan.nextLine();
-        if (note.trim().isEmpty()){
+        DMUI.inputRemark();
+        String note = scan.nextLine().trim();
+        if (note.isEmpty()){
             note = "None";
         }
         
@@ -1045,9 +919,8 @@ public class DMControl {
     }
     
     public static int qtyValidation(){
-        Scanner scan = new Scanner(System.in);
         
-        System.out.print("Quantity of same item*: ");
+        DMUI.inputQty();
         int qty = 0;
         boolean validQty = false;
         while(validQty == false){
@@ -1055,8 +928,7 @@ public class DMControl {
             
             if(qtyS.isEmpty()){
 
-                System.out.println(RED + "Cannot leave blank.\n" + RESET);
-                System.out.print("Enter again: ");
+                DMUtility.emptyInputErrorMsg();
 
             }else{
                 try {
@@ -1064,28 +936,31 @@ public class DMControl {
 
                     if (qty == 0) {
                         
-                        System.out.println(RED + "Quantity cannot be 0.\n" + RESET);
-                        System.out.print("Enter again: ");
-
+                        DMUtility.invalidQtyZ();
+                        
                     } else if(qty  < 0){
-                        System.out.println(RED + "Quantity cannot be negative.\n" + RESET);
-                        System.out.print("Enter again: ");
+                        
+                        DMUtility.invalidQtyNeg();
+                        
                     }else {
                         validQty = true; 
                     }
 
                 } catch (NumberFormatException e) {
 
-                    System.out.println(RED + "Invalid input. Please enter correct quantity.\n" + RESET);
-                    System.out.print("Enter again: ");
+                    DMUtility.invalidInputType("quantity");
 
                 }
+            }
+            
+            if(!validQty){
+                DMUI.reEnter();
             }
         }
         return qty;
     }
     
-    public static void commonFoodInput(LinkedList<Item> newItemList, int foodCat, int qty, String note, String dID){
+    public static void commonFoodInput(LinkedListInterface<Item> newItemList, int foodCat, int qty, String note, String dID){
         
         //expiryDate
         Date expiryDate = expiryDateValidation(newItemList, dID);
@@ -1096,7 +971,7 @@ public class DMControl {
         //status
         String foodStaName = foodStaValidation();
         
-        LinkedList<Item> list = new LinkedList();
+        LinkedListInterface<Item> list = new LinkedList();
         String id = null;
         switch(foodCat){
             case 1: 
@@ -1188,26 +1063,24 @@ public class DMControl {
                 list.saveToFile(ESS_PATH);
                 break;
             default:
-                System.out.println(RED + "Invalid food category.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
         }
         
     }
     
-    public static Date expiryDateValidation(LinkedList<Item> newItemList, String dID){
-        Scanner scan = new Scanner(System.in);
+    public static Date expiryDateValidation(LinkedListInterface<Item> newItemList, String dID){
         
-        System.out.print("\nExpiry Date (dd/mm/yyyy)*: ");
+        DMUI.inputExpDate();
         Date expiryDate = null;
         boolean validExp = false;
         
         while(validExp == false){
-            String exp = scan.nextLine();
+            String exp = scan.nextLine().trim();
             
             if (exp.isEmpty()){
                 
-                System.out.println(RED + "Expiry date cannot leave blank.\n" + RESET);
-                System.out.print("Enter again: ");
+                DMUtility.emptyInputErrorMsg();
                 
             } else{
                 
@@ -1221,13 +1094,10 @@ public class DMControl {
                     Date today = new Date();
 
                     if (expiryDate.before(today)) {
-                        
-                        System.out.println(RED + "The food had expired.\n" + RESET);
-                        String[] menu = {"Enter again", "Discard"};
-                        int selection = menuIntReturn(menu);
+                        int selection = DMUI.inputExpAction();
                         
                         if(selection == 1){
-                            System.out.print("Enter date again: ");
+                            expiryDateValidation(newItemList, dID);
                         }else{
                             inputFood(newItemList, dID);
                         }
@@ -1237,10 +1107,13 @@ public class DMControl {
                     }
                     
                 } catch (ParseException e) {
-                    System.out.println(RED + "Invalid date format. Please enter the date in dd/MM/yyyy format.\n" + RESET);
-                    System.out.print("Enter date again: ");
+                    DMUtility.invalidDateFormat();
                 }
                 
+            }
+            
+            if(!validExp){
+                DMUI.reEnter();
             }
         }
         
@@ -1249,18 +1122,17 @@ public class DMControl {
     }
     
     public static int weightValidation(){
-        Scanner scan = new Scanner(System.in);
         
-        System.out.print("\nWeight(gram)*: ");
+        DMUI.inputWeight();
+        
         int w = 0;
         boolean validW = false;
         while(validW == false){
-            String wS = scan.nextLine();
+            String wS = scan.nextLine().trim();
             
             if(wS.isEmpty()){
 
-                System.out.println(RED + "Cannot leave blank.\n" + RESET);
-                System.out.print("Enter again: ");
+                DMUtility.emptyInputErrorMsg();
 
             }else{
                 try {
@@ -1268,11 +1140,9 @@ public class DMControl {
 
                     if (w == 0) {
                         
-                        System.out.println(RED + "Weight cannot be 0.\n" + RESET);
-                        System.out.print("Enter again: ");
+                        DMUtility.invalidWZ();
 
                     } else if(w  < 0){
-                        System.out.println(RED + "Weight cannot be negative.\n" + RESET);
                         System.out.print("Enter again: ");
                     }else {
                         validW = true;
@@ -1280,10 +1150,12 @@ public class DMControl {
 
                 } catch (NumberFormatException e) {
 
-                    System.out.println(RED + "Invalid input. Please enter correct weight.\n" + RESET);
-                    System.out.print("Enter again: ");
+                    DMUtility.invalidInputType("weight");
 
                 }
+            }
+            if(!validW){
+                DMUI.reEnter();
             }
         }
         
@@ -1292,9 +1164,7 @@ public class DMControl {
     
     public static String foodStaValidation(){
         
-        System.out.println("\nFood Status");
-        String[] foodStatusMenu = {"New (made within 1 weeks)", "Good"};
-        int foodSta = menuIntReturn(foodStatusMenu);
+        int foodSta = DMUI.inputFoodStatus();
         
         String foodStaName = null;
         switch(foodSta){
@@ -1305,7 +1175,7 @@ public class DMControl {
                 foodStaName = "Good";
                 break;
             default:
-                System.out.println(RED + "Invalid food status.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1315,9 +1185,7 @@ public class DMControl {
     public static String inputBaked() {
         
         // baked food type
-        System.out.println("\nBaked Food Type");
-        String[] bakedFoodMenu = {"Cookies", "Crackers"};
-        int type = menuIntReturn(bakedFoodMenu);
+        int type = DMUI.inputBakedT();
         
         String name = null;
         switch(type){
@@ -1328,7 +1196,7 @@ public class DMControl {
                 name = "Crackers";
                 break;
             default:
-                System.out.println(RED + "Invalid bank name.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1338,9 +1206,7 @@ public class DMControl {
     public static String inputBoxed(){
         
         // boxed food type
-        System.out.println("\nBoxed Food Type");
-        String[] boxedFoodMenu = {"Cereals", "Snacks"};
-        int type = menuIntReturn(boxedFoodMenu);
+        int type = DMUI.inputBoxedT();
         
         String name = null;
         switch(type){
@@ -1351,7 +1217,7 @@ public class DMControl {
                 name = "Snacks";
                 break;
             default:
-                System.out.println(RED + "Invalid bank name.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1359,21 +1225,9 @@ public class DMControl {
     }
     
     public static String inputCanned(){
-        Scanner scan = new Scanner(System.in);
         
         // canned food type
-        System.out.println("\nCanned Food Type");
-        String[] cannedFoodMenu = {
-                "Baked beans", 
-                "Chicken soup", 
-                "Corn", 
-                "Lychee", 
-                "Meat", 
-                "Mushroom soup", 
-                "Pineapple", 
-                "Tomatoes", 
-                "Tuna"};
-        int type = menuIntReturn(cannedFoodMenu);
+        int type = DMUI.inputCannedT();
         
         String name = null;
         switch(type){
@@ -1405,7 +1259,7 @@ public class DMControl {
                 name = "Tuna can";
                 break;
             default:
-                System.out.println(RED + "Invalid bank name.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1415,9 +1269,7 @@ public class DMControl {
     public static String inputDry(){
         
         // dry food type
-        System.out.println("\nDry Food Type");
-        String[] dryFoodMenu = {"Instant noodles", "Oats", "Pasta", "Rice"};
-        int type = menuIntReturn(dryFoodMenu);
+        int type = DMUI.inputDryT();
         
         String name = null;
         switch(type){
@@ -1434,7 +1286,7 @@ public class DMControl {
                 name = "Rice";
                 break;
             default:
-                System.out.println(RED + "Invalid bank name.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1444,9 +1296,7 @@ public class DMControl {
     public static String inputEss(){
         
         // essentials type
-        System.out.println("\nEssentials Type");
-        String[] essMenu = {"Oil", "Pepper", "Salt", "Sugar"};
-        int type = menuIntReturn(essMenu);
+        int type = DMUI.inputEssT();
         
         String name = null;
        
@@ -1464,14 +1314,14 @@ public class DMControl {
                 name = "Sugar";
                 break;
             default:
-                System.out.println(RED + "Invalid bank name.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
         }
         
         return name;
     }
     
-    public static void commonApparelInput(LinkedList<Item> newItemList, int appCat, int qty, String note, String dID){
+    public static void commonApparelInput(LinkedListInterface<Item> newItemList, int appCat, int qty, String note, String dID){
         //size
         String size;
         if(appCat == 4){
@@ -1490,7 +1340,7 @@ public class DMControl {
         String brand = brandValidation();
         
         LinkedList<Item> list = new LinkedList();
-        String id = null;
+        String id;
         switch(appCat){
             case 1: 
                 
@@ -1570,15 +1420,13 @@ public class DMControl {
                 list.saveToFile(SOCKS_PATH);
                 break;
             default:
-                System.out.println(RED + "Invalid apparel category.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
         }
     }
     
     public static String sizeValidation(){
-        System.out.println("\nApparel size");
-        String[] sizeMenu = {"XS", "S", "M", "L", "XL", "Free Size"};
-        int appSize = menuIntReturn(sizeMenu);
+        int appSize = DMUI.inputAppSize();
         
         String size = null;
         switch(appSize){
@@ -1601,7 +1449,7 @@ public class DMControl {
                 size = "Free Size";
                 break;
             default:
-                System.out.println(RED + "Invalid apparel size.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1609,38 +1457,17 @@ public class DMControl {
     }
     
     public static String shoesSizeValidation(){
-        Scanner scan = new Scanner(System.in);
         
-        System.out.print("\nApparel size (1 - 16): ");
+        DMUI.inputShoeSize();
         String sizeStr = null;
         boolean validSize = false;
         while(validSize == false){
-            sizeStr = scan.nextLine();
+            sizeStr = scan.nextLine().trim();
             
-            if(sizeStr.isEmpty()){
-
-                System.out.println(RED + "Cannot leave blank.\n" + RESET);
-                System.out.print("Enter again: ");
-
-            }else{
-                try {
-                    int size = Integer.parseInt(sizeStr);
-
-                    if (size < 1 || size > 16) {
-                        System.out.println(RED + "Invalid integer. Please enter between 1 to 16.\n" + RESET);
-
-                        System.out.print("Enter again: ");
-
-                    } else {
-                        validSize = true; 
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    System.out.println(RED + "Invalid input. Please enter correct integer.\n" + RESET);
-                    System.out.print("Enter again: ");
-
-                }
+            validSize = chkIntInputInRange(sizeStr, 1, 16);
+            
+            if(!validSize){
+                DMUI.reEnter();
             }
         }
         
@@ -1649,9 +1476,7 @@ public class DMControl {
     
     public static String colorValidation(){
         
-        System.out.println("\nApparel Color");
-        String[] appColorMenu = {"Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Silver", "White", "Black"};
-        int appColor = menuIntReturn(appColorMenu);
+        int appColor = DMUI.inputColor();
         
         String color = null;
         switch(appColor){
@@ -1683,7 +1508,7 @@ public class DMControl {
                 color = "Black";
                 break;
             default:
-                System.out.println(RED + "Invalid apparel color.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1692,9 +1517,7 @@ public class DMControl {
     
     public static String conditionValidation(){
         
-        System.out.println("\nApparel Condition");
-        String[] appConMenu = {"New", "Good", "Fair", "Poor"};
-        int appCon = menuIntReturn(appConMenu);
+        int appCon = DMUI.inputAppCon();
         
         String condition = null;
         switch(appCon){
@@ -1711,7 +1534,7 @@ public class DMControl {
                 condition = "Poor";
                 break;
             default:
-                System.out.println(RED + "Invalid apparel condition.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1719,9 +1542,7 @@ public class DMControl {
     }
     
     public static String brandValidation(){
-        System.out.println("\nApparel Brand");
-        String[] appBrandMenu = {"Adidas", "H & M", "Nike", "Puma", "Uniclo", "Others"};
-        int appBrand = menuIntReturn(appBrandMenu);
+        int appBrand = DMUI.inputAppBrand();
         
         String brand = null;
         switch(appBrand){
@@ -1744,7 +1565,7 @@ public class DMControl {
                 brand = "Others";
                 break;
             default:
-                System.out.println(RED + "Invalid apparel brand.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
         }
         
@@ -1753,9 +1574,7 @@ public class DMControl {
     
     public static String inputShoes(){
         
-        System.out.println("\nShoes Category");
-        String[] shoesMenu = {"Slipper", "Sport shoes"};
-        int s = menuIntReturn(shoesMenu);
+        int s = DMUI.inputShoesT();
         
         switch(s){
             case 1: 
@@ -1763,6 +1582,7 @@ public class DMControl {
             case 2:
                 return "Sport shoes";
             default:
+                DMUtility.invalidMenuSelection();
                 return "Unknown";
         }
     }
@@ -1771,9 +1591,7 @@ public class DMControl {
     // Part 2: Remove a donation
     // -------------------------
     public static void remDonation(){
-        System.out.println(BLUE + "\nItem to remove:" + RESET);
-        String[] itemRemoveMenu = {"Bank", "Cash", "Food", "Apparel"};
-        int itemRem = menuIntReturn(itemRemoveMenu);
+        int itemRem = DMUI.inputRemCat();
         
         switch(itemRem){
             case 1: 
@@ -1783,14 +1601,7 @@ public class DMControl {
                 remItem(CASH_PATH, "MC");
                 break;
             case 3:
-                System.out.println("\nFood Category");
-                String[] foodCatMenu = {
-                    "Baked Goods", 
-                    "Boxed Goods", 
-                    "Canned Food", 
-                    "Dry Goods", 
-                    "Essentials"};
-                int foodCat = menuIntReturn(foodCatMenu);
+                int foodCat = DMUI.inputFoodCat();
 
                 switch(foodCat){
                     case 1: 
@@ -1809,19 +1620,12 @@ public class DMControl {
                         remItem(ESS_PATH, "FE");
                         break;
                     default:
-                        System.out.println(RED + "Invalid food category.\n" + RESET);
+                        DMUtility.invalidMenuSelection();
                         break;
                 }
                 break;
             case 4:
-                System.out.println("\nApparel Category");
-                String[] appCatMenu = {
-                    "Jacket", 
-                    "Pant", 
-                    "Shirt", 
-                    "Shoes", 
-                    "Socks"};
-                int appCat = menuIntReturn(appCatMenu);
+                int appCat = DMUI.inputAppCat();
 
                 switch(appCat){
                     case 1: 
@@ -1840,179 +1644,201 @@ public class DMControl {
                         remItem(SOCKS_PATH, "AS");
                         break;
                     default:
-                        System.out.println(RED + "Invalid food category.\n" + RESET);
+                        DMUtility.invalidMenuSelection();
                         break;
                 }
                 break;
             default:
-                System.out.println(RED + "Invalid item to remove.\n" + RESET);
+                DMUtility.invalidMenuSelection();
                 break;
                 
         }
     }
     
     public static void remItem(String filePath, String id){
-        Scanner scan = new Scanner(System.in);
-        LinkedList<Item> sList = new LinkedList();
-        sList.loadFromFile(filePath);
+        LinkedListInterface<Item> list = new LinkedList();
+        list.loadFromFile(filePath);
             
-        if(sList.isEmpty()){
-            System.out.println(RED + "The list is empty, no item exist in file." + RESET);
-            boolean cont = YN("Do you want to continue remove other item?");
+        if(list.isEmpty()){
+            DMUtility.noSuchItem();
+            boolean cont = YN(DMUI.contRemoveQ());
             if (cont == true){
                 remDonation();
             }else{
                 donationManagementMainMenu();
             }
         }else{
-            sList.removeIf(item -> item.toString().trim().isEmpty()); // remove empty or space
             
-            printSameTable(filePath);
-            System.out.print("\nWhich item do you wish to remove?\n"
-                    + "Enter ID: ");
+            printSameTable(filePath, true);
+            DMUI.remItemHeader();
+            DMUI.inputItemID();
+            String inputID = null;
             boolean validID = false;
-            
-            while(validID == false){
-            
-                String inputID = scan.nextLine();
+            while (!validID) {
+                inputID = scan.nextLine();
 
-                if(inputID.isEmpty()){
-                    System.out.println(RED + "Cannot leave blank." + RESET);
-                    System.out.print("\nEnter again: ");
-                }else {
-
-                    if( inputID.length() != 7 ){
-                        System.out.println(RED + "Invalid length. The length should be 7 and format "+ id + "00000." + RESET);
-                        System.out.print("\nEnter again: ");
-                    } else{
-                        
-                        inputID = inputID.substring(0,2).toUpperCase() + inputID.substring(2, 7);
-                        if (!(id.equalsIgnoreCase(inputID.substring(0, 2)))){
-                            System.out.println(RED + "Invalid format. The format should be " + id + "00000." + RESET);
-                            System.out.print("\nEnter again: ");
-                        }else{
-                            // valid format, check if this id exist, remove if yes
-                            LinkedList<Item> list = new LinkedList();
-
-                            list.loadFromFile(filePath);
-                            validID = removeByID(list, inputID, filePath);
-                            if (validID == false){
-                                System.out.print("\nEnter again: ");
-                            }
-                        }
-                    }
-                }
+                validID = itemIDValidation(inputID);
+            }
             
+            inputID = inputID.substring(0, 2).toUpperCase() + inputID.substring(2, 7);
+            // valid format, check if this id exist, remove if yes
+            Item item = findByID(inputID, list);
+            if (item != null){
+                // item found
+                // delete from list
+                deleteById(inputID, list);
+
+                list.saveToFile(filePath);
+                printSameTable(filePath, true);
+            }else{
+                DMUtility.itemNoExist();
             }
         }
         
     }
-    
-    // make sure list available before enter function
-    public static boolean removeByID(LinkedList<Item> list, String id, String filePath){
-        Item item = findById(list, id);
-        if (item != null){
-            // item found
-            // delete from list
-            deleteById(list, id);
-            
-            list.saveToFile(filePath);
-            printSameTable(filePath);
-            return true;
-        }else{
-            System.out.println(RED + "Item does not exist." + RESET);
-        }
         
-        return false;
+    public static<T> void deleteById(String id, LinkedListInterface<Item> list) {
+        if (list.getHead() == null) {
+            
+            DMUtility.noSuchItem();
+            return;
+            
+        } else if (list.getHead().data.getId().equals(id)) {
+            // First id match
+            list.setHead(list.getHead().next);
+
+            DMUtility.itemRemove();
+            
+        } else {
+            Node<Item> currentNode = list.getHead();
+
+            while (currentNode != null) {
+
+                if (currentNode.next.data.getId().equals(id)) {
+                    currentNode.next = currentNode.next.next;
+                    DMUtility.itemRemove();
+                    return;
+                } 
+                currentNode = currentNode.next;
+            }
+             
+            DMUtility.itemRemoveFail();
+        }
     }
     
     // -------------------------------
     // Part 3: Search donation details
     // -------------------------------
     public static void searchDonation() {
-        Scanner scan = new Scanner(System.in);
-        System.out.println(BLUE + "\n - - - Search Donation Item by Item ID - - -" + RESET);
         
+        DMUI.searchIDHeader();
         boolean contSearch = true;
         while(contSearch){
-            System.out.print("Enter ID: ");
+            
+            DMUI.inputItemID();
+            
+            String inputID = null;
             boolean validID = false;
-
             while (!validID) {
-                String inputID = scan.nextLine();
+                inputID = scan.nextLine();
 
-                validID = searchingIdValidation(inputID);
+                validID = itemIDValidation(inputID);
             }
             
-            contSearch = YN("Do you want to search for another item ID?");
+            searchingID(inputID);
+            
+            contSearch = YN(DMUI.contSearchQ());
             if (contSearch){
                 System.out.println();
             }
         }
     }
     
-    // Binary search
-    public static Item searchByID(LinkedList<Item> list, String id) {
-        // Run data in linked list into array
-        Node<Item> currentNode = list.head;
-        Item[] itemArray = new Item[list.length()];
-        for (int i = 0; i < list.length(); i++) {
-            itemArray[i] = currentNode.data;
-            currentNode = currentNode.next;
+    public static void searchingID(String inputID){
+        
+        String prefix = inputID.substring(0, 2).toUpperCase();
+        String filePath = null;
+        switch (prefix) {
+            case "MB":
+                filePath = BANK_PATH;
+                break;
+            case "MC":
+                filePath = CASH_PATH;
+                break;
+            case "FA":
+                filePath = BAKED_PATH;
+                break;
+            case "FO":
+                filePath = BOXED_PATH;
+                break;
+            case "FC":
+                filePath = CANNED_PATH;
+                break;
+            case "FD":
+                filePath = DRY_PATH;
+                break;
+            case "FE":
+                filePath = ESS_PATH; 
+                break;
+            case "AJ":
+                filePath = JACKET_PATH;
+                break;
+            case "AP":
+                filePath = PANT_PATH;
+                break;
+            case "AI":
+                filePath = SHIRT_PATH;
+                break;
+            case "AO":
+                filePath = SHOES_PATH;
+                break;
+            case "AS":
+                filePath = SOCKS_PATH;
+                break;
+            default:
+                DMUtility.invalidID();
+                break;
         }
 
-        // Sort Item in array using bubble sort
-        for (int i = 0; i < itemArray.length - 1; i++) {
-            for (int j = 0; j < itemArray.length - 1 - i; j++) {
-                if (itemArray[j].getId().compareTo(itemArray[j + 1].getId()) > 0) {
-                    // Swap itemArray[j] and itemArray[j + 1]
-                    Item temp = itemArray[j];
-                    itemArray[j] = itemArray[j + 1];
-                    itemArray[j + 1] = temp;
-                }
-            }
-        }
-
-        // Find from the middle using binary search
-        int low = 0;
-        int high = itemArray.length - 1;
-
-        while (low <= high) {
-            int mid = (low + high) / 2;
-            Item midItem = itemArray[mid];
-
-            if (midItem.getId().equals(id)) {
-                return midItem;
-            } else if (midItem.getId().compareTo(id) < 0) {
-                low = mid + 1;
+        // valid format, check if this id exists, show it if yes
+        if (filePath != null) {
+            LinkedListInterface<Item> list = new LinkedList<>();
+            list.loadFromFile(filePath);
+            Item item = findByID(inputID, list);
+            if (item != null) {
+                // show that particular item
+                DMUI.printDetailHeader();
+                printSpecificItem(item);
+                
             } else {
-                high = mid - 1;
+                DMUtility.itemNoExist();
             }
         }
-
-        return null; // Item not found
+        
     }
 
     // ------------------------------
     // Part 4: Amend donation details
     // ------------------------------
     public static void amendDonation(){
-        Scanner scan = new Scanner(System.in);
         
         boolean contAmend = true;
         while(contAmend == true){
-            System.out.println(BLUE + "\n - - - Amend Donation Item - - - " + RESET);
-            System.out.print("Enter item ID: ");
-            boolean validID = false;
+            DMUI.amendDonationHeader();
+            DMUI.inputItemID();
 
             String id = null;
+            boolean validID = false;
             while (!validID) {
                 id = scan.nextLine();
 
-                validID = searchingIdValidation(id);
+                validID = itemIDValidation(id);
             }
-
+            
             id = id.substring(0, 2).toUpperCase() + id.substring(2, 7);
+            
+            searchingID(id);
+
             String prefix = id.substring(0, 2);
             String filePath = null;
             String[] amendList = null;
@@ -2068,18 +1894,18 @@ public class DMControl {
                     amendList = cloth;
                     break;
                 default:
-                    System.out.println(RED + "Invalid ID." + RESET);
+                    DMUtility.invalidMenuSelection();
                     break;
             }
             
-            LinkedList<Item> list = new LinkedList<>();
+            LinkedListInterface<Item> list = new LinkedList<>();
             list.loadFromFile(filePath);
-            Item item = findById(list, id);
+            Item item = findByID(id, list);
             if (item != null) {
 
                 boolean contItem = true;
                 do{
-                    System.out.println("\nOption available");
+                    DMUI.optionAvailable();
                     int amendOption = menuIntReturn(amendList);
 
                     if (item instanceof Money){
@@ -2092,10 +1918,10 @@ public class DMControl {
 
                     }
 
-                    System.out.println(GREEN + "\nItem updated Successfully.\n" + RESET);
+                    DMUtility.itemUpdated();
                     printSpecificItem(item);
                     
-                    contItem = YN("Do you want to continue amend this item?");
+                    contItem = YN(DMUI.contAmendSameItemQ());
                     
                 }while(contItem == true);
 
@@ -2103,7 +1929,7 @@ public class DMControl {
 
             list.saveToFile(filePath);
             
-            contAmend = YN("Do you want to amend another item?");
+            contAmend = YN(DMUI.contAmendOtherQ());
             
         }
         
@@ -2127,7 +1953,7 @@ public class DMControl {
         Scanner scan = new Scanner(System.in);
         
         if(amendOption == 1){
-            System.out.print("Remarks: ");
+            DMUI.inputRemark();
             String note = scan.nextLine();
             ((PhysicalItem) item).setNote(note);
         }
@@ -2142,12 +1968,11 @@ public class DMControl {
     }
     
     public static void foodAmend(int amendOption, Item item, String filePath){
-        Scanner scan = new Scanner(System.in);
         
         if (amendOption == 2){
             
             // expiry date
-            System.out.print("Expiry Date (dd/mm/yyyy)*: ");
+            DMUI.inputExpDate();
             Date expiryDate = null;
             boolean validExp = false;
 
@@ -2156,8 +1981,8 @@ public class DMControl {
 
                 if (exp.isEmpty()){
 
-                    System.out.println(RED + "Expiry date cannot leave blank.\n" + RESET);
-                    System.out.print("Enter again: ");
+                    DMUtility.emptyInputErrorMsg();
+                    DMUI.reEnter();
 
                 } else{
 
@@ -2172,17 +1997,16 @@ public class DMControl {
 
                         if (expiryDate.before(today)) {
 
-                            System.out.println(RED + "The food had expired.\n" + RESET);
-                            String[] menu = {"Enter Again", "Remain Unchange", "Delete Item"};
-                            int selection = menuIntReturn(menu);
+                            DMUtility.foodExpired();
+                            int selection = DMUI.contUpdateDateMenu();
 
                             if(selection == 1){
                                 
-                                System.out.print("Enter date again: ");
+                                DMUI.inputDateAgain();
                                 
                             }else if(selection == 2){
                                 
-                                boolean cont = YN("Do you want to continue amend item?");
+                                boolean cont = YN(DMUI.contAmendOtherQ());
                                 if (cont == true){
                                     amendDonation();
                                 }else{
@@ -2191,19 +2015,15 @@ public class DMControl {
                                 
                             }else{
                                 
-                                LinkedList<Item> list = new LinkedList<>();
+                                LinkedListInterface<Item> list = new LinkedList<>();
                                 list.loadFromFile(filePath);
                                 if (list.isEmpty()){
                                     
-                                    System.out.println(RED + "The list is empty, no item exist in file." + RESET);
+                                    DMUtility.noSuchItem();
                                     
                                 }else{
-                                    boolean delSuccessfully = removeByID(list, item.getId(), filePath);
-                                    if(delSuccessfully == true){
-                                        System.out.println(GREEN + "Item had been deleted successfully!" + RESET);
-                                    } else{
-                                        System.out.println("Item deleted unsuccessfully.");
-                                    }
+                                    deleteById(item.getId(), list);
+                                    list.saveToFile(filePath);
                                 }
                             }
 
@@ -2213,8 +2033,8 @@ public class DMControl {
                         }
 
                     } catch (ParseException e) {
-                        System.out.println("Invalid date format. Please enter the date in dd/MM/yyyy format.");
-                        System.out.print("Enter date again: ");
+                        DMUtility.invalidDateFormat();
+                        DMUI.reEnter();
                     }
 
                 }
@@ -2246,7 +2066,7 @@ public class DMControl {
             } else if(item instanceof Essentials){
                 detail = inputEss();
             }else{
-                System.out.println(RED + "Invalid food type." + RESET);
+                DMUtility.invalidMenuSelection();
             }
             
             if(detail != null){
@@ -2297,44 +2117,44 @@ public class DMControl {
     // -----------------------------------------
     public static void trackItemByCategory(){
         
-        System.out.println(BLUE + "\n--- MONEY ---" + RESET);
-        System.out.print("Bank");
-        printSameTable(BANK_PATH);
+        DMUI.TIMoneyHeader();
+        DMUI.TIBankHeader();
+        printSameTable(BANK_PATH, false);
         
-        System.out.print("\nCash");
-        printSameTable(CASH_PATH);
+        DMUI.TICashHeader();
+        printSameTable(CASH_PATH, false);
         
-        System.out.println(BLUE + "\n--- FOOD ---" + RESET);
-        System.out.print("Boxed Goods");
-        printSameTable(BOXED_PATH);
+        DMUI.TIFoodHeader();
+        DMUI.TIBakedHeader();
+        printSameTable(BAKED_PATH, false);
         
-        System.out.print("\nBaked Goods");
-        printSameTable(BAKED_PATH);
+        DMUI.TIBoxedHeader();
+        printSameTable(BOXED_PATH, false);
         
-        System.out.print("\nCanned Foods");
-        printSameTable(CANNED_PATH);
+        DMUI.TICannedHeader();
+        printSameTable(CANNED_PATH, false);
         
-        System.out.print("\nDry Goods");
-        printSameTable(DRY_PATH);
+        DMUI.TIDryHeader();
+        printSameTable(DRY_PATH, false);
         
-        System.out.print("\nEssentials");
-        printSameTable(ESS_PATH);
+        DMUI.TIEssHeader();
+        printSameTable(ESS_PATH, false);
         
-        System.out.println(BLUE + "\n--- APPAREL ---" + RESET);
-        System.out.print("Jackets");
-        printSameTable(JACKET_PATH);
+        DMUI.TIAppHeader();
+        DMUI.TIJacketHeader();
+        printSameTable(JACKET_PATH, false);
         
-        System.out.print("\nPant");
-        printSameTable(PANT_PATH);
+        DMUI.TIPantHeader();
+        printSameTable(PANT_PATH, false);
         
-        System.out.print("\nShirt");
-        printSameTable(SHIRT_PATH);
+        DMUI.TIShirtHeader();
+        printSameTable(SHIRT_PATH, false);
         
-        System.out.print("\nShoes");
-        printSameTable(SHOES_PATH);
+        DMUI.TIShoesHeader();
+        printSameTable(SHOES_PATH, false);
         
-        System.out.print("\nSocks");
-        printSameTable(SOCKS_PATH);
+        DMUI.TISocksHeader();
+        printSameTable(SOCKS_PATH, false);
         
     }
     
@@ -2342,12 +2162,12 @@ public class DMControl {
     // Part 6: List donation by different donor
     // ----------------------------------------
     public static void listByDiffDonor(){
-        LinkedList<Item> itemList = loadAllItemIntoList();
-        ManageDonors<Donor> donorList = new ManageDonors<>();
-        donorList.loadFromFile("donors.txt");
+        LinkedListInterface<Item> itemList = loadAllItemIntoList();
+        LinkedListInterface<Donor> donorList = new LinkedList<>();
+        donorList.loadFromFile(DONOR_PATH);
 
-        LinkedList<Donor> individualList = donorList.filterByCategory(Individual.class);
-        LinkedList<Donor> organizationList = donorList.filterByCategory(Organization.class);
+        LinkedListInterface<Donor> individualList = donorList.filterByCategoryIntoLinkedListInterface(Individual.class);
+        LinkedListInterface<Donor> organizationList = donorList.filterByCategoryIntoLinkedListInterface(Organization.class);
         
         // remove all empty space
         itemList.removeEmptyData();
@@ -2420,28 +2240,22 @@ public class DMControl {
         
         boolean cont = true;
         do{
-            System.out.println(BLUE + "\n - - - Item List - - -" + RESET);
-            String[] sortMenu = {
-                "Sort and List All Money in Ascending", 
-                "Sort and List All Money in Descending", 
-                "Sort and List All Bank in Ascending",
-                "Sort and List All Bank in Descending",
-                "Sort and List All Cash in Ascending", 
-                "Sort and List All Cash in Descending",
-                "Sort and List All Food according Expiry Date",
-                "Display All"
-            };
-            int sortSelection = menuIntReturn(sortMenu);
+            
+            int sortSelection = DMUI.listDonationMenu();
 
-            LinkedList<Money> bankList = new LinkedList<>();
+            LinkedListInterface<Money> bankList = new LinkedList<>();
             bankList.loadFromFile(BANK_PATH);
-            LinkedList<Money> cashList = new LinkedList<>();
+            
+            LinkedListInterface<Money> cashList = new LinkedList<>();
             cashList.loadFromFile(CASH_PATH);
-            LinkedList<Money> moneyList = new LinkedList<>();
+            
+            LinkedListInterface<Money> moneyList = new LinkedList<>();
             moneyList.loadFromFile(BANK_PATH);
-            moneyList.appendList(cashList);
+            LinkedList<Cash> tempCash = new LinkedList<>();
+            tempCash.loadFromFile(CASH_PATH);
+            moneyList.appendList(tempCash);
 
-            LinkedList<Food> foodList = loadAllFoodToList();
+            LinkedListInterface<Food> foodList = loadAllFoodIntoList();
 
             switch(sortSelection){
                 case 1: 
@@ -2487,7 +2301,7 @@ public class DMControl {
 
     }
     
-    public static void sortMoney(LinkedList<Money> moneyList, int asc, int header) {
+    public static void sortMoney(LinkedListInterface<Money> moneyList, int asc, int header) {
         moneyList.removeEmptyData();
 
         if (moneyList.head == null) {
@@ -2577,7 +2391,7 @@ public class DMControl {
         }
     }
 
-    public static void sortFoodExp(LinkedList<Food> foodList){
+    public static void sortFoodExp(LinkedListInterface<Food> foodList){
         
         foodList.removeEmptyData();
         

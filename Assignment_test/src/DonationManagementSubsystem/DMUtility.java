@@ -39,6 +39,10 @@ public class DMUtility {
         System.out.println("\n" + RED + "No item donated yet." + RESET);
     }
     
+    public static void noSuchItem(){
+        System.out.println(RED + "No item exist yet." + RESET);
+    }
+    
     public static void addFunctionDown(){
         System.out.println(RED + "Add function cannot run without existance of donor." + RESET);
     }
@@ -46,6 +50,10 @@ public class DMUtility {
     // no exist
     public static void donorNoExist(){
         System.out.println("\n" + RED + "Donor does not exist." + RESET);
+    }
+    
+    public static void itemNoExist(){
+        System.out.println(RED + "\nItem does not exist." + RESET);
     }
     
     // input error
@@ -70,11 +78,15 @@ public class DMUtility {
     }
     
     public static void intCannotNeg(){
-        System.out.println("\n" + RED + "The input cannot be less than or equal to zero." + RESET);
+        System.out.println("\n" + RED + "The input cannot be less than or equal to 0." + RESET);
     }
     
     public static void invalidIDFormat(String constrant){
         System.out.println(RED + "Invalid format. Volunteer Id format should be " + constrant.toUpperCase() + "00000.\n" + RESET);
+    }
+    
+    public static void invalidID(){
+        System.out.println(RED + "Invalid ID." + RESET);
     }
     
     public static void invalidMenuSelection(){
@@ -84,5 +96,55 @@ public class DMUtility {
     // item added 
     public static void itemAdded(){
         System.out.println("\n" + GREEN + "Items added successfully" + RESET);
+    }
+    
+    public static void invalidInputType(String string){
+        System.out.println(RED + "Invalid input. Please enter correct " + string + ".\n" + RESET);
+    }
+    
+    // amount error msg
+    public static void invalidAmt(){
+        System.out.println(RED + "Invalid amount. Donated amount could not be 0 or less than 0.\n" + RESET);
+    }
+    
+    // qty error msg
+    public static void invalidQtyZ(){
+        System.out.println(RED + "Quantity cannot be 0.\n" + RESET);
+    }
+    
+    public static void invalidQtyNeg(){
+        System.out.println(RED + "Quantity cannot be negative.\n" + RESET);
+    }
+    
+    // food date error msg
+    public static void foodExpired(){
+        System.out.println(RED + "The food had expired.\n" + RESET);
+    }
+    
+    public static void invalidDateFormat(){
+        System.out.println(RED + "Invalid date format. Please enter the date in dd/MM/yyyy format.\n" + RESET);
+    }
+    
+    // weight error msg
+    public static void invalidWZ(){
+        System.out.println(RED + "Weight cannot be 0.\n" + RESET);
+    }
+    
+    public static void invalidWNeg(){
+        System.out.println(RED + "Weight cannot be negative.\n" + RESET);
+    }
+    
+    // remove successfully
+    public static void itemRemove(){
+        System.out.println(GREEN + "Item remove successfully." + RESET);
+    }
+    
+    public static void itemRemoveFail(){
+        System.out.println(GREEN + "Item remove successfully." + RESET);
+    }
+    
+    // amend successfully
+    public static void itemUpdated(){
+        System.out.println(GREEN + "\nItem updated Successfully.\n" + RESET);
     }
 }
