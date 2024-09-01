@@ -48,11 +48,11 @@ public class DoneeLinkedList<T extends Donee> extends LinkedList<T> implements D
         } else {
             Node<T> current = head;
 
-            while (current.data != null && !current.data.getId().equals(id)) {
+            while (current != null && !current.data.getId().equals(id)) {
                 current = current.next;
             }
 
-            if (current.data.getId().equals(id)) {
+            if (current != null && current.data.getId().equals(id)) {
                 current.data.setStatus(status);
             } else {
                 // ID not found
