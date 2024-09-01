@@ -124,7 +124,7 @@ public class ManageDoneeUI {
     }
 
     public void displayMenuChoice() {
-        System.out.println(Blue + "\n- - - Donor Menu - - -" + Reset);
+        System.out.println(Blue + "\n- - - Donee Menu - - -" + Reset);
         System.out.println("Choose an option:");
         System.out.println("1. Add a new donee");
         System.out.println("2. Remove a donee");
