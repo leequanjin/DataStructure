@@ -336,6 +336,7 @@ public class VolunteerManagement {
             clearAllFile();
             loadAllFile();
             
+            VolunteerUI.breakLine();
             int selection = VolunteerUI.volunteerMainMenu();
             switch (selection) {
                 case 1:
@@ -363,6 +364,8 @@ public class VolunteerManagement {
                     report();
                     break;
                 case 9:
+                    VolunteerUI.breakLine();
+                    VolunteerUI.breakLine();
                     return;
                 default:
                     VolunteerUtility.invalidMenuSelection();

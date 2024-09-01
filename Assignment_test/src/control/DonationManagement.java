@@ -109,7 +109,9 @@ public class DonationManagement {
                     report();
                     break;
                 case 11:
-                    System.exit(0); // later redirect to previous menu
+                    DonationManagementUI.breakLine();
+                    DonationManagementUI.breakLine();
+                    return;
                 default:
                     System.out.println("Invalid choice.");
                     break;
