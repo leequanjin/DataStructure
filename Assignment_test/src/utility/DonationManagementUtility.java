@@ -4,11 +4,10 @@
  */
 package utility;
 
-import DonationManagementSubsystem.*;
 
 /**
  *
- * @author Asus
+ * @author Heng Pei Lin
  */
 public class DonationManagementUtility {
     public static final String RED = "\u001B[31m";
@@ -138,11 +137,11 @@ public class DonationManagementUtility {
     
     // remove successfully
     public static void itemRemove(){
-        System.out.println(GREEN + "Item remove successfully." + RESET);
+        System.out.println("\n" + GREEN + "Item remove successfully." + RESET);
     }
     
     public static void itemRemoveFail(){
-        System.out.println(GREEN + "Item remove successfully." + RESET);
+        System.out.println("\n" + RED + "Item remove unsuccessfully." + RESET);
     }
     
     // amend successfully
