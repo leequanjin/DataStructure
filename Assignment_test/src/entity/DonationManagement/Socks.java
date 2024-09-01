@@ -4,8 +4,6 @@
  */
 package entity.DonationManagement;
 
-import DonationList.*;
-
 /**
  *
  * @author Heng Pei Lin

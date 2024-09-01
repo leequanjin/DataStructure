@@ -4,7 +4,6 @@
  */
 package entity.DonationManagement;
 
-import DonationList.*;
 
 /**
  *

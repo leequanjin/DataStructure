@@ -4,7 +4,6 @@
  */
 package entity.DonationManagement;
 
-import DonationList.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

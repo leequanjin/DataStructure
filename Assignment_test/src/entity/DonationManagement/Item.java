@@ -4,7 +4,6 @@
  */
 package entity.DonationManagement;
 
-import DonationList.*;
 import java.io.Serializable;
 
 /**
@@ -21,7 +20,7 @@ public abstract class Item implements Serializable {
     public Item(String id, String donorID){
         this.id = id;
         this.donorID = donorID;
-        availability = "Available";
+        this.availability = "Available";
     }
 
     public String getId() {
