@@ -54,7 +54,11 @@ public class DonationManagementUtility {
     }
     
     public static void itemNoExist(){
-        System.out.println(RED + "\nItem does not exist." + RESET);
+        System.out.println("\n" + RED + "Item does not exist." + RESET);
+    }
+    
+    public static void noMoney(){
+        System.out.println("\n" + RED + "No any money on cash or bank." + RESET);
     }
     
     // input error
