@@ -56,6 +56,6 @@ public class DistributionMessageUI {
     }
 
     public void displayExitMessage() {
-        System.out.println(Green + "Exiting donee menu..." + Reset);
+        System.out.println(Green + "Exiting donation distribution menu..." + Reset);
     } 
 }

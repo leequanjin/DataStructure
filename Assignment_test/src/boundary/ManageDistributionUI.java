@@ -16,11 +16,16 @@ import java.util.Scanner;
  */
 public class ManageDistributionUI {
     
+    //Colours
+    static String Blue = "\u001B[34m";
+    static String Reset = "\u001b[0m";
+    
     Scanner scanner = new Scanner(System.in);
     String choice = null;
     
     // Boundary - ManageDistributionUI //
     public void displayDistributionMenu() {
+        System.out.println(Blue + "\n- - - Donor Menu - - -" + Reset);
         System.out.println("Choose an option:");
         System.out.println("1. Add new donation distribution");
         System.out.println("2. Delete donation distribution");
