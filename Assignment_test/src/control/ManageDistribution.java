@@ -6,7 +6,6 @@ package control;
 
 import adt.Node;
 import entity.DonationManagement.Item;
-import control.DonationManagement;
 import adt.Distribution.DistributionLinkedList;
 import adt.Distribution.DistributionLinkedListInterface;
 import adt.Distribution.ItemLinkedList;

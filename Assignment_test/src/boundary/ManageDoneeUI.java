@@ -19,6 +19,7 @@ public class ManageDoneeUI {
     //Colours
     static String Red = "\u001b[31m";
     static String Green = "\u001b[32;2m";
+    static String Blue = "\u001B[34m";
     static String Reset = "\u001b[0m";
     
     Scanner scanner = new Scanner(System.in);
@@ -123,6 +124,7 @@ public class ManageDoneeUI {
     }
 
     public void displayMenuChoice() {
+        System.out.println(Blue + "\n- - - Donor Menu - - -" + Reset);
         System.out.println("Choose an option:");
         System.out.println("1. Add a new donee");
         System.out.println("2. Remove a donee");
