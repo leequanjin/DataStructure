@@ -1,6 +1,5 @@
 package entity.Volunteer;
 
-import VolunteerSubsystem.*;
 import java.io.Serializable;
 
 // @author Clarist, Heng Pei Lin

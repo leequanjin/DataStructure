@@ -4,7 +4,6 @@
  */
 package entity.Volunteer;
 
-import VolunteerSubsystem.*;
 import java.io.Serializable;
 
 /**
