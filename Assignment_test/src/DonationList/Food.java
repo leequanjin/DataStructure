@@ -73,6 +73,6 @@ public class Food extends PhysicalItem {
         String dateString = formatter.format(expiryDate);
         
         return super.toString() + 
-                String.format(" %-11s | %-8d | %-8s | %-15s |", dateString, weight, status, detail);
+                String.format(" %-11s | %-8d | %-8s | %-20s |", dateString, weight, status, detail);
     }
 }
