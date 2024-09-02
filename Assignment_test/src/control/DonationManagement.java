@@ -2726,7 +2726,7 @@ public class DonationManagement {
     }
     
     public static void printAllIntoTable() {
-        String[] fileList = {BANK_PATH, CASH_PATH, JACKET_PATH, PANT_PATH, SHIRT_PATH, SHOES_PATH, SOCKS_PATH, BAKED_PATH, BOXED_PATH, CANNED_PATH, DRY_PATH, ESS_PATH};
+        String[] fileList = {BANK_PATH, CASH_PATH, BAKED_PATH, BOXED_PATH, CANNED_PATH, DRY_PATH, ESS_PATH, JACKET_PATH, PANT_PATH, SHIRT_PATH, SHOES_PATH, SOCKS_PATH};
 
         for (int i = 0; i < fileList.length; i++) {
             LinkedList<Item> list = new LinkedList<>();
@@ -3101,7 +3101,7 @@ public class DonationManagement {
             Date dataDate = currentNode.data.getExpiryDate();
             int dataYear = dataDate.getYear() + 1900; // 124 + 1900 = 2024
 
-            if (dataYear < year) {
+            if (dataYear <= year) {
                 itemList.insert(currentNode.data);
             } 
                 
