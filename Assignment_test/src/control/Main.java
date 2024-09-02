@@ -42,7 +42,7 @@ public class Main {
                     VolunteerManagement.volunteerMainMenu();
                 }
                 case "6" -> {
-                    System.out.println("Not implemented yet");
+                    ManageEvent.eventMainMenu();
                 }
                 case "7" -> {
                     exit = true;

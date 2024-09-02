@@ -78,7 +78,7 @@ public class ManageDistributionUI {
     }
 
     public void displayDistributionPeriodReport(LinkedListInterface distributionListByPeriod) {
-        System.out.printf("%-15s |%-20s |%-20s |%s\n", "Year", "Completed", "Cancelled", "In Progress");
+        System.out.printf("%-15s |%-20s |%-20s |%s\n", "Period", "Completed", "Cancelled", "In Progress");
         String line = String.format("-").repeat(74);
         System.out.println(line);
         System.out.println(distributionListByPeriod.show());

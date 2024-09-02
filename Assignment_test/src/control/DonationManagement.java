@@ -2932,23 +2932,23 @@ public class DonationManagement {
             } else if (type.equals("SNACKS")){
                 filterFoodCategory(foodList, "Snacks");
             } else if (type.equals("BAKED BEANS")){
-                filterFoodCategory(foodList, "Baked beans");
+                filterFoodCategory(foodList, "Baked beans can");
             } else if (type.equals("CHICKEN SOUP")){
-                filterFoodCategory(foodList, "Chicken soup");
+                filterFoodCategory(foodList, "Chicken soup can");
             } else if (type.equals("CORN")){
-                filterFoodCategory(foodList, "Corn");
+                filterFoodCategory(foodList, "Corn can");
             } else if (type.equals("LYCHEE")){
-                filterFoodCategory(foodList, "Lychee");
+                filterFoodCategory(foodList, "Lychee can");
             } else if (type.equals("MEAT")){
-                filterFoodCategory(foodList, "Meat");
+                filterFoodCategory(foodList, "Meat can");
             } else if (type.equals("MUSHROOM SOUP")){
-                filterFoodCategory(foodList, "Mushroom soup");
+                filterFoodCategory(foodList, "Mushroom soup can");
             } else if (type.equals("PINEAPPLE")){
-                filterFoodCategory(foodList, "Pineapple");
+                filterFoodCategory(foodList, "Pineapple can");
             } else if (type.equals("TOMATOES")){
-                filterFoodCategory(foodList, "Tomatoes");
+                filterFoodCategory(foodList, "Tomatoes can");
             } else if (type.equals("TUNA")){
-                filterFoodCategory(foodList, "Tuna");
+                filterFoodCategory(foodList, "Tuna can");
             } else if (type.equals("INSTANT NOODLES")){
                 filterFoodCategory(foodList, "Instant Noodles");
             } else if (type.equals("OATS")){

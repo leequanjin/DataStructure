@@ -1263,6 +1263,7 @@ public class ManageEvent {
         int startYear = scan.nextInt();
         ManageEventUI.inputEndYear();
         int endYear = scan.nextInt();
+        scan.nextLine();
 
         double[] fundraisingTotals = new double[endYear - startYear + 1];
 

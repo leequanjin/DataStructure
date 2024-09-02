@@ -442,7 +442,7 @@ public class ManageDonor {
         printStar(publicCount);
         System.out.println("(" + publicCount + ")");
 
-        System.out.println("\nRemarks: Symbol " + Purple + "* " + Reset + "represents 100 people.");
+        System.out.println("\nRemarks: \nSymbol " + Purple + "* " + Reset + "represents 100 people.");
         System.out.println("Symbol " + Blue + "* " + Reset + "represents 10 people.");
         System.out.println("Symbol * represents 1 person.");
     }

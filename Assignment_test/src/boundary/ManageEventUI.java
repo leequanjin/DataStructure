@@ -478,7 +478,7 @@ public class ManageEventUI {
     }
 
     public static void displayStarRemark() {
-        System.out.println("\nNote: \n" + PURPLE + "*" + RESET + " represents 100" + "\n" + BLUE + "*" + RESET + " represents 10" +"\n" +  "*" + " represents 1");
+        System.out.println("\nNote: \n" + BLUE + "*" + RESET + " represents 100" + "\n" + PURPLE + "*" + RESET + " represents 10" +"\n" +  "*" + " represents 1");
     }
 
     public static void printStar(int count) {
