@@ -500,6 +500,7 @@ public class DonationManagement {
         list.removeEmptyData();
         
         if(list.isEmpty()){
+            DonationManagementUI.breakLine();
             DonationManagementUtility.noSuchItem();
             return;
         }
@@ -3080,6 +3081,7 @@ public class DonationManagement {
         }
         
         if (itemList.getHead() == null) {
+            DonationManagementUI.breakLine();
             DonationManagementUtility.noSuchItem();
         } else {
             printListToTable(itemList);
@@ -3109,6 +3111,7 @@ public class DonationManagement {
         }
 
         if (itemList.getHead() == null) {
+            DonationManagementUI.breakLine();
             DonationManagementUtility.noSuchItem();
         } else {
             printListToTable(itemList);
