@@ -4,11 +4,13 @@
  */
 package entity.DonationManagement;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Asus
  */
-public class TotalMoney {
+public class TotalMoney implements Serializable {
     private double ttlBank;
     private double ttlCash;
 
