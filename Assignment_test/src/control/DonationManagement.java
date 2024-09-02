@@ -2315,7 +2315,6 @@ public class DonationManagement {
         DonationManagementUI.TISocksHeader();
         printTable(SOCKS_PATH);
         
-        // total item donated, total money donated
     }
     
     // ----------------------------------------
