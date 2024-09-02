@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author Asus
+ * @author Heng Pei Lin
  */
 public class TotalMoney implements Serializable {
     private double ttlBank;
