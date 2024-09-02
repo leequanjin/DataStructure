@@ -4,7 +4,6 @@
  */
 package boundary;
 
-
 import control.ManageEvent;
 import entity.Event.Event;
 import entity.Event.Sponsorship;
@@ -13,7 +12,6 @@ import adt.LinkedListInterface;
 import adt.Node;
 import entity.Volunteer.Volunteer;
 import java.text.SimpleDateFormat;
-
 
 /**
  *
@@ -56,15 +54,15 @@ public class ManageEventUI {
             System.out.println((i + 1) + ". " + selectionList[i]);
         }
 
-        System.out.print("Enter your choice: ");
+        System.out.print("\nEnter your choice: ");
     }
 
     public static void inputChoice() {
-        System.out.print("Enter your choice: ");
+        System.out.print("\nEnter your choice: ");
     }
 
     public static void reEnter() {
-        System.out.print("Enter again: ");
+        System.out.print("\nEnter again: ");
     }
 
     public static void inputYN(String sentence) {
@@ -72,7 +70,7 @@ public class ManageEventUI {
     }
 
     public static void inputEventName() {
-        System.out.print("Event Name: ");
+        System.out.print("\nEvent Name: ");
     }
 
     public static void inputDate() {
@@ -88,11 +86,11 @@ public class ManageEventUI {
     }
 
     public static void inputTicketEventID() {
-        System.out.print("Enter Event ID for the Ticket: ");
+        System.out.print("\nEnter Event ID for the Ticket: ");
     }
 
     public static void inputNumTicketType() {
-        System.out.print("How many ticket types would you like to add?: ");
+        System.out.print("\nHow many ticket types would you like to add?: ");
     }
 
     public static void inputTicketType() {
@@ -108,7 +106,7 @@ public class ManageEventUI {
     }
 
     public static void inputSponsEventID() {
-        System.out.print("Enter Event ID for the Sponsorship: ");
+        System.out.print("\nEnter Event ID for the Sponsorship: ");
     }
 
     public static void inputSponsName() {
@@ -120,11 +118,11 @@ public class ManageEventUI {
     }
 
     public static void displayEvent() {
-        System.out.println("Available events:");
+        System.out.println("\nAvailable events:");
     }
 
     public static void inputRemoveEventID() {
-        System.out.print("Enter the Event ID to remove: ");
+        System.out.print("\nEnter the Event ID to remove: ");
     }
 
     public static int searchEventMenu() {
@@ -139,67 +137,80 @@ public class ManageEventUI {
     }
 
     public static void inputEventID() {
-        System.out.print("Enter the Event ID: ");
+        System.out.print("\nEnter the Event ID: ");
+    }
+
+    public static void eventFound() {
+        System.out.println("\nEvent Found: ");
     }
 
     public static void displayEventDetails(Event event) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        System.out.println("\nEvent Found: ");
-        System.out.printf("%-15s : %s\n", "Event ID", event.getEventID());
+        System.out.printf("\n%-15s : %s\n", "Event ID", event.getEventID());
         System.out.printf("%-15s : %s\n", "Event Name", event.getEventName());
         System.out.printf("%-15s : %s\n", "Date", dateFormat.format(event.getDate()));
         System.out.printf("%-15s : %s\n", "Time", event.getTime());
-        System.out.printf("%-15s : %s\n", "Location", event.getLocation() );
+        System.out.printf("%-15s : %s\n", "Location", event.getLocation());
     }
+
     public static void displayTicketTable() {
-        System.out.printf(" %-10s | %-20s | %-10s | %-10s\n",  "Ticket ID", "Ticket Type", "Price (RM)", "Status");
+        System.out.printf(" %-10s | %-20s | %-10s | %-10s\n", "Ticket ID", "Ticket Type", "Price (RM)", "Status");
         System.out.println("-------------------------------------------------------------------");
     }
-    
+
     public static void displayTicketDetails(Ticket ticket) {
-        
-        System.out.printf(" %-10s | %-20s | %-10.2f | %-10s\n" ,
+
+        System.out.printf("%-10s | %-20s | %-10.2f | %-10s\n",
                 ticket.getTicketID(),
                 ticket.getTicketType(),
                 ticket.getTicketPrice(),
                 ticket.getTicketStatus());
-        
+
+    }
+
+    public static void displayAvailableEvent(Event event) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        System.out.printf("%-10s | %-30s | %-12s | %-8s | %-20s\n",
+                event.getEventID(),
+                event.getEventName(),
+                dateFormat.format(event.getDate()),
+                event.getTime(),
+                event.getLocation());
     }
 
     public static void disEventByDate(int show, Event event) {
-        System.out.printf("%-6s %-3s %-2s %-8s", "Event ", show, ": ", event.getEventID());
+        System.out.printf("\n%-6s %-3s %-2s %-8s", "Event ", show, ": ", event.getEventID());
         System.out.printf("%-4s %-50s\n", " -> ", event.getEventName());
     }
 
     public static void disTicketDetails(int ticketCount, Ticket ticket) {
-        
-        System.out.printf("%-5d | %-10s | %-20s | %-10.2f | %-10s\n" ,
+
+        System.out.printf("\n%-5d | %-10s | %-20s | %-10.2f | %-10s\n",
                 ticketCount,
                 ticket.getTicketID(),
                 ticket.getTicketType(),
                 ticket.getTicketPrice(),
                 ticket.getTicketStatus());
     }
-    
+
     public static void disSponsorshipDetails(int sponsorshipCount, Sponsorship sponsorship) {
-        
+
         System.out.printf("%-5d | %-12s | %-30s | %-12.2f\n",
                 sponsorshipCount,
                 sponsorship.getSponsorID(),
                 sponsorship.getSponsorName(),
                 sponsorship.getSponsorAmount());
     }
-    
-    
+
     public static void displaySponsorshipDetails(Sponsorship sponsorship) {
-        System.out.printf("%-20s : %s\n","Sponsorship ID", sponsorship.getSponsorID());
+        System.out.printf("\n%-20s : %s\n", "Sponsorship ID", sponsorship.getSponsorID());
         System.out.printf("%-20s : %s\n", "Sponsorship Name", sponsorship.getSponsorName());
-        System.out.printf("%-20s :RM %.2f\n", "Sponsorship Amount ", sponsorship.getSponsorAmount() );
-        
+        System.out.printf("%-20s :RM %.2f\n", "Sponsorship Amount ", sponsorship.getSponsorAmount());
+
     }
 
     public static void inputUpdateEventID() {
-        System.out.print("Enter the Event ID to update: ");
+        System.out.print("\nEnter the Event ID to update: ");
     }
 
     public static int displayUpdateMenu() {
@@ -239,12 +250,12 @@ public class ManageEventUI {
     }
 
     public static void displayTicketTableHeader() {
-        System.out.printf("%-5s | %-10s | %-20s | %-10s | %-10s\n", "No.", "Ticket ID", "Ticket Type", "Price (RM)", "Status");
+        System.out.printf("\n%-5s | %-10s | %-20s | %-10s | %-10s\n", "No.", "Ticket ID", "Ticket Type", "Price (RM)", "Status");
         System.out.println("-------------------------------------------------------------------");
     }
 
     public static void displaySponsorshipTableHeader() {
-        System.out.printf("%-5s | %-12s | %-30s | %-12s\n", "No.", "Sponsor ID", "Sponsor Name", "Amount (RM)");
+        System.out.printf("\n%-5s | %-12s | %-30s | %-12s\n", "No.", "Sponsor ID", "Sponsor Name", "Amount (RM)");
         System.out.println("-------------------------------------------------------------------");
     }
 
@@ -262,7 +273,7 @@ public class ManageEventUI {
     }
 
     public static void inputNewTicketType(String selectedTicketType) {
-        System.out.print("Enter new Ticket Type (Current: " + selectedTicketType + "): ");
+        System.out.print("\nEnter new Ticket Type (Current: " + selectedTicketType + "): ");
     }
 
     public static void inputNewTicketPrice() {
@@ -306,19 +317,18 @@ public class ManageEventUI {
     }
 
 //list all
-    
     public static void titleListAllEvent() {
         System.out.println("\nList of All Events:");
     }
-    
+
     public static void displayEventListHeader() {
-        
-        System.out.printf("%-10s | %-30s | %-12s | %-8s | %-20s\n", "Event ID", "Event Name", "Date", "Time", "Location");
+
+        System.out.printf("\n%-10s | %-30s | %-12s | %-8s | %-20s\n", "Event ID", "Event Name", "Date", "Time", "Location");
         System.out.println("---------------------------------------------------------------------------------------------");
     }
 
     public static void displayEventDetailsInList(Event event) {
-        displayEventListHeader() ;
+        displayEventListHeader();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         System.out.printf("%-10s | %-30s | %-12s | %-8s | %-20s\n",
                 event.getEventID(),
@@ -356,21 +366,19 @@ public class ManageEventUI {
                 sponsorship.getSponsorAmount());
     }
 
-    
-
     //remove volunteer
     public static String inputVolunteerID() {
-        System.out.print("Enter the Volunteer ID: ");
+        System.out.print("\nEnter the Volunteer ID: ");
         return ManageEvent.scan.nextLine().trim();
     }
 
     public static void displayVolunteerDetails(Volunteer volunteer) {
-        System.out.println("Volunteer ID: " + volunteer.getVolunteerID());
+        System.out.println("\nVolunteer ID: " + volunteer.getVolunteerID());
         System.out.println("Volunteer Name: " + volunteer.getName());
     }
 
     public static void displayVolunteerEvents(LinkedListInterface<Event> events) {
-        System.out.println("\nEvents Participated:");
+        System.out.println("\nEvents Participated:\n");
         System.out.printf("%-5s | %-10s | %-30s | %-12s | %-8s | %-20s\n", "No.", "Event ID", "Event Name", "Date", "Time", "Location");
         System.out.println("---------------------------------------------------------------------------------------------");
 
@@ -394,7 +402,7 @@ public class ManageEventUI {
     }
 
     public static String inputEventIDToRemove() {
-        System.out.print("Enter the Event ID to remove from this volunteer: ");
+        System.out.print("\nEnter the Event ID to remove from this volunteer: ");
         return ManageEvent.scan.nextLine().trim();
     }
 
@@ -411,7 +419,7 @@ public class ManageEventUI {
     }
 
     public static void inputStartYear() {
-        System.out.print("Enter the start year (YYYY): ");
+        System.out.print("\nEnter the start year (YYYY): ");
     }
 
     public static void inputEndYear() {
@@ -465,7 +473,7 @@ public class ManageEventUI {
     }
 
     public static void displayStarRemark() {
-        System.out.println("\nNote: \n" + PURPLE + "*" + RESET + " represents 100" + "\n" + BLUE + "*" + RESET + " represents 10");
+        System.out.println("\nNote: \n" + PURPLE + "*" + RESET + " represents 100" + "\n" + BLUE + "*" + RESET + " represents 10" +"\n" +  "*" + " represents 1");
     }
 
     public static void printStar(int count) {

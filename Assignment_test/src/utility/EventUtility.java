@@ -189,6 +189,11 @@ public class EventUtility {
         System.out.println(GREEN + "Event with ID " + eventID + " removed from volunteer " + volunteerID + ".\n" +RESET);
     }
     
+    public static void exitMainMenu() {
+        System.out.println("\n" +GREEN +"Exiting Event Menu..."+ "\n" +RESET);
+    
+    }
+    
     
     
     

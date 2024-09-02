@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package control;
 
 import utility.EventUtility;
@@ -25,28 +21,27 @@ import java.util.Scanner;
  * @author Clarist Liew
  */
 public class ManageEvent {
-    
+
     // Common Use File
-    private static final String EVENT_FILE = "C:\\Users\\Clarist Liew\\Downloads\\DataStruc\\DataStructure\\Assignment_test\\event.txt";
-    private static final String TICKET_FILE = "C:\\Users\\Clarist Liew\\Downloads\\DataStruc\\DataStructure\\Assignment_test\\ticket.txt";
-    private static final String SPONSORSHIP_FILE = "C:\\Users\\Clarist Liew\\Downloads\\DataStruc\\DataStructure\\Assignment_test\\sponsorship.txt";
-    private static final String VOLUNTEER_FILE = "C:\\Users\\Clarist Liew\\Downloads\\DataStruc\\DataStructure\\Assignment_test\\volunteers.txt";
-    private static final String VOLUNTEER_EVENT_FILE = "C:\\Users\\Clarist Liew\\Downloads\\DataStruc\\DataStructure\\Assignment_test\\volunteer_event.txt";
-    
+    private static final String EVENT_FILE = "event.txt";
+    private static final String TICKET_FILE = "ticket.txt";
+    private static final String SPONSORSHIP_FILE = "sponsorship.txt";
+    private static final String VOLUNTEER_FILE = "volunteers.txt";
+    private static final String VOLUNTEER_EVENT_FILE = "volunteer_event.txt";
+
     //Common use Linked List
     private static final LinkedListInterface<Event> eventList = new LinkedList<>();
     private static final LinkedListInterface<Sponsorship> sponsorshipList = new LinkedList<>();
     private static final LinkedListInterface<Ticket> ticketList = new LinkedList<>();
     private static final LinkedListInterface<EventVolunteer> volunteerEventList = new LinkedList<>();
     private static final LinkedListInterface<Volunteer> volunteerList = new LinkedList<>();
-    
+
     public static Scanner scan = new Scanner(System.in);
-    
-    
+
     public static int menuIntReturn(String[] selectionList) {
-        
+
         ManageEventUI.displayMenu(selectionList);
-        
+
         int intInput = 0;
         boolean validInput = false;
 
@@ -63,32 +58,32 @@ public class ManageEvent {
 
         return intInput;
     }
-    
-    public static boolean chkEmptyInput(String input){
-        if(input.isEmpty()){
+
+    public static boolean chkEmptyInput(String input) {
+        if (input.isEmpty()) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
-    
-    public static boolean chkInt(String input){
+
+    public static boolean chkInt(String input) {
         try {
             int number = Integer.parseInt(input);
 
             return true;
-            
+
         } catch (NumberFormatException e) {
             return false;
         }
     }
-    
-    public static boolean intSelectionValidation(int input,int initial, int length){
+
+    public static boolean intSelectionValidation(int input, int initial, int length) {
 
         if (input < initial || input > length) {
             return false;
         } else {
-            return true; 
+            return true;
         }
     }
 
@@ -124,9 +119,8 @@ public class ManageEvent {
 
         return validInput;
     }
-    
-    
-    public static boolean chkYN(String input){
+
+    public static boolean chkYN(String input) {
         input = input.toUpperCase().trim();
         if (input.equals("Y")) {
             return true;
@@ -134,7 +128,7 @@ public class ManageEvent {
             return false;
         }
     }
-    
+
     public static boolean YN(String sentence) {
 
         boolean validInput = false;
@@ -170,78 +164,76 @@ public class ManageEvent {
             return false;
         }
     }
-    
+
     // Input data consistent
-    public static boolean chkSpecificWord(String[] inputList, String input){
-        for(int i = 0; i < inputList.length; i++){
-            if(input.trim().toUpperCase().equalsIgnoreCase(inputList[i].trim().toUpperCase())){
+    public static boolean chkSpecificWord(String[] inputList, String input) {
+        for (int i = 0; i < inputList.length; i++) {
+            if (input.trim().toUpperCase().equalsIgnoreCase(inputList[i].trim().toUpperCase())) {
                 return true;
             }
         }
         return false;
     }
-    
+
     private static String generateEventID(String prefix) {
-    
-    int maxId = 0;
 
-    Node<Event> current = eventList.getHead();
+        int maxId = 0;
 
-    while (current != null) {
-        String currentId = current.data.getEventID().substring(2,7);
-        int idNumber = Integer.parseInt(currentId);
-        if (idNumber > maxId) {
-            maxId = idNumber;
+        Node<Event> current = eventList.getHead();
+
+        while (current != null) {
+            String currentId = current.data.getEventID().substring(2, 7);
+            int idNumber = Integer.parseInt(currentId);
+            if (idNumber > maxId) {
+                maxId = idNumber;
+            }
+            current = current.next;
         }
-        current = current.next;
+
+        return prefix + String.format("%05d", maxId + 1);
     }
 
-    return prefix + String.format("%05d", maxId + 1);
-    }
-    
     private static String generateTicketID(String prefix) {
-    
-    int maxId = 0;
 
-    Node<Ticket> current = ticketList.getHead();
+        int maxId = 0;
 
-    while (current != null) {
-        String currentId = current.data.getTicketID().substring(prefix.length());
-        int idNumber = Integer.parseInt(currentId);
-        if (idNumber > maxId) {
-            maxId = idNumber;
+        Node<Ticket> current = ticketList.getHead();
+
+        while (current != null) {
+            String currentId = current.data.getTicketID().substring(prefix.length());
+            int idNumber = Integer.parseInt(currentId);
+            if (idNumber > maxId) {
+                maxId = idNumber;
+            }
+            current = current.next;
         }
-        current = current.next;
+
+        return prefix + String.format("%05d", maxId + 1);
     }
 
-    return prefix + String.format("%05d", maxId + 1);
-}
+    private static String generateSponsorshipID(String prefix) {
 
-private static String generateSponsorshipID(String prefix) {
-    
-    int maxId = 0;
+        int maxId = 0;
 
-    Node<Sponsorship> current = sponsorshipList.getHead();
+        Node<Sponsorship> current = sponsorshipList.getHead();
 
-    while (current != null) {
-        String currentId = current.data.getSponsorID().substring(prefix.length());
-        int idNumber = Integer.parseInt(currentId);
-        if (idNumber > maxId) {
-            maxId = idNumber;
+        while (current != null) {
+            String currentId = current.data.getSponsorID().substring(prefix.length());
+            int idNumber = Integer.parseInt(currentId);
+            if (idNumber > maxId) {
+                maxId = idNumber;
+            }
+            current = current.next;
         }
-        current = current.next;
+
+        return prefix + String.format("%05d", maxId + 1);
     }
 
-    return prefix + String.format("%05d", maxId + 1);
-}
-    
-    
-    
     private static Date getValidDate(Scanner scan) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = null;
         while (true) {
-            ManageEventUI.inputDate(); 
+            ManageEventUI.inputDate();
             String dateString = scan.nextLine().trim();
 
             // Check if the format is correct
@@ -305,7 +297,7 @@ private static String generateSponsorshipID(String prefix) {
 
     private static String getValidTime(Scanner scanner) {
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        timeFormat.setLenient(false);  
+        timeFormat.setLenient(false);
 
         String time = "";
 
@@ -323,95 +315,86 @@ private static String generateSponsorshipID(String prefix) {
 
         return time;
     }
-    
-    private static int getValidInteger(Scanner scanner) {
-    while (true) {
-        try {
-            int value = Integer.parseInt(scanner.nextLine().trim());
-            if (value > 0) {
-                return value;
-            } else {
-                EventUtility.invalidNegativeValue();
-            }
-        } catch (NumberFormatException e) {
-            EventUtility.invalidIntInput();
-        }
-    }
-}
-    public static int getValidRange(int max) {
-    int value;
-    while (true) {
-        ManageEventUI.inputChoice();
-        try {
-            value = Integer.parseInt(scan.nextLine().trim());
-            if (value > 0 && value <= max) {
-                return value;
-            } else {
-                EventUtility.invalidSelection(max);
-            }
-        } catch (NumberFormatException e) {
-            EventUtility.invalidIntInput();
-        }
-    }
-}
 
+    private static int getValidInteger(Scanner scanner) {
+        while (true) {
+            try {
+                int value = Integer.parseInt(scanner.nextLine().trim());
+                if (value > 0) {
+                    return value;
+                } else {
+                    EventUtility.invalidNegativeValue();
+                }
+            } catch (NumberFormatException e) {
+                EventUtility.invalidIntInput();
+            }
+        }
+    }
+
+    public static int getValidRange(int max) {
+        int value;
+        while (true) {
+            ManageEventUI.inputChoice();
+            try {
+                value = Integer.parseInt(scan.nextLine().trim());
+                if (value > 0 && value <= max) {
+                    return value;
+                } else {
+                    EventUtility.invalidSelection(max);
+                }
+            } catch (NumberFormatException e) {
+                EventUtility.invalidIntInput();
+            }
+        }
+    }
 
     private static double getValidDouble(Scanner scanner) {
-    while (true) {
-        try {
-            return Double.parseDouble(scanner.nextLine().trim());
-        } catch (NumberFormatException e) {
-           EventUtility.invalidIntInput();
+        while (true) {
+            try {
+                return Double.parseDouble(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                EventUtility.invalidIntInput();
+            }
         }
     }
-    }  
-    
+
     // Sequential Search
     private static Event findEventByID(String eventID) {
-    Node<Event> currentNode = eventList.getHead();
+        Node<Event> currentNode = eventList.getHead();
 
-    while (currentNode != null) {
-        Event tempEvent = currentNode.data;
-        if (eventList.contains(tempEvent) && tempEvent.getEventID().equals(eventID)) {
-            return tempEvent;
+        while (currentNode != null) {
+            Event tempEvent = currentNode.data;
+            if (eventList.contains(tempEvent) && tempEvent.getEventID().equals(eventID)) {
+                return tempEvent;
+            }
+            currentNode = currentNode.next;
         }
-        currentNode = currentNode.next;
+
+        return null;
     }
 
-    return null;
-}
-    public static void clearAllFile(){
+    public static void clearAllFile() {
         ticketList.clear();
         eventList.clear();
         sponsorshipList.clear();
         volunteerEventList.clear();
         volunteerList.clear();
-        
+
     }
 
-
-    
-    
-    
-    
-    public static void loadAllFile(){
+    public static void loadAllFile() {
         eventList.loadFromFile(EVENT_FILE);
         ticketList.loadFromFile(TICKET_FILE);
         sponsorshipList.loadFromFile(SPONSORSHIP_FILE);
         volunteerEventList.loadFromFile(VOLUNTEER_EVENT_FILE);
         volunteerList.loadFromFile(VOLUNTEER_FILE);
     }
-    
-    
-    
-    
-    
-    
+
     public static void main(String[] args) {
         eventMainMenu();
     }
-    
-    public static void eventMainMenu(){
+
+    public static void eventMainMenu() {
         boolean cont = true;
         do {
             clearAllFile();
@@ -449,9 +432,9 @@ private static String generateSponsorshipID(String prefix) {
                     generateSummaryReports();
                     break;
                 case 11:
-                    System.out.println("Exiting..."); 
+                    EventUtility.exitMainMenu();
                     break;
-                
+
             }
 
             cont = YN("Do you want to continue manage event?");
@@ -461,7 +444,6 @@ private static String generateSponsorshipID(String prefix) {
         } while (cont);
 
     }
-    
 
     private static void addEvent() {
 
@@ -502,9 +484,8 @@ private static String generateSponsorshipID(String prefix) {
 
     }
 
-    
     private static void addTicket() {
-        
+
         if (eventList.isEmpty()) {
             EventUtility.eventNotExist();
             return;
@@ -549,20 +530,19 @@ private static String generateSponsorshipID(String prefix) {
                 ticketList.insert(ticket);
                 ManageEventUI.displayTicketDetails(ticket);
             }
-            
-             
+
             ticketList.saveToFile(TICKET_FILE);
             EventUtility.ticketAddedMsg();
         }
     }
-    
+
     private static void addSponsorship() {
-        
+
         if (eventList.isEmpty()) {
             EventUtility.eventNotExist();
             return;
         }
-        
+
         String eventID;
         Event event;
 
@@ -603,8 +583,15 @@ private static String generateSponsorshipID(String prefix) {
             EventUtility.eventNotExistToRemove();
             return;
         }
-
+        Node<Event> currentEvent = eventList.getHead();
+        while (currentEvent != null) {
+        Event event = currentEvent.data;
         ManageEventUI.displayEvent();
+        ManageEventUI.displayEventListHeader();
+        ManageEventUI.displayAvailableEvent(event);
+        currentEvent = currentEvent.next;
+        }
+        
         
         ManageEventUI.inputRemoveEventID();
         String eventID = scan.nextLine().trim();
@@ -621,8 +608,6 @@ private static String generateSponsorshipID(String prefix) {
         eventList.saveToFile(EVENT_FILE);
         EventUtility.eventRemovedMsg();
     }
-    
-    
 
     public static void searchEvent() {
 
@@ -639,7 +624,7 @@ private static String generateSponsorshipID(String prefix) {
         switch (searchChoice) {
             case 1:
                 ManageEventUI.inputEventID();
-                String eventID = scan.nextLine().trim(); 
+                String eventID = scan.nextLine().trim();
                 foundEvent = findEventByID(eventID);
                 break;
             case 2:
@@ -659,7 +644,7 @@ private static String generateSponsorshipID(String prefix) {
             EventUtility.searchEventNotExist();
         }
     }
-    
+
     // Sequential Search
     private static LinkedListInterface<Event> searchEventsByDate(Date searchDate) {
         LinkedListInterface<Event> foundEvents = new LinkedList<>();
@@ -676,10 +661,8 @@ private static String generateSponsorshipID(String prefix) {
         return foundEvents;
     }
 
-    
-
     public static void disEventDetails(Event event) {
-        
+        ManageEventUI.eventFound();
         ManageEventUI.displayEventDetails(event);
         disEventTickets(event.getEventID());
         disEventSponsorships(event.getEventID());
@@ -707,10 +690,10 @@ private static String generateSponsorshipID(String prefix) {
                 ManageEventUI.disTicketDetails(ticketCount, ticketNode.data);
                 ticketsFound = true;
                 ticketCount++;
-                
+
             }
             ticketNode = ticketNode.next;
-            
+
         }
 
         if (!ticketsFound) {
@@ -736,7 +719,7 @@ private static String generateSponsorshipID(String prefix) {
             EventUtility.noSponsorshipsFound();
         }
     }
-    
+
     public static void updateEvent() {
 
         if (eventList.isEmpty()) {
@@ -1043,9 +1026,9 @@ private static String generateSponsorshipID(String prefix) {
         } else {
             EventUtility.updateSponsorError();
         }
-    
-    
-}
+
+    }
+
     private static void listAllEvents() {
 
         // Check if there are any events
@@ -1055,8 +1038,6 @@ private static String generateSponsorshipID(String prefix) {
         }
 
         // Header for the event list
-       
-
         ManageEventUI.titleListAllEvent();
         Node<Event> eventNode = eventList.getHead();
         while (eventNode != null) {
@@ -1236,7 +1217,7 @@ private static String generateSponsorshipID(String prefix) {
         ManageEventUI.displayVolunteerDetails(foundVolunteer);
         ManageEventUI.displayVolunteerEvents(assignedEvents);
     }
-    
+
     public static void generateSummaryReports() {
         boolean cont = true;
         do {
@@ -1297,7 +1278,7 @@ private static String generateSponsorshipID(String prefix) {
             currentEvent = currentEvent.next;
         }
 
-         ManageEventUI.displayAnnualFundraisingReport(fundraisingTotals, startYear);
+        ManageEventUI.displayAnnualFundraisingReport(fundraisingTotals, startYear);
     }
 
     public static void topEventsWithMostVolunteersReport() {
@@ -1417,21 +1398,4 @@ private static String generateSponsorshipID(String prefix) {
 
         ManageEventUI.displayBestTicketSalesPerformance(topEvents, soldOutCounts);
     }
-  
-    
-    
 }
-
-    
-    
-
-
-    
-    
-    
-    
-
-    
-    
-    
-
