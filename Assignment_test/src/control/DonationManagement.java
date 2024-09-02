@@ -108,8 +108,8 @@ public class DonationManagement {
                     report();
                     break;
                 case 11:
-                    DonationManagementUI.breakLine();
-                    DonationManagementUI.breakLine();
+                    DonationManagementUI.exit();
+                    
                     return;
                 default:
                     DonationManagementUtility.invalidMenuSelection();
@@ -121,8 +121,8 @@ public class DonationManagement {
                 DonationManagementUI.breakLine();
             }
         }
-        DonationManagementUI.breakLine();
-        DonationManagementUI.breakLine();
+        DonationManagementUI.exit();
+        
     }
     
     // ----------------

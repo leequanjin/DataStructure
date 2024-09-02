@@ -9,7 +9,7 @@ import adt.LinkedListInterface;
 import adt.Node;
 
 import entity.Event.Event;
-import boundary.DonationManagementUI;
+import boundary.VolunteerUI;
 
 import entity.Volunteer.Volunteer;
 import entity.Volunteer.EventVolunteer;
@@ -365,8 +365,8 @@ public class VolunteerManagement {
                     report();
                     break;
                 case 9:
-                    VolunteerUI.breakLine();
-                    VolunteerUI.breakLine();
+                    VolunteerUI.exit();
+                    
                     return;
                 default:
                     VolunteerUtility.invalidMenuSelection();
@@ -375,12 +375,12 @@ public class VolunteerManagement {
 
             cont = YN(VolunteerUI.contVolQ());
             if (cont) {
-                DonationManagementUI.breakLine();
+                VolunteerUI.breakLine();
             }
         } while (cont);
 
-        DonationManagementUI.breakLine();
-        DonationManagementUI.breakLine();
+        VolunteerUI.exit();
+        
     }
     
     // -----------------

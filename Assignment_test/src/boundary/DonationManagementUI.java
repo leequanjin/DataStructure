@@ -27,7 +27,11 @@ public class DonationManagementUI {
     public static final String PURPLE = "\u001B[35m";
     public static final String CYAN = "\u001B[36m";
     public static final String RESET = "\u001B[0m";
-
+    
+    public static void exit(){
+        System.out.println("\n" + GREEN + "Exiting donation management menu...\n" + RESET);
+    }
+    
     //------------
     // Common Use
     //------------
