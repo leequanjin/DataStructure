@@ -146,7 +146,7 @@ public class ManageEventUI {
 
     public static void displayEventDetails(Event event) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        System.out.printf("\n%-15s : %s\n", "Event ID", event.getEventID());
+        System.out.printf("%-15s : %s\n", "Event ID", event.getEventID());
         System.out.printf("%-15s : %s\n", "Event Name", event.getEventName());
         System.out.printf("%-15s : %s\n", "Date", dateFormat.format(event.getDate()));
         System.out.printf("%-15s : %s\n", "Time", event.getTime());
@@ -185,7 +185,7 @@ public class ManageEventUI {
 
     public static void disTicketDetails(int ticketCount, Ticket ticket) {
 
-        System.out.printf("\n%-5d | %-10s | %-20s | %-10.2f | %-10s\n",
+        System.out.printf("%-5d | %-10s | %-20s | %-10.2f | %-10s\n",
                 ticketCount,
                 ticket.getTicketID(),
                 ticket.getTicketType(),
