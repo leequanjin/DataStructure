@@ -1,21 +1,24 @@
-
 package entity.Event;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+
+/**
+ *
+ * @author Clarist Liew
+ */
 public class Event implements Serializable {
+
     private String eventID;
     private String eventName;
     private Date date;
     private String time;
     private String location;
 
-    
-
-    
-    public Event(String eventID, String eventName, Date date, String time,  String location ) {
-        this.eventID= eventID;
+    public Event(String eventID, String eventName, Date date, String time, String location) {
+        this.eventID = eventID;
         this.eventName = eventName;
         this.date = date;
         this.time = time;
@@ -62,14 +65,11 @@ public class Event implements Serializable {
     public void setLocation(String location) {
         this.location = location;
     }
-    
-    
-
 
     @Override
     public String toString() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String dateString = formatter.format(date);
-    return "Event Name: " + eventName + '\n' + "Date: " + dateString + '\n' + "Time: " + time + '\n' + "Location: " + location ;
+        return "Event Name: " + eventName + '\n' + "Date: " + dateString + '\n' + "Time: " + time + '\n' + "Location: " + location;
     }
-}    
+}  
