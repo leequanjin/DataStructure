@@ -578,16 +578,16 @@ public class ManageEvent {
     }
 
     public static void removeEvent() {
-
+        
         if (eventList.isEmpty()) {
             EventUtility.eventNotExistToRemove();
             return;
         }
+        ManageEventUI.displayEvent();
+        ManageEventUI.displayEventListHeader();
         Node<Event> currentEvent = eventList.getHead();
         while (currentEvent != null) {
         Event event = currentEvent.data;
-        ManageEventUI.displayEvent();
-        ManageEventUI.displayEventListHeader();
         ManageEventUI.displayAvailableEvent(event);
         currentEvent = currentEvent.next;
         }
