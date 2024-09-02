@@ -184,6 +184,18 @@ public class EventUtility {
         System.out.println(GREEN + "Event Location updated successfully!\n" + RESET);
     }
     
+    public static void ticketTypeandPriceUpdatedMsg(){
+        System.out.println(GREEN + "Ticket Type and Price updated successfully!\n" + RESET);
+    }
+    
+    public static void ticketStatusUpdatedMsg(){
+        System.out.println(GREEN + "Ticket Status updated successfully!\n" + RESET);
+    }
+    
+    public static void sponsorshipUpdatedMsg(){
+        System.out.println(GREEN + "Sponsorship updated successfully!\n" + RESET);
+    }
+    
     // Display a message when an event is removed from a volunteer
     public static void eventRemovedFromVolunteer(String eventID, String volunteerID) {
         System.out.println(GREEN + "Event with ID " + eventID + " removed from volunteer " + volunteerID + ".\n" +RESET);

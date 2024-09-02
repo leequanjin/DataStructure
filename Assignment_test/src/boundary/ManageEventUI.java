@@ -259,6 +259,11 @@ public class ManageEventUI {
         System.out.println("-------------------------------------------------------------------");
     }
 
+    public static void displayTicketStatusDetails(int ticketIndex, Ticket currentTicket) {
+        System.out.println(ticketIndex + "."+ "Ticket ID:" + currentTicket.getTicketID()+ " Type: " + currentTicket.getTicketType()
+                + " Price: RM" + String.format("%.2f", currentTicket.getTicketPrice()) + "  Status:" +currentTicket.getTicketStatus());
+    }
+    
     public static void displayTicketDetails(int ticketIndex, Ticket currentTicket) {
         System.out.println(ticketIndex + ". Type: " + currentTicket.getTicketType()
                 + ", Price: RM" + String.format("%.2f", currentTicket.getTicketPrice()));

@@ -876,7 +876,9 @@ public class ManageEvent {
                 while (updatedTicketNode != null) {
                     ManageEventUI.displayTicketUpdatedDetails(updatedTicketNode.data);
                     updatedTicketNode = updatedTicketNode.next;
+                    
                 }
+                EventUtility.ticketTypeandPriceUpdatedMsg();
                 break;
 
             case 2:
@@ -885,11 +887,11 @@ public class ManageEvent {
                 LinkedListInterface<Ticket> eventTickets = new LinkedList<>();
                 ticketIndex = 1;
 
-                ManageEventUI.displayTicketTableHeader();
+                
                 while (currentTicket != null) {
                     if (currentTicket.data.getEventID().equals(eventID)) {
                         eventTickets.insert(currentTicket.data);
-                        ManageEventUI.displayTicketDetails(ticketIndex, currentTicket.data);
+                        ManageEventUI.displayTicketStatusDetails(ticketIndex, currentTicket.data);
                         ticketIndex++;
                     }
                     currentTicket = currentTicket.next;
@@ -927,6 +929,7 @@ public class ManageEvent {
 
                 ticketList.saveToFile(TICKET_FILE);
                 ManageEventUI.displayTicketUpdatedDetails(updatedTicket);
+                EventUtility.ticketStatusUpdatedMsg();
                 break;
 
             default:
@@ -1024,6 +1027,7 @@ public class ManageEvent {
             sponsorshipList.replace(selectedSponsorship, updatedSponsorship);
             sponsorshipList.saveToFile(SPONSORSHIP_FILE);
             ManageEventUI.displaySponsorshipUpdatedDetails(updatedSponsorship);
+            EventUtility.sponsorshipUpdatedMsg();
         } else {
             EventUtility.updateSponsorError();
         }
