@@ -2335,6 +2335,7 @@ public class DonationManagement {
         individualList.removeEmptyData();
         organizationList.removeEmptyData();
 
+        DonationManagementUI.breakLine();
         DonationManagementUI.individualHeader();
         filterByDonorInd(itemList, individualList);
 
@@ -2782,7 +2783,9 @@ public class DonationManagement {
 
             }
             if (list.isEmpty()) {
+                DonationManagementUI.breakLine();
                 DonationManagementUtility.noSuchItem();
+                DonationManagementUI.breakLine();
                 continue;
             } else {
                 printListToTable(list);
