@@ -37,7 +37,7 @@ public class TotalMoney implements Serializable {
     
     @Override
     public String toString(){
-        return String.format("%-20s %-4s %-5.2f /n%-20s %-4s %-5.2f ", 
+        return String.format("%-20s %-4s %-5.2f \n%-20s %-4s %-5.2f ", 
                 "Total bank amount", ": RM", ttlBank, 
                 "Total cash amount", ": RM", ttlCash);
     }
