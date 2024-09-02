@@ -2649,6 +2649,7 @@ public class DonationManagement {
             DonationManagementUI.commonItemHeader();
             DonationManagementUI.commonPhyItemHeader();
             DonationManagementUI.commonFoodHeader();
+            DonationManagementUI.breakLine();
             DonationManagementUI.printNode(foodList.getHead());
             return;
         }
@@ -2701,6 +2702,7 @@ public class DonationManagement {
         DonationManagementUI.commonItemHeader();
         DonationManagementUI.commonPhyItemHeader();
         DonationManagementUI.commonFoodHeader();
+        DonationManagementUI.breakLine();
         while (node != null) {
             DonationManagementUI.printNode(node);
             stop++;
