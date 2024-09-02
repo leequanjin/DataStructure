@@ -571,7 +571,7 @@ public class DonationManagementUI {
     }
         
     public static void list8Header(){
-        System.out.print("\n --- Donation Item List --- ");
+        System.out.println("\n --- Donation Item List --- ");
     }
     
     public static String contSortQ(){
