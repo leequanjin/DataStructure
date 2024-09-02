@@ -543,35 +543,35 @@ public class DonationManagementUI {
     }
     
     public static void list1Header(){
-        System.out.println("\n --- Money List --- (Ascending Order)");
+        System.out.print("\n --- Money List --- (Ascending Order)");
     }
     
     public static void list2Header(){
-        System.out.println("\n --- Money List --- (Descending Order)");
+        System.out.print("\n --- Money List --- (Descending Order)");
     }
         
     public static void list3Header(){
-        System.out.println("\n --- Bank List --- (Ascending Order)");
+        System.out.print("\n --- Bank List --- (Ascending Order)");
     }
         
     public static void list4Header(){
-        System.out.println("\n --- Bank List --- (Descending Order)");
+        System.out.print("\n --- Bank List --- (Descending Order)");
     }
         
     public static void list5Header(){
-        System.out.println("\n --- Cash List --- (Ascending Order)");
+        System.out.print("\n --- Cash List --- (Ascending Order)");
     }
         
     public static void list6Header(){
-        System.out.println("\n --- Cash List --- (Descending Order)");
+        System.out.print("\n --- Cash List --- (Descending Order)");
     }
         
     public static void list7Header(){
-        System.out.println("\n --- Food List --- (According Expiry Date)");
+        System.out.print("\n --- Food List --- (According Expiry Date)");
     }
         
     public static void list8Header(){
-        System.out.println("\n --- Donation Item List --- ");
+        System.out.print("\n --- Donation Item List --- ");
     }
     
     public static String contSortQ(){
