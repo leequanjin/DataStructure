@@ -389,7 +389,7 @@ public class ManageDonor {
 
             System.out.print(" (" + sum + ") ");
 
-            printStar(sum);
+            printStar2(sum);
 
             if (max < sum) {
                 max = sum;
