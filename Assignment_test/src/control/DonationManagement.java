@@ -68,8 +68,6 @@ public class DonationManagement {
         
         chkAllFileExist();
         donationManagementMainMenu();
-        DonationManagementUI.breakLine();
-        DonationManagementUI.breakLine();
     }
     
     public static void donationManagementMainMenu(){
@@ -123,6 +121,8 @@ public class DonationManagement {
                 DonationManagementUI.breakLine();
             }
         }
+        DonationManagementUI.breakLine();
+        DonationManagementUI.breakLine();
     }
     
     // ----------------
@@ -2540,6 +2540,9 @@ public class DonationManagement {
         if (moneyList.getHead().next == null){
             DonationManagementUI.commonItemHeader();
             DonationManagementUI.commonMoneyHeader();
+            if(header == 1){
+                DonationManagementUI.bankHeader();
+            }
             DonationManagementUI.breakLine();
             DonationManagementUI.printNode(moneyList.getHead());
             return;
@@ -2601,7 +2604,6 @@ public class DonationManagement {
         
         DonationManagementUI.commonItemHeader();
         DonationManagementUI.commonMoneyHeader();
-        DonationManagementUI.breakLine();
         if (header == 1){
             DonationManagementUI.bankHeader();
         }

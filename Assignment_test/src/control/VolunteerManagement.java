@@ -328,8 +328,6 @@ public class VolunteerManagement {
         String[] fileList = {VOLUNTEER_PATH, EVENT_PATH, EV_PATH};
         chkFileExist(fileList);
         volunteerMainMenu();
-        DonationManagementUI.breakLine();
-        DonationManagementUI.breakLine();
     }
     
     public static void volunteerMainMenu(){
@@ -381,6 +379,8 @@ public class VolunteerManagement {
             }
         } while (cont);
 
+        DonationManagementUI.breakLine();
+        DonationManagementUI.breakLine();
     }
     
     // -----------------
