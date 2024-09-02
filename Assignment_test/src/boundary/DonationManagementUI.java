@@ -454,7 +454,7 @@ public class DonationManagementUI {
     }
     
     public static void TIFoodHeader(){
-    System.out.print(BLUE + "\n--- FOOD ---" + RESET);
+    System.out.println(BLUE + "\n--- FOOD ---" + RESET);
     }
     
     public static void TIBakedHeader(){
