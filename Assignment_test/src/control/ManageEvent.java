@@ -672,6 +672,7 @@ public class ManageEvent {
         Node<Event> currentEvent = foundEvents.getHead();
         int show = 1;
         while (currentEvent != null) {
+            ManageEventUI.eventFound();
             ManageEventUI.disEventByDate(show, currentEvent.data);
             disEventTickets(currentEvent.data.getEventID());
             disEventSponsorships(currentEvent.data.getEventID());
