@@ -478,7 +478,9 @@ public class DonationManagement {
         list.removeEmptyData();
         
         if(list.isEmpty()){
+            DonationManagementUI.breakLine();
             DonationManagementUtility.noSuchItem();
+            DonationManagementUI.breakLine();
             return;
         }
         
