@@ -16,7 +16,7 @@ import utility.DonationManagementUtility;
 
 /**
  *
- * @author Asus
+ * @author Heng Pei Lin
  */
 public class DonationManagementUI {
 
